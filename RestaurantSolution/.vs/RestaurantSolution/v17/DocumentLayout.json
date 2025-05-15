@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0CB50C79-565E-4B38-94C6-A442BB1A722B}|Restaurant.DataAccess\\Restaurant.DataAccess.csproj|c:\\users\\laurp\\desktop\\faculta\\anul 2\\sem2\\mvp\\restaurantsolution\\restaurant.dataaccess\\repos\\preparatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CB50C79-565E-4B38-94C6-A442BB1A722B}|Restaurant.DataAccess\\Restaurant.DataAccess.csproj|solutionrelative:restaurant.dataaccess\\repos\\preparatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "PreparatRepository.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.DataAccess\\Repos\\PreparatRepository.cs",
+              "RelativeDocumentMoniker": "Restaurant.DataAccess\\Repos\\PreparatRepository.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.DataAccess\\Repos\\PreparatRepository.cs",
+              "RelativeToolTip": "Restaurant.DataAccess\\Repos\\PreparatRepository.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAmwEIAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-15T14:00:50.252Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

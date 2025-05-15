@@ -1,0 +1,15 @@
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Microsoft.TestPlatform.AdapterUtilities.dll
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Restaurant.Tests.dll
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Restaurant.Tests.pdb
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\obj\Debug\Restaurant.Tests.csproj.AssemblyReference.cache
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\obj\Debug\Restaurant.Tests.csproj.CoreCompileInputs.cache
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\obj\Debug\Restaura.99B7017B.Up2Date
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\obj\Debug\Restaurant.Tests.dll
+C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Tests\obj\Debug\Restaurant.Tests.pdb
