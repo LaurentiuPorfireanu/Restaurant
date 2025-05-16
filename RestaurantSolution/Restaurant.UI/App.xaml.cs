@@ -25,7 +25,7 @@ namespace Restaurant.UI
 
 
             var repo = new CategoryRepository(new RestaurantContext());
-            repo.Insert("TestCat");
+          
             var all = repo.GetAll();
             MessageBox.Show($"Am {all.Count()} categorii (incluzând «TestCat»).");
 

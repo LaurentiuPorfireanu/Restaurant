@@ -2603,11 +2603,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.Services\\Restaurant.Services.csproj",
+      "projectUniqueName": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Restaurant.Services.csproj",
       "projectName": "Restaurant.Services",
-      "projectPath": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.Services\\Restaurant.Services.csproj",
+      "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Restaurant.Services.csproj",
       "packagesPath": "C:\\Users\\laurp\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.Services\\obj\\",
+      "outputPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2628,11 +2628,11 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.DataAccess\\Restaurant.DataAccess.csproj": {
-              "projectPath": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.DataAccess\\Restaurant.DataAccess.csproj"
+            "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.DataAccess\\Restaurant.DataAccess.csproj": {
+              "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.DataAccess\\Restaurant.DataAccess.csproj"
             },
-            "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj": {
-              "projectPath": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj"
+            "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj": {
+              "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj"
             }
           }
         }

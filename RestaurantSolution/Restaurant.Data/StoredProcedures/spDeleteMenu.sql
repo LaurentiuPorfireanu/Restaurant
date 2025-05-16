@@ -1,0 +1,8 @@
+﻿CREATE PROCEDURE spDeleteMenu
+    @MenuID INT
+AS
+BEGIN
+    DELETE FROM Menu
+    WHERE MenuID = @MenuID;
+END
+GO

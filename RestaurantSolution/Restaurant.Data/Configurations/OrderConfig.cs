@@ -23,7 +23,7 @@ namespace Restaurant.Data.Configurations
                    .IsRequired();
 
             builder.Property(o => o.Status)
-                   .IsRequired();
+                   .IsRequired().HasConversion<int>();
 
             builder.Property(o => o.EstimatedDelivery);
 

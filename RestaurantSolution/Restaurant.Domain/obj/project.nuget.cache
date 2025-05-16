@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Vr9hMvKPQOM=",
+  "dgSpecHash": "fSH4E5Cx3uQ=",
   "success": true,
-  "projectFilePath": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj",
+  "projectFilePath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\laurp\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\laurp\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",

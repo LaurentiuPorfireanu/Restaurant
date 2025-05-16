@@ -11,8 +11,9 @@ namespace Restaurant.Domain.Enums
         InvalidOrderState = 0,
         Registered = 1,
         InPreparation = 2,
-        Delievered = 4,
-        Canceled = 8
+        OutforDelivery = 4,
+        Delievered = 8,
+        Canceled = 16
     }
 }
 

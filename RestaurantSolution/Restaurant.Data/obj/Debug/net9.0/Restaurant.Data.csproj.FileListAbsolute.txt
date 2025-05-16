@@ -17,3 +17,23 @@ C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Dat
 C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.genruntimeconfig.cache
 C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Microsoft.Data.Tools.Schema.Sql.UnitTesting.dll
 C:\Users\laurp\Desktop\Faculta\Anul 2\sem2\MVP\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter.dll
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Restaurant.Data.deps.json
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Restaurant.Data.runtimeconfig.json
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Restaurant.Data.dll
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Restaurant.Data.pdb
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Microsoft.Data.Tools.Schema.Sql.UnitTesting.dll
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Microsoft.Data.Tools.Schema.Sql.UnitTestingAdapter.dll
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Restaurant.Domain.dll
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\bin\Debug\net9.0\Restaurant.Domain.pdb
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.csproj.AssemblyReference.cache
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.AssemblyInfoInputs.cache
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.AssemblyInfo.cs
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.csproj.CoreCompileInputs.cache
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.sourcelink.json
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaura.C7FCD0F2.Up2Date
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.dll
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\refint\Restaurant.Data.dll
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.pdb
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\Restaurant.Data.genruntimeconfig.cache
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.Data\obj\Debug\net9.0\ref\Restaurant.Data.dll

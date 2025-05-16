@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "MdNSBCvgk+M=",
+  "dgSpecHash": "0OUstt23CH0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\laurp\\Desktop\\Faculta\\Anul 2\\sem2\\MVP\\RestaurantSolution\\Restaurant.Services\\Restaurant.Services.csproj",
+  "projectFilePath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Restaurant.Services.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\laurp\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\laurp\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
