@@ -16,23 +16,29 @@ namespace Restaurant.Services.Implementation
             => _repo.GetAll();
 
         public Category GetCategoryById(int id)
-            => _repo.GetById(id);
+        {
+            if (id <= 0) throw new ArgumentException("ID invalid", nameof(id));
+            return _repo.GetById(id);
+        }
 
         public void CreateCategory(string name)
         {
-            
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Nume obligatoriu", nameof(name));
             _repo.Insert(name);
         }
 
         public void UpdateCategory(int id, string name)
         {
-            
+            if (id <= 0) throw new ArgumentException("ID invalid", nameof(id));
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Nume obligatoriu", nameof(name));
             _repo.Update(id, name);
         }
 
         public void DeleteCategory(int id)
         {
-            
+            if (id <= 0) throw new ArgumentException("ID invalid", nameof(id));
             _repo.Delete(id);
         }
     }

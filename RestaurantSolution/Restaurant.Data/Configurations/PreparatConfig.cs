@@ -22,8 +22,6 @@ namespace Restaurant.Data.Configurations
             builder.Property(p => p.QuantityPortie)
                    .IsRequired();
 
-            builder.Property(p => p.QuantityPortie)
-                   .IsRequired();
 
             builder.HasOne(p => p.Category)
                    .WithMany(c => c.Preparate)

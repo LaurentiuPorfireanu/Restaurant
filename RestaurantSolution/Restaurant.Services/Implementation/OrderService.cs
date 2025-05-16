@@ -7,7 +7,7 @@ using Restaurant.DataAccess.Interfaces;
 
 namespace Restaurant.Services.Implementation
 {
-    internal class OrderService:IOrderService
+    public class OrderService:IOrderService
     {
         private readonly IOrderRepository _repo;
 

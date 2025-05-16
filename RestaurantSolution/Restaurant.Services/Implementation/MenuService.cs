@@ -6,7 +6,7 @@ using Restaurant.DataAccess.Interfaces;
 
 namespace Restaurant.Services.Implementation
 {
-    internal class MenuService:IMenuService
+    public class MenuService:IMenuService
     {
 
         private readonly IMenuRepository _repo;
