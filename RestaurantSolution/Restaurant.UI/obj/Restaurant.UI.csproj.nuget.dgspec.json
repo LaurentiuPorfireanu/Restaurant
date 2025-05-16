@@ -302,6 +302,12 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -433,6 +439,9 @@
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
+              "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Data\\Restaurant.Data.csproj": {
+                "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Data\\Restaurant.Data.csproj"
+              },
               "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj": {
                 "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj"
               },
