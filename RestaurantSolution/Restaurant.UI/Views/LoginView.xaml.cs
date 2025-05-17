@@ -1,10 +1,9 @@
-﻿using Restaurant.Services.Implementation;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Login;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace Restaurant.UI.Views
 {
@@ -12,14 +11,9 @@ namespace Restaurant.UI.Views
     {
         private readonly LoginViewModel _viewModel;
 
-
-
-
         public LoginView(IAuthenticationService authService)
         {
             InitializeComponent();
-
-            
 
             _viewModel = new LoginViewModel(authService);
             DataContext = _viewModel;
@@ -29,6 +23,8 @@ namespace Restaurant.UI.Views
 
             // Handle successful login
             _viewModel.LoginSuccessful += ViewModel_LoginSuccessful;
+            _viewModel.ContinueAsGuestRequested += ViewModel_ContinueAsGuestRequested;
+            _viewModel.CreateAccountRequested += ViewModel_CreateAccountRequested;
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
@@ -38,7 +34,22 @@ namespace Restaurant.UI.Views
 
         private void ViewModel_LoginSuccessful(object sender, EventArgs e)
         {
-            MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Login successful! Redirect to main window will be implemented later.");
+            // TODO: Redirect to main window
+        }
+
+        private void ViewModel_ContinueAsGuestRequested(object sender, EventArgs e)
+        {
+            MessageBox.Show("Continue as guest! Redirect to main window will be implemented later.");
+            // TODO: Redirect to main window as guest
+        }
+
+        private void ViewModel_CreateAccountRequested(object sender, EventArgs e)
+        {
+            // Deschide fereastra pentru crearea contului
+            var registrationView = App.ServiceProvider.GetRequiredService<RegistrationView>();
+            registrationView.Show();
+            Close();
         }
     }
 }

@@ -14,13 +14,13 @@ namespace Restaurant.UI
 {
     public partial class App : Application
     {
-        private ServiceProvider _serviceProvider;
+        public static ServiceProvider ServiceProvider { get; private set; }
 
         public App()
         {
             var services = new ServiceCollection();
             ConfigureServices(services);
-            _serviceProvider = services.BuildServiceProvider();
+            ServiceProvider = services.BuildServiceProvider();
         }
 
         private void ConfigureServices(ServiceCollection services)
@@ -47,6 +47,7 @@ namespace Restaurant.UI
 
             // Register views
             services.AddTransient<LoginView>();
+            services.AddTransient<RegistrationView>();
             //services.AddTransient<MainWindow>();
         }
 
@@ -54,7 +55,7 @@ namespace Restaurant.UI
         {
             base.OnStartup(e);
 
-            var loginWindow = _serviceProvider.GetService<LoginView>();
+            var loginWindow = ServiceProvider.GetRequiredService<LoginView>();
             loginWindow.Show();
         }
     }

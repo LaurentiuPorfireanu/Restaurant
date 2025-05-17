@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Autentificare Restaurant" 
-        Height="350" Width="400"
+        Height="420" Width="400"
         WindowStartupLocation="CenterScreen" 
         ResizeMode="NoResize">
 
@@ -13,9 +13,10 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
 
-
     <Grid Margin="20">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -64,10 +65,39 @@
                 Padding="15,8" 
                 FontSize="14" 
                 HorizontalAlignment="Center" 
-                MinWidth="150"/>
+                MinWidth="150"
+                Margin="0,0,0,15"/>
+
+        <!-- Separator -->
+        <Border Grid.Row="5" 
+                BorderBrush="#DDDDDD" 
+                BorderThickness="0,1,0,0" 
+                Margin="0,5,0,15">
+            <TextBlock Text="sau" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center"
+                       Background="White" 
+                       Margin="0,-10,0,0" 
+                       Padding="10,0"/>
+        </Border>
+
+        <!-- Additional Buttons -->
+        <UniformGrid Grid.Row="6" Rows="1" Columns="2" Margin="0,0,0,15">
+            <Button Content="Continuă ca vizitator" 
+                    Command="{Binding ContinueAsGuestCommand}"
+                    Padding="10,8" 
+                    Margin="0,0,5,0"
+                    FontSize="13"/>
+
+            <Button Content="Creează cont" 
+                    Command="{Binding CreateAccountCommand}"
+                    Padding="10,8"
+                    Margin="5,0,0,0"
+                    FontSize="13"/>
+        </UniformGrid>
 
         <!-- Loading Indicator -->
-        <ProgressBar Grid.Row="5" 
+        <ProgressBar Grid.Row="7" 
                      IsIndeterminate="True" 
                      Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" 
                      Height="5" 

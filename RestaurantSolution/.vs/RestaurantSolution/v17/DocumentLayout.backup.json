@@ -3,16 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\login\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\login\\loginviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\views\\registrationview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\views\\registrationview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{97B80865-E274-4BC3-B3AD-0BE925F80BD8}|Restaurant.Services\\Restaurant.Services.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.services\\implementation\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{97B80865-E274-4BC3-B3AD-0BE925F80BD8}|Restaurant.Services\\Restaurant.Services.csproj|solutionrelative:restaurant.services\\implementation\\authenticationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\views\\loginview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\views\\loginview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\registrationviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\registrationviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,41 +38,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AuthenticationService.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Implementation\\AuthenticationService.cs",
-              "RelativeDocumentMoniker": "Restaurant.Services\\Implementation\\AuthenticationService.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Implementation\\AuthenticationService.cs",
-              "RelativeToolTip": "Restaurant.Services\\Implementation\\AuthenticationService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T11:48:20.687Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "LoginViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Login\\LoginViewModel.cs",
-              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Login\\LoginViewModel.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Login\\LoginViewModel.cs",
-              "RelativeToolTip": "Restaurant.ViewModels\\Login\\LoginViewModel.cs",
-              "ViewState": "AgIAAE0AAAAAAAAAAAAAwF4AAAANAAAAAAAAAA==",
+              "Title": "RegistrationView.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\RegistrationView.xaml.cs",
+              "RelativeDocumentMoniker": "Restaurant.UI\\Views\\RegistrationView.xaml.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\RegistrationView.xaml.cs",
+              "RelativeToolTip": "Restaurant.UI\\Views\\RegistrationView.xaml.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T11:42:51.342Z",
+              "WhenOpened": "2025-05-17T14:44:54.522Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "LoginView.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\LoginView.xaml.cs",
-              "RelativeDocumentMoniker": "Restaurant.UI\\Views\\LoginView.xaml.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\LoginView.xaml.cs",
-              "RelativeToolTip": "Restaurant.UI\\Views\\LoginView.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "RegistrationViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\RegistrationViewModel.cs",
+              "RelativeDocumentMoniker": "Restaurant.ViewModels\\RegistrationViewModel.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\RegistrationViewModel.cs",
+              "RelativeToolTip": "Restaurant.ViewModels\\RegistrationViewModel.cs",
+              "ViewState": "AgIAAP0AAAAAAAAAAAAAANAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T11:35:13.625Z",
+              "WhenOpened": "2025-05-17T14:44:15.143Z",
               "EditorCaption": ""
             }
           ]

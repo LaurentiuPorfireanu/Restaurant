@@ -3,11 +3,9 @@ using Restaurant.ViewModels.Base;
 using Restaurant.ViewModels.Commands;
 using Restaurant.ViewModels.State;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Security.Cryptography;
 
 namespace Restaurant.ViewModels.Login
 {
@@ -68,27 +66,22 @@ namespace Restaurant.ViewModels.Login
         public bool CanLogin => !string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(Password) && !IsLoading;
 
         public ICommand LoginCommand { get; }
+        public ICommand ContinueAsGuestCommand { get; }
+        public ICommand CreateAccountCommand { get; }
 
         public event EventHandler LoginSuccessful;
+        public event EventHandler ContinueAsGuestRequested;
+        public event EventHandler CreateAccountRequested;
 
         public LoginViewModel(IAuthenticationService authService)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
-            LoginCommand = new RelayCommand(ExecuteLogin, _ => CanLogin);
-        }
-        public string HashPassword(string password)
-        {
-            if (string.IsNullOrEmpty(password))
-                throw new ArgumentException("Password cannot be null or empty", nameof(password));
 
-            // Folosim SHA256 simplu, exact ca în scriptul SQL
-            using (var sha256 = SHA256.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(password);
-                var hash = sha256.ComputeHash(bytes);
-                return Convert.ToBase64String(hash);
-            }
+            LoginCommand = new RelayCommand(ExecuteLogin, _ => CanLogin);
+            ContinueAsGuestCommand = new RelayCommand(ExecuteContinueAsGuest);
+            CreateAccountCommand = new RelayCommand(ExecuteCreateAccount);
         }
+
         private async void ExecuteLogin(object parameter)
         {
             try
@@ -96,33 +89,22 @@ namespace Restaurant.ViewModels.Login
                 ErrorMessage = string.Empty;
                 IsLoading = true;
 
-                // Debugging info - ce date sunt trimise
-                MessageBox.Show($"Încercare autentificare cu:\nEmail: {Email}\nParolă: {Password}", "Date Login");
-                string hash = HashPassword("Lau2905");
-                Console.WriteLine($"Hash pentru Lau2905: {hash}");
-
                 var user = await _authService.AuthenticateAsync(Email, Password);
-
-                // Debugging info - rezultatul autentificării
                 if (user != null)
                 {
-                    MessageBox.Show($"Autentificare reușită!\nUtilizator: {user.FirstName} {user.LastName}\nEmail: {user.Email}\nRol: {user.Role}",
-                                   "Autentificare Reușită");
+                    // Afișează mesajul direct din ViewModel
+                    MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     CurrentUserState.Instance.CurrentUser = user;
                     LoginSuccessful?.Invoke(this, EventArgs.Empty);
                 }
                 else
                 {
-                    MessageBox.Show("Autentificare eșuată - utilizatorul nu a fost găsit sau parola este incorectă",
-                                  "Autentificare Eșuată");
                     ErrorMessage = "Email sau parolă incorecte.";
                 }
             }
             catch (Exception ex)
             {
-                // Debugging info - excepția detaliată
-                MessageBox.Show($"Excepție: {ex.ToString()}", "Eroare Autentificare");
                 ErrorMessage = $"Eroare la autentificare: {ex.Message}";
             }
             finally
@@ -131,6 +113,19 @@ namespace Restaurant.ViewModels.Login
             }
         }
 
+        private void ExecuteContinueAsGuest(object parameter)
+        {
+            // Setează CurrentUser ca null sau un utilizator "guest" special
+            CurrentUserState.Instance.CurrentUser = null;
 
+            // Notifică View-ul că utilizatorul vrea să continue ca vizitator
+            ContinueAsGuestRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void ExecuteCreateAccount(object parameter)
+        {
+            // Notifică View-ul că utilizatorul vrea să creeze un cont nou
+            CreateAccountRequested?.Invoke(this, EventArgs.Empty);
+        }
     }
 }
