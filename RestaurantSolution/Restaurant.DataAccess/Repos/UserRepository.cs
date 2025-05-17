@@ -28,6 +28,7 @@ namespace Restaurant.DataAccess.Repositories
             => _context.Users
                    .FromSqlRaw("EXEC spGetUserByEmail @p0", email)
                    .AsNoTracking()
+                    .AsEnumerable()
                    .FirstOrDefault();
 
         public void Insert(

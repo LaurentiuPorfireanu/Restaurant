@@ -1,14 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-	  <UseWPF>true</UseWPF>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Restaurant.Data\Restaurant.Data.csproj" />
-    <ProjectReference Include="..\Restaurant.Domain\Restaurant.Domain.csproj" />
-    <ProjectReference Include="..\Restaurant.Services\Restaurant.Services.csproj" />
-  </ItemGroup>
-
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Restaurant.Data\Restaurant.Data.csproj" />
+		<ProjectReference Include="..\Restaurant.Domain\Restaurant.Domain.csproj" />
+		<ProjectReference Include="..\Restaurant.Services\Restaurant.Services.csproj" />
+	</ItemGroup>
 </Project>

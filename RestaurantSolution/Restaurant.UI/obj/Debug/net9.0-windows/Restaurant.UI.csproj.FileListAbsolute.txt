@@ -292,11 +292,10 @@ C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\bin\Debug\net
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\bin\Debug\net9.0-windows\Restaurant.DataAccess.pdb
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\bin\Debug\net9.0-windows\Restaurant.Services.pdb
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Restaurant.UI.csproj.AssemblyReference.cache
-C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\MainWindow.g.cs
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Views\LoginView.baml
+C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Views\LoginView.g.cs
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\App.g.cs
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Restaurant.UI_MarkupCompile.cache
-C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Restaurant.UI_MarkupCompile.lref
-C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\MainWindow.baml
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Restaurant.UI.g.resources
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Restaurant.UI.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Restaurant.UI.AssemblyInfoInputs.cache
@@ -309,5 +308,3 @@ C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Restaurant.UI.pdb
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Restaurant.UI.genruntimeconfig.cache
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\ref\Restaurant.UI.dll
-C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Views\LoginView.baml
-C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\obj\Debug\net9.0-windows\Views\LoginView.g.cs

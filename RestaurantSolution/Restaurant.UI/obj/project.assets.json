@@ -4599,7 +4599,10 @@
   "projectFileDependencyGroups": {
     "net9.0-windows7.0": [
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.5",
+      "Restaurant.Data >= 1.0.0",
+      "Restaurant.DataAccess >= 1.0.0",
       "Restaurant.Domain >= 1.0.0",
+      "Restaurant.Services >= 1.0.0",
       "Restaurant.ViewModels >= 1.0.0"
     ]
   },
@@ -4635,8 +4638,17 @@
         "net9.0-windows7.0": {
           "targetAlias": "net9.0-windows",
           "projectReferences": {
+            "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.DataAccess\\Restaurant.DataAccess.csproj": {
+              "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.DataAccess\\Restaurant.DataAccess.csproj"
+            },
+            "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Data\\Restaurant.Data.csproj": {
+              "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Data\\Restaurant.Data.csproj"
+            },
             "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj": {
               "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Domain\\Restaurant.Domain.csproj"
+            },
+            "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Restaurant.Services.csproj": {
+              "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Restaurant.Services.csproj"
             },
             "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Restaurant.ViewModels.csproj": {
               "projectPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Restaurant.ViewModels.csproj"

@@ -9,7 +9,10 @@
       "Restaurant.UI/1.0.0": {
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Tools": "9.0.5",
+          "Restaurant.Data": "1.0.0",
+          "Restaurant.DataAccess": "1.0.0",
           "Restaurant.Domain": "1.0.0",
+          "Restaurant.Services": "1.0.0",
           "Restaurant.ViewModels": "1.0.0"
         },
         "runtime": {
@@ -961,6 +964,7 @@
       },
       "Restaurant.Services/1.0.0": {
         "dependencies": {
+          "Microsoft.EntityFrameworkCore": "9.0.5",
           "Restaurant.DataAccess": "1.0.0",
           "Restaurant.Domain": "1.0.0"
         },
@@ -973,6 +977,7 @@
       },
       "Restaurant.ViewModels/1.0.0": {
         "dependencies": {
+          "Restaurant.Data": "1.0.0",
           "Restaurant.Domain": "1.0.0",
           "Restaurant.Services": "1.0.0"
         },

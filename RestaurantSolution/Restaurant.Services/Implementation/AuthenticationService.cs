@@ -19,19 +19,46 @@ namespace Restaurant.Services.Implementation
 
         public async Task<User> AuthenticateAsync(string email, string password)
         {
+            // Debugging info - parametrii primiți
+            Console.WriteLine($"AuthService: Încercare autentificare cu:\nEmail: {email}\nParolă: {password}", "AuthService");
+
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                Console.WriteLine("AuthService: Email sau parolă goală", "AuthService");
                 return null;
+            }
 
             var user = _userRepository.GetByEmail(email);
-            if (user == null)
-                return null;
 
-            // Verify the password
-            if (!VerifyPassword(user.PasswordHash, password))
+            // Debugging info - rezultatul căutării utilizatorului
+            if (user == null)
+            {
+                Console.WriteLine($"AuthService: Utilizatorul cu email {email} nu a fost găsit în baza de date", "AuthService");
+                return null;
+            }
+            else
+            {
+                Console.WriteLine($"AuthService: Utilizator găsit!\nID: {user.UserID}\nNume: {user.FirstName} {user.LastName}\nEmail: {user.Email}\nHash: {user.PasswordHash}", "AuthService");
+            }
+
+            // Calculează hash-ul parolei introduse pentru comparație
+            string computedHash = HashPassword(password);
+
+            // Debugging info - compararea hash-urilor
+            Console.WriteLine($"AuthService: Comparare hash-uri:\nHash stocat în DB: {user.PasswordHash}\nHash calculat pentru parola introdusă: {computedHash}", "AuthService");
+
+            // Verifică parola
+            bool isMatch = VerifyPassword(user.PasswordHash, password);
+
+            // Debugging info - rezultat verificare
+            Console.WriteLine($"AuthService: Verificare parolă: {(isMatch ? "REUȘITĂ" : "EȘUATĂ")}", "AuthService");
+
+            if (!isMatch)
                 return null;
 
             return user;
         }
+
 
         public bool VerifyPassword(string passwordHash, string password)
         {
@@ -48,7 +75,7 @@ namespace Restaurant.Services.Implementation
             if (string.IsNullOrEmpty(password))
                 throw new ArgumentException("Password cannot be null or empty", nameof(password));
 
-            // Using SHA256 for password hashing
+            // Folosim SHA256 simplu, exact ca în scriptul SQL
             using (var sha256 = SHA256.Create())
             {
                 var bytes = Encoding.UTF8.GetBytes(password);

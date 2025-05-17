@@ -12,12 +12,14 @@ namespace Restaurant.UI.Views
     {
         private readonly LoginViewModel _viewModel;
 
+
+
+
         public LoginView(IAuthenticationService authService)
         {
             InitializeComponent();
 
-            // Create BooleanToVisibilityConverter for binding
-            Resources.Add("BooleanToVisibilityConverter", new BooleanToVisibilityConverter());
+            
 
             _viewModel = new LoginViewModel(authService);
             DataContext = _viewModel;
@@ -36,9 +38,7 @@ namespace Restaurant.UI.Views
 
         private void ViewModel_LoginSuccessful(object sender, EventArgs e)
         {
-            //var mainWindow = new MainWindow();
-            //mainWindow.Show();
-            //Close();
+            MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
