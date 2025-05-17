@@ -1,35 +1,61 @@
-﻿using Restaurant.Data.Context;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Restaurant.Data.Context;
 using Restaurant.DataAccess.Interfaces;
 using Restaurant.DataAccess.Repos;
-using System.Configuration;
-using System.Data;
+using Restaurant.DataAccess.Repositories;
+using Restaurant.Services.Implementation;
+using Restaurant.Services.Implementations;
+using Restaurant.Services.Interfaces;
+using Restaurant.UI.Views;
+using System;
 using System.Windows;
 
 namespace Restaurant.UI
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
+        private ServiceProvider _serviceProvider;
+
+        public App()
+        {
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            _serviceProvider = services.BuildServiceProvider();
+        }
+
+        private void ConfigureServices(ServiceCollection services)
+        {
+            // Register DbContext
+            services.AddDbContext<RestaurantContext>();
+
+            // Register repositories
+            services.AddScoped<IAlergenRepository, AlergenRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IPreparatRepository, PreparatRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            // Register services
+            services.AddScoped<IAlergenService, AlergenService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPreparatService, PreparatService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+            // Register views
+            services.AddTransient<LoginView>();
+            //services.AddTransient<MainWindow>();
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Example usage of RestaurantContext
-            using (var context = new RestaurantContext())
-            {
-                bool canConnect = new RestaurantContext().Database.CanConnect();
-                MessageBox.Show($"Conexiune OK: {canConnect}");
-            }
-
-
-            var repo = new CategoryRepository(new RestaurantContext());
-          
-            var all = repo.GetAll();
-            MessageBox.Show($"Am {all.Count()} categorii (incluzând «TestCat»).");
-
+            var loginWindow = _serviceProvider.GetService<LoginView>();
+            loginWindow.Show();
         }
     }
-
 }

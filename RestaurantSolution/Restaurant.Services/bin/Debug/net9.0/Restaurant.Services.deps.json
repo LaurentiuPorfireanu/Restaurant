@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v9.0": {
       "Restaurant.Services/1.0.0": {
         "dependencies": {
+          "Microsoft.EntityFrameworkCore": "9.0.5",
           "Restaurant.DataAccess": "1.0.0",
           "Restaurant.Domain": "1.0.0"
         },

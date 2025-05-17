@@ -1575,7 +1575,10 @@
         },
         "runtime": {
           "bin/placeholder/Restaurant.ViewModels.dll": {}
-        }
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WPF"
+        ]
       }
     }
   },
