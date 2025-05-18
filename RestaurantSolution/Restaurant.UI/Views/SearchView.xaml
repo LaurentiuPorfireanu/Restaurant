@@ -1,0 +1,221 @@
+﻿<UserControl x:Class="Restaurant.UI.Views.Search.SearchView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900">
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Titlu și informații generale -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,15">
+            <TextBlock Text="Căutare în Meniu" 
+                       FontSize="24" 
+                       FontWeight="SemiBold" 
+                       Margin="0,0,0,5"/>
+            <TextBlock Text="Caută preparate și meniuri după cuvinte cheie sau alergeni" 
+                       FontSize="14" 
+                       Opacity="0.7"/>
+        </StackPanel>
+
+        <!-- Opțiuni de căutare -->
+        <Grid Grid.Row="1" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Cuvânt cheie -->
+            <TextBox Grid.Column="0" 
+                     Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" 
+                     Padding="10"
+                     FontSize="14"
+                     VerticalContentAlignment="Center"
+                     Margin="0,0,10,0"/>
+
+            <!-- Tip căutare -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
+                <RadioButton Content="Conține" 
+                             IsChecked="{Binding IsContainsSearch}" 
+                             Margin="0,0,5,0"
+                             VerticalContentAlignment="Center"/>
+                <RadioButton Content="Nu conține" 
+                             IsChecked="{Binding IsNotContainsSearch}" 
+                             Margin="10,0,0,0"
+                             VerticalContentAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Buton căutare -->
+            <Button Grid.Column="2" 
+                    Content="Caută" 
+                    Command="{Binding SearchCommand}"
+                    Padding="15,8" 
+                    MinWidth="100"/>
+        </Grid>
+
+        <!-- Rezultate căutare -->
+        <Border Grid.Row="2" 
+                BorderBrush="#E0E0E0" 
+                BorderThickness="1" 
+                Background="White">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header Rezultate -->
+                <Border Grid.Row="0" 
+                        Background="#F5F5F5" 
+                        Padding="15,10" 
+                        BorderThickness="0,0,0,1" 
+                        BorderBrush="#E0E0E0">
+                    <Grid>
+                        <TextBlock Text="Rezultatele căutării" 
+                                   FontWeight="Medium"/>
+                        <TextBlock Text="{Binding ResultsCount, StringFormat='{}{0} rezultate găsite'}" 
+                                   HorizontalAlignment="Right"/>
+                    </Grid>
+                </Border>
+
+                <!-- Lista rezultate -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding SearchResults}">
+                        <ItemsControl.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" 
+                                                   FontWeight="SemiBold" 
+                                                   FontSize="16" 
+                                                   Margin="15,15,15,5"/>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ItemsControl.GroupStyle>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="#E0E0E0" 
+                                        BorderThickness="0,0,0,1" 
+                                        Padding="15,10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Tip articol (Preparat/Meniu) -->
+                                        <Border Grid.Column="0" 
+                                                Background="{Binding TypeBackground}" 
+                                                CornerRadius="3" 
+                                                Padding="5,2" 
+                                                Margin="0,0,10,0">
+                                            <TextBlock Text="{Binding TypeName}" 
+                                                       Foreground="White" 
+                                                       FontSize="12"/>
+                                        </Border>
+
+                                        <!-- Informații articol -->
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="{Binding Name}" 
+                                                       FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding AlergenInfo}" 
+                                                       FontSize="12" 
+                                                       Opacity="0.7"
+                                                       Margin="0,3,0,0"/>
+
+                                            <!-- Badge pentru indisponibilitate -->
+                                            <Border Background="#FFE0E0" 
+                                                    Padding="5,2" 
+                                                    CornerRadius="3" 
+                                                    HorizontalAlignment="Left"
+                                                    Margin="0,5,0,0">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="Indisponibil" 
+                                                           Foreground="#D32F2F" 
+                                                           FontSize="11"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <!-- Cantitate -->
+                                        <TextBlock Grid.Column="2" 
+                                                   Text="{Binding QuantityInfo}" 
+                                                   VerticalAlignment="Center" 
+                                                   Margin="10,0"/>
+
+                                        <!-- Preț -->
+                                        <TextBlock Grid.Column="3" 
+                                                   Text="{Binding PriceFormatted}" 
+                                                   FontWeight="SemiBold" 
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Indicator de încărcare -->
+                <Grid Grid.Row="1">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLoading}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Rectangle Fill="#80FFFFFF" />
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <ProgressBar IsIndeterminate="True" Width="100" Height="4" Margin="0,0,0,10"/>
+                        <TextBlock Text="Se caută..." HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Mesaj când nu există rezultate -->
+                <Grid Grid.Row="1">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasNoResults}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="Nu a fost găsit niciun rezultat" 
+                                   FontSize="16" 
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="Încearcă să folosești alte cuvinte cheie" 
+                                   Opacity="0.7" 
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

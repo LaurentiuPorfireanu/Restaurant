@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET9_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\App.xaml
-21424453612
+71672428322
 
-101879377809
+16-44688057
 235-2046505901
-Views\LoginView.xaml;Views\RegistrationView.xaml;
+Views\AdminPanelView.xaml;Views\LoginView.xaml;Views\MainWindow.xaml;Views\MyOrdersView.xaml;Views\RegistrationView.xaml;Views\RestaurantMenuView.xaml;Views\SearchView.xaml;
 
 False
 

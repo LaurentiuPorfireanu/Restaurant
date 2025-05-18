@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\views\\registrationview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\views\\registrationview.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\converters\\booleantovisibilityconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\converters\\booleantovisibilityconverter.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\registrationviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\registrationviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\views\\myordersview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\views\\myordersview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\order\\myordersviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\order\\myordersviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,27 +43,39 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RegistrationView.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\RegistrationView.xaml.cs",
-              "RelativeDocumentMoniker": "Restaurant.UI\\Views\\RegistrationView.xaml.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\RegistrationView.xaml.cs",
-              "RelativeToolTip": "Restaurant.UI\\Views\\RegistrationView.xaml.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Title": "BooleanToVisibilityConverter.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Converters\\BooleanToVisibilityConverter.cs",
+              "RelativeDocumentMoniker": "Restaurant.UI\\Converters\\BooleanToVisibilityConverter.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Converters\\BooleanToVisibilityConverter.cs",
+              "RelativeToolTip": "Restaurant.UI\\Converters\\BooleanToVisibilityConverter.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T14:44:54.522Z",
+              "WhenOpened": "2025-05-18T11:47:34.529Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "RegistrationViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\RegistrationViewModel.cs",
-              "RelativeDocumentMoniker": "Restaurant.ViewModels\\RegistrationViewModel.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\RegistrationViewModel.cs",
-              "RelativeToolTip": "Restaurant.ViewModels\\RegistrationViewModel.cs",
-              "ViewState": "AgIAAP0AAAAAAAAAAAAAANAAAAAAAAAAAAAAAA==",
+              "Title": "MyOrdersView.xaml",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\MyOrdersView.xaml",
+              "RelativeDocumentMoniker": "Restaurant.UI\\Views\\MyOrdersView.xaml",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\MyOrdersView.xaml",
+              "RelativeToolTip": "Restaurant.UI\\Views\\MyOrdersView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-18T11:37:04.477Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MyOrdersViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Order\\MyOrdersViewModel.cs",
+              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Order\\MyOrdersViewModel.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Order\\MyOrdersViewModel.cs",
+              "RelativeToolTip": "Restaurant.ViewModels\\Order\\MyOrdersViewModel.cs",
+              "ViewState": "AgIAAD8BAAAAAAAAAAAUwFUBAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-17T14:44:15.143Z",
+              "WhenOpened": "2025-05-18T11:37:58.938Z",
               "EditorCaption": ""
             }
           ]
