@@ -4,7 +4,8 @@ namespace Restaurant.UI.Services
 {
     public interface INavigationService
     {
-        void NavigateTo<T>() where T : class;
+        void NavigateTo<TViewModel>() where TViewModel : class;
+        void ShowDialog<TViewModel>() where TViewModel : class;
         void Close();
     }
 }

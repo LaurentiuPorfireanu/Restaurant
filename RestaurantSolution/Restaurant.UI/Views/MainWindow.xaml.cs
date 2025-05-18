@@ -1,8 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Restaurant.ViewModels.Main;
-using Restaurant.ViewModels.State;
-using System;
+﻿using System;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+using Restaurant.Services.Interfaces;
+using Restaurant.UI.Views.Admin;
+using Restaurant.UI.Views.Menu;
+using Restaurant.UI.Views.Order;
+using Restaurant.UI.Views.Search;
+using Restaurant.ViewModels.Main;
 
 namespace Restaurant.UI.Views
 {
@@ -16,41 +20,49 @@ namespace Restaurant.UI.Views
             InitializeComponent();
             _serviceProvider = serviceProvider;
 
-            _viewModel = new MainWindowViewModel(serviceProvider);
-
-            // Abonare la evenimentul de cerere afișare dialog login
-            _viewModel.ShowLoginRequested += ViewModel_ShowLoginRequested;
-
-            // Verificăm dacă există un utilizator curent (login/guest)
-            if (CurrentUserState.Instance.CurrentUser != null)
-            {
-                _viewModel.InitializeForUser(CurrentUserState.Instance.CurrentUser);
-            }
-            else
-            {
-                _viewModel.InitializeAsGuest();
-            }
-
-            // Subscriere la evenimentul de schimbare a utilizatorului
-            CurrentUserState.Instance.UserChanged += (s, e) =>
-            {
-                if (e.User != null)
-                {
-                    _viewModel.InitializeForUser(e.User);
-                }
-                else
-                {
-                    _viewModel.InitializeAsGuest();
-                }
-            };
-
+            // Creează și setează ViewModel-ul
+            _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
+
+            // Abonare la evenimentele din ViewModel
+            _viewModel.NavigationRequested += ViewModel_NavigationRequested;
+            _viewModel.LoginRequested += ViewModel_LoginRequested;
+            _viewModel.LogoutConfirmed += ViewModel_LogoutConfirmed;
         }
 
-        private void ViewModel_ShowLoginRequested(object sender, EventArgs e)
+        private void ViewModel_NavigationRequested(object sender, string target)
+        {
+            switch (target)
+            {
+                case "Menu":
+                    var menuView = _serviceProvider.GetRequiredService<RestaurantMenuView>();
+                    _viewModel.SetCurrentView(menuView);
+                    break;
+                case "Search":
+                    var searchView = _serviceProvider.GetRequiredService<SearchView>();
+                    _viewModel.SetCurrentView(searchView);
+                    break;
+                case "MyOrders":
+                    var ordersView = _serviceProvider.GetRequiredService<MyOrdersView>();
+                    _viewModel.SetCurrentView(ordersView);
+                    break;
+                case "Admin":
+                    var adminView = _serviceProvider.GetRequiredService<AdminPanelView>();
+                    _viewModel.SetCurrentView(adminView);
+                    break;
+            }
+        }
+
+        private void ViewModel_LoginRequested(object sender, EventArgs e)
         {
             var loginView = _serviceProvider.GetRequiredService<LoginView>();
             loginView.ShowDialog();
+        }
+
+        private void ViewModel_LogoutConfirmed(object sender, EventArgs e)
+        {
+            // Resetarea view-ului la meniu
+            ViewModel_NavigationRequested(sender, "Menu");
         }
     }
 }

@@ -6,11 +6,19 @@ using Restaurant.DataAccess.Repositories;
 using Restaurant.Services.Implementation;
 using Restaurant.Services.Implementations;
 using Restaurant.Services.Interfaces;
+using Restaurant.UI.Services;
 using Restaurant.UI.Views;
 using Restaurant.UI.Views.Admin;
 using Restaurant.UI.Views.Menu;
 using Restaurant.UI.Views.Order;
 using Restaurant.UI.Views.Search;
+using Restaurant.ViewModels.Admin;
+using Restaurant.ViewModels.Login;
+using Restaurant.ViewModels.Main;
+using Restaurant.ViewModels.Order;
+using Restaurant.ViewModels.Registration;
+using Restaurant.ViewModels.RestaurantMenu;
+using Restaurant.ViewModels.Search;
 using System;
 using System.Windows;
 
@@ -48,6 +56,14 @@ namespace Restaurant.UI
             services.AddScoped<IPreparatService, PreparatService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+            // Register Navigation Service
+            services.AddSingleton<INavigationService, NavigationService>();
+
+            // Register ViewModels
+            services.AddTransient<LoginViewModel>();
+            services.AddTransient<RegistrationViewModel>();
+            services.AddTransient<MainWindowViewModel>();
 
             // Register views
             services.AddTransient<LoginView>();

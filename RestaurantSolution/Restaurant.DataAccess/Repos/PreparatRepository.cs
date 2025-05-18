@@ -15,11 +15,9 @@ namespace Restaurant.DataAccess.Repos
         public IEnumerable<Preparat> GetByCategory(int categoryId)
         {
             return _context.Preparate
-                       .FromSqlRaw(
-                         "EXEC spGetPreparateByCategory @p0",
-                         categoryId)
-                       .AsNoTracking()
-                       .ToList();
+                .Where(p => p.CategoryID == categoryId)
+                .AsNoTracking()
+                .ToList();
         }
 
 
