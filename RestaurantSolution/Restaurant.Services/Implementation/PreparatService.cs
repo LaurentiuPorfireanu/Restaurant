@@ -1,17 +1,25 @@
-﻿using System;
+﻿// Restaurant.Services/Implementation/PreparatService.cs
+using System;
 using System.Collections.Generic;
 using Restaurant.Domain.Entities;
 using Restaurant.Services.Interfaces;
 using Restaurant.DataAccess.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Restaurant.Data.Context;
+using System.Linq;
 
 namespace Restaurant.Services.Implementations
 {
     public class PreparatService : IPreparatService
     {
         private readonly IPreparatRepository _repo;
+        private readonly RestaurantContext _context; // Added for direct operations with images and allergens
 
-        public PreparatService(IPreparatRepository repo)
-            => _repo = repo;
+        public PreparatService(IPreparatRepository repo, RestaurantContext context)
+        {
+            _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
 
         public IEnumerable<Preparat> GetPreparateByCategory(int categoryId)
         {
@@ -21,49 +29,62 @@ namespace Restaurant.Services.Implementations
             return _repo.GetByCategory(categoryId);
         }
 
-        public void CreatePreparat(
+        public int CreatePreparat(
             string name,
-            decimal pret,
-            int QuantityPortie,
-            int QuantityTotal,
+            decimal price,
+            int quantityPortie,
+            int quantityTotal,
             int categoryId)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Denumire obligatorie", nameof(name));
-            if (pret < 0)
-                throw new ArgumentException("Prețul trebuie să fie >= 0", nameof(pret));
-            if (QuantityPortie <= 0)
-                throw new ArgumentException("Cantitate portie invalidă", nameof(QuantityPortie));
-            if (QuantityTotal < 0)
-                throw new ArgumentException("Cantitate totală invalidă", nameof(QuantityTotal));
+            if (price < 0)
+                throw new ArgumentException("Prețul trebuie să fie >= 0", nameof(price));
+            if (quantityPortie <= 0)
+                throw new ArgumentException("Cantitate portie invalidă", nameof(quantityPortie));
+            if (quantityTotal < 0)
+                throw new ArgumentException("Cantitate totală invalidă", nameof(quantityTotal));
             if (categoryId <= 0)
                 throw new ArgumentException("Categorie invalidă", nameof(categoryId));
 
-            _repo.Insert(name, pret, QuantityPortie, QuantityTotal, categoryId);
+            // Creare preparat nou
+            var preparat = new Preparat
+            {
+                Name = name,
+                Price = price,
+                QuantityPortie = quantityPortie,
+                QuantityTotal = quantityTotal,
+                CategoryID = categoryId
+            };
+
+            _context.Preparate.Add(preparat);
+            _context.SaveChanges();
+
+            return preparat.PreparatID; // Return the ID of the newly created preparat
         }
 
         public void UpdatePreparat(
             int preparatId,
             string name,
-            decimal pret,
-            int QuantityPortie,
-            int QuantityTotal,
+            decimal price,
+            int quantityPortie,
+            int quantityTotal,
             int categoryId)
         {
             if (preparatId <= 0)
                 throw new ArgumentException("ID preparat invalid", nameof(preparatId));
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Denumire obligatorie", nameof(name));
-            if (pret < 0)
-                throw new ArgumentException("Prețul trebuie să fie >= 0", nameof(pret));
-            if (QuantityPortie <= 0)
-                throw new ArgumentException("Cantitate portie invalidă", nameof(QuantityPortie));
-            if (QuantityTotal < 0)
-                throw new ArgumentException("Cantitate totală invalidă", nameof(QuantityTotal));
+            if (price < 0)
+                throw new ArgumentException("Prețul trebuie să fie >= 0", nameof(price));
+            if (quantityPortie <= 0)
+                throw new ArgumentException("Cantitate portie invalidă", nameof(quantityPortie));
+            if (quantityTotal < 0)
+                throw new ArgumentException("Cantitate totală invalidă", nameof(quantityTotal));
             if (categoryId <= 0)
                 throw new ArgumentException("Categorie invalidă", nameof(categoryId));
 
-            _repo.Update(preparatId, name, pret, QuantityPortie, QuantityTotal, categoryId);
+            _repo.Update(preparatId, name, price, quantityPortie, quantityTotal, categoryId);
         }
 
         public void DeletePreparat(int preparatId)
@@ -72,6 +93,64 @@ namespace Restaurant.Services.Implementations
                 throw new ArgumentException("ID preparat invalid", nameof(preparatId));
 
             _repo.Delete(preparatId);
+        }
+
+        public void AddPreparatImage(int preparatId, string imagePath)
+        {
+            if (preparatId <= 0)
+                throw new ArgumentException("ID preparat invalid", nameof(preparatId));
+            if (string.IsNullOrWhiteSpace(imagePath))
+                throw new ArgumentException("Cale imagine invalidă", nameof(imagePath));
+
+            var foto = new PreparatFoto
+            {
+                PreparatID = preparatId,
+                ImagePath = imagePath
+            };
+
+            _context.PreparatFotos.Add(foto);
+            _context.SaveChanges();
+        }
+
+        public void AddPreparatAlergen(int preparatId, int alergenId)
+        {
+            if (preparatId <= 0)
+                throw new ArgumentException("ID preparat invalid", nameof(preparatId));
+            if (alergenId <= 0)
+                throw new ArgumentException("ID alergen invalid", nameof(alergenId));
+
+            // Verifică dacă asocierea există deja
+            var existing = _context.PreparatAlergens
+                .FirstOrDefault(pa => pa.PreparatID == preparatId && pa.AlergenID == alergenId);
+
+            if (existing == null)
+            {
+                var preparatAlergen = new PreparatAlergen
+                {
+                    PreparatID = preparatId,
+                    AlergenID = alergenId
+                };
+
+                _context.PreparatAlergens.Add(preparatAlergen);
+                _context.SaveChanges();
+            }
+        }
+
+        public void RemovePreparatAlergen(int preparatId, int alergenId)
+        {
+            if (preparatId <= 0)
+                throw new ArgumentException("ID preparat invalid", nameof(preparatId));
+            if (alergenId <= 0)
+                throw new ArgumentException("ID alergen invalid", nameof(alergenId));
+
+            var preparatAlergen = _context.PreparatAlergens
+                .FirstOrDefault(pa => pa.PreparatID == preparatId && pa.AlergenID == alergenId);
+
+            if (preparatAlergen != null)
+            {
+                _context.PreparatAlergens.Remove(preparatAlergen);
+                _context.SaveChanges();
+            }
         }
     }
 }

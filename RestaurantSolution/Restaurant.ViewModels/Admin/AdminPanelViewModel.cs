@@ -1,4 +1,6 @@
-﻿using Restaurant.Domain.Entities;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Win32;
+using Restaurant.Domain.Entities;
 using Restaurant.Domain.Enums;
 using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Base;
@@ -7,6 +9,7 @@ using Restaurant.ViewModels.Order;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +27,7 @@ namespace Restaurant.ViewModels.Admin
         private readonly IMenuService _menuService;
         private readonly IOrderService _orderService;
         private readonly IUserService _userService;
+        private readonly IServiceProvider _serviceProvider;
 
         #endregion
 
@@ -49,6 +53,108 @@ namespace Restaurant.ViewModels.Admin
         private ReportType _selectedReportType;
 
         #endregion
+
+        private string _preparatName;
+        private decimal _preparatPrice;
+        private int _preparatQuantityPortie;
+        private int _preparatQuantityTotal;
+        private Category _preparatSelectedCategory;
+        private ObservableCollection<Alergen> _preparatAvailableAlergens;
+        private ObservableCollection<Alergen> _preparatSelectedAlergens;
+        private ObservableCollection<PreparatImageItem> _preparatImages;
+        private Preparat _preparatBeingEdited;
+        private bool _isAddPreparatMode;
+        private bool _isEditPreparatMode;
+
+
+        public string PreparatName
+        {
+            get => _preparatName;
+            set
+            {
+                SetProperty(ref _preparatName, value);
+                OnPropertyChanged(nameof(CanSavePreparat));
+            }
+        }
+
+        public decimal PreparatPrice
+        {
+            get => _preparatPrice;
+            set
+            {
+                SetProperty(ref _preparatPrice, value);
+                OnPropertyChanged(nameof(CanSavePreparat));
+            }
+        }
+
+        public int PreparatQuantityPortie
+        {
+            get => _preparatQuantityPortie;
+            set
+            {
+                SetProperty(ref _preparatQuantityPortie, value);
+                OnPropertyChanged(nameof(CanSavePreparat));
+            }
+        }
+
+        public int PreparatQuantityTotal
+        {
+            get => _preparatQuantityTotal;
+            set
+            {
+                SetProperty(ref _preparatQuantityTotal, value);
+                OnPropertyChanged(nameof(CanSavePreparat));
+            }
+        }
+
+        public Category PreparatSelectedCategory
+        {
+            get => _preparatSelectedCategory;
+            set
+            {
+                SetProperty(ref _preparatSelectedCategory, value);
+                OnPropertyChanged(nameof(CanSavePreparat));
+            }
+        }
+
+        public ObservableCollection<Alergen> PreparatAvailableAlergens
+        {
+            get => _preparatAvailableAlergens;
+            set => SetProperty(ref _preparatAvailableAlergens, value);
+        }
+
+        public ObservableCollection<Alergen> PreparatSelectedAlergens
+        {
+            get => _preparatSelectedAlergens;
+            set => SetProperty(ref _preparatSelectedAlergens, value);
+        }
+
+        public ObservableCollection<PreparatImageItem> PreparatImages
+        {
+            get => _preparatImages;
+            set => SetProperty(ref _preparatImages, value);
+        }
+
+        public bool IsAddPreparatMode
+        {
+            get => _isAddPreparatMode;
+            set => SetProperty(ref _isAddPreparatMode, value);
+        }
+
+        public bool IsEditPreparatMode
+        {
+            get => _isEditPreparatMode;
+            set => SetProperty(ref _isEditPreparatMode, value);
+        }
+
+        public bool CanSavePreparat =>
+            !string.IsNullOrWhiteSpace(PreparatName) &&
+            PreparatPrice >= 0 &&
+            PreparatQuantityPortie > 0 &&
+            PreparatQuantityTotal >= 0 &&
+            PreparatSelectedCategory != null &&
+            !IsLoading;
+
 
         #region Form Properties
 
@@ -284,7 +390,343 @@ namespace Restaurant.ViewModels.Admin
 
         public ICommand ShowLowStockCommand { get; }
 
+        public ICommand AddPreparatModeCommand { get; }
+        public ICommand SavePreparatCommand { get; }
+        public ICommand CancelPreparatEditCommand { get; }
+        public ICommand AddPreparatAlergenCommand { get; }
+        public ICommand RemovePreparatAlergenCommand { get; }
+        public ICommand AddPreparatImagesCommand { get; }
+        public ICommand RemovePreparatImageCommand { get; }
+
         #endregion
+
+
+        private void EnterAddPreparatMode()
+        {
+            try
+            {
+                // Resetează formularul
+                PreparatName = string.Empty;
+                PreparatPrice = 0;
+                PreparatQuantityPortie = 100;
+                PreparatQuantityTotal = 0;
+                PreparatSelectedCategory = Categories.FirstOrDefault();
+
+                // Încarcă toți alergenii disponibili
+                PreparatAvailableAlergens.Clear();
+                PreparatSelectedAlergens.Clear();
+                PreparatImages.Clear();
+
+                foreach (var alergen in _alergenService.GetAllAlergens())
+                {
+                    PreparatAvailableAlergens.Add(alergen);
+                }
+
+                // Activează modul de adăugare
+                IsAddPreparatMode = true;
+                IsEditPreparatMode = false;
+                _preparatBeingEdited = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la inițializarea formularului pentru preparat nou: {ex.Message}",
+                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void SaveImages()
+        {
+            if (_preparatBeingEdited != null)
+            {
+                // Dacă suntem în modul de editare, mai întâi eliminăm imaginile vechi
+                // Ideea este să nu le eliminăm din folderul imagini, ci doar din baza de date
+                // În realitate, ar trebui să verificăm care imagini au fost adăugate/șterse
+
+                // Adăugăm imaginile noi
+                foreach (var image in PreparatImages)
+                {
+                    _preparatService.AddPreparatImage(_preparatBeingEdited.PreparatID, image.ImagePath);
+                }
+            }
+            else
+            {
+                // Dacă suntem în modul de adăugare, imaginile se vor adăuga după ce preparatul este creat
+                // Ar trebui să avem un ID de preparat returnat din metoda CreatePreparat
+
+                // Poți modifica metoda CreatePreparat pentru a returna ID-ul preparatului creat
+                int newPreparatId = _preparatService.CreatePreparat(
+                    PreparatName,
+                    PreparatPrice,
+                    PreparatQuantityPortie,
+                    PreparatQuantityTotal,
+                    PreparatSelectedCategory.CategoryId);
+
+                // Apoi adăugăm imaginile
+                foreach (var image in PreparatImages)
+                {
+                    _preparatService.AddPreparatImage(newPreparatId, image.ImagePath);
+                }
+            }
+        }
+        private void SavePreparat()
+        {
+            try
+            {
+                if (!ValidatePreparat())
+                    return;
+
+                if (IsAddPreparatMode)
+                {
+                    // Adaugă preparat nou
+                    _preparatService.CreatePreparat(
+                        PreparatName,
+                        PreparatPrice,
+                        PreparatQuantityPortie,
+                        PreparatQuantityTotal,
+                        PreparatSelectedCategory.CategoryId);
+
+                    // Salvează imaginile - ar trebui implementat în serviciu
+                    SaveImages();
+
+                    MessageBox.Show("Preparatul a fost adăugat cu succes!", "Succes",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (IsEditPreparatMode && _preparatBeingEdited != null)
+                {
+                    // Actualizează preparat existent
+                    _preparatService.UpdatePreparat(
+                        _preparatBeingEdited.PreparatID,
+                        PreparatName,
+                        PreparatPrice,
+                        PreparatQuantityPortie,
+                        PreparatQuantityTotal,
+                        PreparatSelectedCategory.CategoryId);
+
+                    // Salvează imaginile - ar trebui implementat în serviciu
+                    SaveImages();
+
+                    MessageBox.Show("Preparatul a fost actualizat cu succes!", "Succes",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                // Reîncarcă lista de preparate
+                LoadPreparate();
+
+                // Dezactivează modul de adăugare/editare
+                IsAddPreparatMode = false;
+                IsEditPreparatMode = false;
+                _preparatBeingEdited = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la salvarea preparatului: {ex.Message}",
+                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CancelPreparatEdit()
+        {
+            IsAddPreparatMode = false;
+            IsEditPreparatMode = false;
+            _preparatBeingEdited = null;
+        }
+
+        private void AddPreparatAlergen(object parameter)
+        {
+            if (parameter is Alergen alergen)
+            {
+                if (!PreparatSelectedAlergens.Contains(alergen))
+                {
+                    PreparatSelectedAlergens.Add(alergen);
+                    PreparatAvailableAlergens.Remove(alergen);
+                }
+            }
+        }
+
+        private void RemovePreparatAlergen(object parameter)
+        {
+            if (parameter is Alergen alergen)
+            {
+                if (PreparatSelectedAlergens.Contains(alergen))
+                {
+                    PreparatSelectedAlergens.Remove(alergen);
+                    PreparatAvailableAlergens.Add(alergen);
+                }
+            }
+        }
+
+        private void AddPreparatImages()
+        {
+            try
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Filter = "Fișiere imagine (*.jpg;*.jpeg;*.png;*.gif)|*.jpg;*.jpeg;*.png;*.gif",
+                    Multiselect = true,
+                    Title = "Selectează imaginile pentru preparat"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    foreach (var fileName in dialog.FileNames)
+                    {
+                        // Creează un folder de imagini dacă nu există
+                        string imagesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
+                        Directory.CreateDirectory(imagesFolder);
+
+                        // Generează un nume de fișier unic pentru a evita suprascrierea
+                        string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(fileName)}";
+                        string destinationPath = Path.Combine(imagesFolder, uniqueFileName);
+
+                        // Copiază fișierul în folder-ul de imagini
+                        File.Copy(fileName, destinationPath, true);
+
+                        // Creează calea relativă pentru a fi stocată în baza de date
+                        string relativePath = Path.Combine("Images", uniqueFileName);
+
+                        // Adaugă imaginea în listă
+                        PreparatImages.Add(new PreparatImageItem
+                        {
+                            ImagePath = relativePath,
+                            FullPath = destinationPath
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la adăugarea imaginilor: {ex.Message}",
+                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void RemovePreparatImage(object parameter)
+        {
+            if (parameter is PreparatImageItem image)
+            {
+                PreparatImages.Remove(image);
+            }
+        }
+
+        private bool ValidatePreparat()
+        {
+            // Validare nume
+            if (string.IsNullOrWhiteSpace(PreparatName))
+            {
+                MessageBox.Show("Numele preparatului este obligatoriu.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Validare preț
+            if (PreparatPrice < 0)
+            {
+                MessageBox.Show("Prețul trebuie să fie >= 0.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Validare cantitate porție
+            if (PreparatQuantityPortie <= 0)
+            {
+                MessageBox.Show("Cantitatea per porție trebuie să fie > 0.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Validare cantitate totală
+            if (PreparatQuantityTotal < 0)
+            {
+                MessageBox.Show("Cantitatea totală trebuie să fie >= 0.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Validare categorie
+            if (PreparatSelectedCategory == null)
+            {
+                MessageBox.Show("Trebuie selectată o categorie.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        // Metoda care se apelează când se face click pe butonul "Adaugă Preparat Nou"
+        private void AddNewPreparat()
+        {
+            EnterAddPreparatMode();
+        }
+
+        // Metoda care se apelează când se face click pe butonul "Editează" pentru un preparat
+        private void EditPreparat(Preparat preparat)
+        {
+            if (preparat == null)
+                return;
+
+            try
+            {
+                _preparatBeingEdited = preparat;
+
+                // Populează formularul cu datele preparatului
+                PreparatName = preparat.Name;
+                PreparatPrice = preparat.Price;
+                PreparatQuantityPortie = preparat.QuantityPortie;
+                PreparatQuantityTotal = preparat.QuantityTotal;
+
+                // Setează categoria
+                PreparatSelectedCategory = Categories.FirstOrDefault(c => c.CategoryId == preparat.CategoryID);
+
+                // Încarcă alergenii
+                PreparatAvailableAlergens.Clear();
+                PreparatSelectedAlergens.Clear();
+
+                // Populează lista de alergeni disponibili și selectați
+                var allAlergens = _alergenService.GetAllAlergens();
+                var selectedAlergenIds = preparat.PreparatAlergens?.Select(pa => pa.AlergenID) ?? Enumerable.Empty<int>();
+
+                foreach (var alergen in allAlergens)
+                {
+                    if (selectedAlergenIds.Contains(alergen.AlergenID))
+                    {
+                        PreparatSelectedAlergens.Add(alergen);
+                    }
+                    else
+                    {
+                        PreparatAvailableAlergens.Add(alergen);
+                    }
+                }
+
+                // Încarcă imaginile
+                PreparatImages.Clear();
+
+                // Dacă există imagini asociate preparatului, le adăugăm în listă
+                if (preparat.Fotos != null)
+                {
+                    foreach (var foto in preparat.Fotos)
+                    {
+                        string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, foto.ImagePath);
+
+                        PreparatImages.Add(new PreparatImageItem
+                        {
+                            ImagePath = foto.ImagePath,
+                            FullPath = fullPath
+                        });
+                    }
+                }
+
+                // Activează modul de editare
+                IsAddPreparatMode = false;
+                IsEditPreparatMode = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la încărcarea datelor preparatului: {ex.Message}",
+                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
 
         #region Constructor
 
@@ -301,7 +743,7 @@ namespace Restaurant.ViewModels.Admin
             _menuService = menuService ?? throw new ArgumentNullException(nameof(menuService));
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-
+           
             // Initialize Collections
             Categories = new ObservableCollection<Category>();
             Preparate = new ObservableCollection<Preparat>();
@@ -328,8 +770,7 @@ namespace Restaurant.ViewModels.Admin
             DeleteAlergenCommand = new RelayCommand(parameter => DeleteAlergen(parameter as Alergen));
             EditAlergenCommand = new RelayCommand(parameter => EditAlergen(parameter as Alergen));
 
-            AddNewPreparatCommand = new RelayCommand(_ => AddNewPreparat());
-            EditPreparatCommand = new RelayCommand(parameter => EditPreparat(parameter as Preparat));
+
             DeletePreparatCommand = new RelayCommand(parameter => DeletePreparat(parameter as Preparat));
 
             AddNewMenuCommand = new RelayCommand(_ => AddNewMenu());
@@ -340,6 +781,22 @@ namespace Restaurant.ViewModels.Admin
             UpdateOrderStatusCommand = new RelayCommand(parameter => UpdateOrderStatus(parameter as OrderViewModel));
 
             ShowLowStockCommand = new RelayCommand(_ => ShowLowStockItems());
+
+
+            AddPreparatModeCommand = new RelayCommand(_ => EnterAddPreparatMode());
+            SavePreparatCommand = new RelayCommand(_ => SavePreparat());
+            CancelPreparatEditCommand = new RelayCommand(_ => CancelPreparatEdit());
+            AddPreparatAlergenCommand = new RelayCommand(AddPreparatAlergen);
+            RemovePreparatAlergenCommand = new RelayCommand(RemovePreparatAlergen);
+            AddPreparatImagesCommand = new RelayCommand(_ => AddPreparatImages());
+            RemovePreparatImageCommand = new RelayCommand(RemovePreparatImage);
+
+            PreparatAvailableAlergens = new ObservableCollection<Alergen>();
+            PreparatSelectedAlergens = new ObservableCollection<Alergen>();
+            PreparatImages = new ObservableCollection<PreparatImageItem>();
+
+            AddNewPreparatCommand = new RelayCommand(_ => AddNewPreparat());
+            EditPreparatCommand = new RelayCommand(parameter => EditPreparat(parameter as Preparat));
         }
 
         #endregion
@@ -639,22 +1096,6 @@ namespace Restaurant.ViewModels.Admin
 
         #region Preparat Operations
 
-        private void AddNewPreparat()
-        {
-            // În producție, aici s-ar deschide un dialog/view pentru adăugarea unui preparat nou
-            MessageBox.Show("Funcționalitatea de adăugare a unui preparat va fi implementată într-o fereastră separată.",
-                "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void EditPreparat(Preparat preparat)
-        {
-            if (preparat == null)
-                return;
-
-            // În producție, aici s-ar deschide un dialog/view pentru editarea preparatului selectat
-            MessageBox.Show($"Funcționalitatea de editare a preparatului '{preparat.Name}' va fi implementată într-o fereastră separată.",
-                "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
 
         private void DeletePreparat(Preparat preparat)
         {
