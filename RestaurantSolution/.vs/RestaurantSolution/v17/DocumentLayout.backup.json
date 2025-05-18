@@ -3,12 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\admin\\adminpanelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\admin\\adminpanelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0CB50C79-565E-4B38-94C6-A442BB1A722B}|Restaurant.DataAccess\\Restaurant.DataAccess.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.dataaccess\\repos\\preparatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0CB50C79-565E-4B38-94C6-A442BB1A722B}|Restaurant.DataAccess\\Restaurant.DataAccess.csproj|solutionrelative:restaurant.dataaccess\\repos\\preparatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\views\\adminpanelview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\views\\adminpanelview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{73D4D189-9493-410F-A102-DE8DF77F5875}|Restaurant.Data\\Restaurant.Data.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.data\\context\\restaurantcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{73D4D189-9493-410F-A102-DE8DF77F5875}|Restaurant.Data\\Restaurant.Data.csproj|solutionrelative:restaurant.data\\context\\restaurantcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{97B80865-E274-4BC3-B3AD-0BE925F80BD8}|Restaurant.Services\\Restaurant.Services.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.services\\implementation\\preparatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{97B80865-E274-4BC3-B3AD-0BE925F80BD8}|Restaurant.Services\\Restaurant.Services.csproj|solutionrelative:restaurant.services\\implementation\\preparatservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\admin\\adminpanelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\admin\\adminpanelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,26 +47,53 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AdminPanelViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "RelativeToolTip": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "ViewState": "AgIAAIUFAAAAAAAAAAAowOABAAAlAAAAAAAAAA==",
+              "Title": "PreparatRepository.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.DataAccess\\Repos\\PreparatRepository.cs",
+              "RelativeDocumentMoniker": "Restaurant.DataAccess\\Repos\\PreparatRepository.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.DataAccess\\Repos\\PreparatRepository.cs",
+              "RelativeToolTip": "Restaurant.DataAccess\\Repos\\PreparatRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-18T18:12:55.484Z",
+              "WhenOpened": "2025-05-18T21:09:46.156Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AdminPanelView.xaml",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "RelativeDocumentMoniker": "Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "RelativeToolTip": "Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-05-18T18:34:16.553Z",
+              "Title": "RestaurantContext.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Data\\Context\\RestaurantContext.cs",
+              "RelativeDocumentMoniker": "Restaurant.Data\\Context\\RestaurantContext.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Data\\Context\\RestaurantContext.cs",
+              "RelativeToolTip": "Restaurant.Data\\Context\\RestaurantContext.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAA7wAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T21:08:48.06Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "PreparatService.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Implementation\\PreparatService.cs",
+              "RelativeDocumentMoniker": "Restaurant.Services\\Implementation\\PreparatService.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Implementation\\PreparatService.cs",
+              "RelativeToolTip": "Restaurant.Services\\Implementation\\PreparatService.cs",
+              "ViewState": "AgIAAHoAAAAAAAAAAAAmwJoAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T21:08:05.348Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AdminPanelViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
+              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
+              "RelativeToolTip": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
+              "ViewState": "AgIAAKkBAAAAAAAAAAAcwBkCAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T21:01:54.83Z",
               "EditorCaption": ""
             }
           ]

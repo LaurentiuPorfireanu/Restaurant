@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Restaurant.Domain.Entities;
@@ -136,12 +137,44 @@ namespace Restaurant.ViewModels.RestaurantMenu
 
         private string GetPreparatImagePath(Preparat preparat)
         {
-            // Aici ar trebui să returnezi calea către prima imagine a preparatului
-            // Pentru simplitate, returnăm o imagine placeholder
-            if (preparat.Fotos != null && preparat.Fotos.Any())
-                return preparat.Fotos.First().ImagePath;
+            // Verificăm dacă preparatul și colecția de fotografii există
+            if (preparat?.Fotos != null && preparat.Fotos.Any())
+            {
+                try
+                {
+                    // Obținem prima fotografie
+                    var foto = preparat.Fotos.First();
+                    string relativePath = foto.ImagePath;
 
-            return "/Images/no_image.png";
+                    if (!string.IsNullOrEmpty(relativePath))
+                    {
+                        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                        string fullPath = Path.Combine(baseDirectory, relativePath);
+
+                        System.Diagnostics.Debug.WriteLine($"Cale imagine: {fullPath}");
+                        System.Diagnostics.Debug.WriteLine($"Fișierul există: {File.Exists(fullPath)}");
+
+                        if (File.Exists(fullPath))
+                            return fullPath;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Eroare la încărcarea imaginii: {ex.Message}");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Preparatul nu are imagini asociate.");
+            }
+
+            // Verificăm dacă imaginea implicită există
+            string defaultPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "no_image.png");
+            if (File.Exists(defaultPath))
+                return defaultPath;
+
+            // Dacă nu există, returnăm o cale relativă pentru imaginea implicită
+            return "Resources/no_image.png";
         }
 
         private string GetAlergenInfo(Preparat preparat)

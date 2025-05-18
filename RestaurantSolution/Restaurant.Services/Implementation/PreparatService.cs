@@ -102,6 +102,10 @@ namespace Restaurant.Services.Implementations
             if (string.IsNullOrWhiteSpace(imagePath))
                 throw new ArgumentException("Cale imagine invalidă", nameof(imagePath));
 
+            // Verifică dacă calea imaginii conține directorul Resources
+            if (!imagePath.Contains("Resources"))
+                throw new ArgumentException("Imaginile trebuie să fie salvate în directorul Resources", nameof(imagePath));
+
             var foto = new PreparatFoto
             {
                 PreparatID = preparatId,
@@ -112,6 +116,7 @@ namespace Restaurant.Services.Implementations
             _context.SaveChanges();
         }
 
+        // Verifică dacă metoda are implementare corectă
         public void AddPreparatAlergen(int preparatId, int alergenId)
         {
             if (preparatId <= 0)
@@ -125,6 +130,9 @@ namespace Restaurant.Services.Implementations
 
             if (existing == null)
             {
+                // Adăugăm cod de diagnostic
+                System.Diagnostics.Debug.WriteLine($"Adăugare alergen {alergenId} la preparatul {preparatId}");
+
                 var preparatAlergen = new PreparatAlergen
                 {
                     PreparatID = preparatId,
@@ -133,6 +141,16 @@ namespace Restaurant.Services.Implementations
 
                 _context.PreparatAlergens.Add(preparatAlergen);
                 _context.SaveChanges();
+
+                // Verificăm că a fost adăugat corect
+                var added = _context.PreparatAlergens
+                    .FirstOrDefault(pa => pa.PreparatID == preparatId && pa.AlergenID == alergenId);
+
+                System.Diagnostics.Debug.WriteLine($"Verificare: asocierea există acum în BD: {added != null}");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"Asocierea dintre preparatul {preparatId} și alergenul {alergenId} există deja");
             }
         }
 

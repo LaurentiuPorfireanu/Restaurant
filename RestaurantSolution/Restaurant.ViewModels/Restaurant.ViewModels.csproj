@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>net9.0-windows</TargetFramework>
 		<UseWPF>true</UseWPF>
+		<OutputType>Library</OutputType>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Restaurant.Data\Restaurant.Data.csproj" />

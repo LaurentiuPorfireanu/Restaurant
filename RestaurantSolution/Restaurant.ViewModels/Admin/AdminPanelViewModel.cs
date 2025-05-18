@@ -433,76 +433,54 @@ namespace Restaurant.ViewModels.Admin
                     "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        private void SaveImages()
-        {
-            if (_preparatBeingEdited != null)
-            {
-                // Dacă suntem în modul de editare, mai întâi eliminăm imaginile vechi
-                // Ideea este să nu le eliminăm din folderul imagini, ci doar din baza de date
-                // În realitate, ar trebui să verificăm care imagini au fost adăugate/șterse
-
-                // Adăugăm imaginile noi
-                foreach (var image in PreparatImages)
-                {
-                    _preparatService.AddPreparatImage(_preparatBeingEdited.PreparatID, image.ImagePath);
-                }
-            }
-            else
-            {
-                // Dacă suntem în modul de adăugare, imaginile se vor adăuga după ce preparatul este creat
-                // Ar trebui să avem un ID de preparat returnat din metoda CreatePreparat
-
-                // Poți modifica metoda CreatePreparat pentru a returna ID-ul preparatului creat
-                int newPreparatId = _preparatService.CreatePreparat(
-                    PreparatName,
-                    PreparatPrice,
-                    PreparatQuantityPortie,
-                    PreparatQuantityTotal,
-                    PreparatSelectedCategory.CategoryId);
-
-                // Apoi adăugăm imaginile
-                foreach (var image in PreparatImages)
-                {
-                    _preparatService.AddPreparatImage(newPreparatId, image.ImagePath);
-                }
-            }
-        }
         private void SavePreparat()
         {
+            System.Diagnostics.Debug.WriteLine("Metoda SavePreparat() a fost apelată la: " + DateTime.Now);
+
             try
             {
                 if (!ValidatePreparat())
                     return;
 
+                int preparatId;
+
                 if (IsAddPreparatMode)
                 {
-                    // Adaugă preparat nou
-                    _preparatService.CreatePreparat(
+                    // Adaugă preparat nou și salvează ID-ul returnat
+                    preparatId = _preparatService.CreatePreparat(
                         PreparatName,
                         PreparatPrice,
                         PreparatQuantityPortie,
                         PreparatQuantityTotal,
                         PreparatSelectedCategory.CategoryId);
 
-                    // Salvează imaginile - ar trebui implementat în serviciu
-                    SaveImages();
+                    // Salvează imaginile folosind ID-ul preparatului nou creat
+                    SaveImages(preparatId);
+
+                    // Salvează alergenii pentru noul preparat
+                    SaveAlergens(preparatId);
 
                     MessageBox.Show("Preparatul a fost adăugat cu succes!", "Succes",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else if (IsEditPreparatMode && _preparatBeingEdited != null)
                 {
+                    preparatId = _preparatBeingEdited.PreparatID;
+
                     // Actualizează preparat existent
                     _preparatService.UpdatePreparat(
-                        _preparatBeingEdited.PreparatID,
+                        preparatId,
                         PreparatName,
                         PreparatPrice,
                         PreparatQuantityPortie,
                         PreparatQuantityTotal,
                         PreparatSelectedCategory.CategoryId);
 
-                    // Salvează imaginile - ar trebui implementat în serviciu
-                    SaveImages();
+                    // Salvează imaginile pentru preparatul editat
+                    SaveImages(preparatId);
+
+                    // Salvează alergenii pentru preparatul editat
+                    SaveAlergens(preparatId);
 
                     MessageBox.Show("Preparatul a fost actualizat cu succes!", "Succes",
                         MessageBoxButton.OK, MessageBoxImage.Information);
@@ -522,6 +500,66 @@ namespace Restaurant.ViewModels.Admin
                     "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        // Metodă nouă pentru salvarea alergenilor
+        private void SaveAlergens(int preparatId)
+        {
+            if (preparatId <= 0)
+            {
+                System.Diagnostics.Debug.WriteLine("ID preparat invalid în SaveAlergens");
+                return;
+            }
+
+            try
+            {
+                // Dacă editam un preparat, ar trebui să ștergem asocierile vechi
+                if (IsEditPreparatMode)
+                {
+                    // Șterge vechile asocieri de alergeni pentru acest preparat
+                    var existingAlergens = _preparatBeingEdited?.PreparatAlergens?.Select(pa => pa.AlergenID) ?? Enumerable.Empty<int>();
+
+                    foreach (var alergenId in existingAlergens)
+                    {
+                        _preparatService.RemovePreparatAlergen(preparatId, alergenId);
+                    }
+                }
+
+                // Adaugă noile asocieri de alergeni
+                foreach (var alergen in PreparatSelectedAlergens)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Adăugare alergen {alergen.Name} (ID: {alergen.AlergenID}) la preparatul cu ID: {preparatId}");
+                    _preparatService.AddPreparatAlergen(preparatId, alergen.AlergenID);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Eroare la salvarea alergenilor: {ex.Message}");
+            }
+        }
+        private void SaveImages(int preparatId)
+        {
+            // Nu mai creăm un preparat nou, ci folosim ID-ul primit ca parametru
+            if (preparatId <= 0)
+            {
+                System.Diagnostics.Debug.WriteLine("ID preparat invalid în SaveImages");
+                return;
+            }
+
+            try
+            {
+                // Adăugăm imaginile pentru preparatul cu ID-ul specificat
+                foreach (var image in PreparatImages)
+                {
+                    _preparatService.AddPreparatImage(preparatId, image.ImagePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Eroare la salvarea imaginilor: {ex.Message}");
+            }
+        }
+
+
 
         private void CancelPreparatEdit()
         {
@@ -554,6 +592,8 @@ namespace Restaurant.ViewModels.Admin
             }
         }
 
+
+
         private void AddPreparatImages()
         {
             try
@@ -567,27 +607,27 @@ namespace Restaurant.ViewModels.Admin
 
                 if (dialog.ShowDialog() == true)
                 {
+                    // Ensure Resources directory exists
+                    string resourcesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+                    Directory.CreateDirectory(resourcesFolder);
+
                     foreach (var fileName in dialog.FileNames)
                     {
-                        // Creează un folder de imagini dacă nu există
-                        string imagesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
-                        Directory.CreateDirectory(imagesFolder);
-
-                        // Generează un nume de fișier unic pentru a evita suprascrierea
+                        // Generate unique filename
                         string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(fileName)}";
-                        string destinationPath = Path.Combine(imagesFolder, uniqueFileName);
+                        string destinationPath = Path.Combine(resourcesFolder, uniqueFileName);
 
-                        // Copiază fișierul în folder-ul de imagini
+                        // Copy file to Resources folder
                         File.Copy(fileName, destinationPath, true);
 
-                        // Creează calea relativă pentru a fi stocată în baza de date
-                        string relativePath = Path.Combine("Images", uniqueFileName);
+                        // Use consistent path format with forward slashes
+                        string relativePath = "Resources/" + uniqueFileName;
 
-                        // Adaugă imaginea în listă
+                        // Add image to list
                         PreparatImages.Add(new PreparatImageItem
                         {
                             ImagePath = relativePath,
-                            FullPath = destinationPath
+                            FullPath = Path.GetFullPath(destinationPath) // Use absolute path for display
                         });
                     }
                 }
@@ -598,6 +638,9 @@ namespace Restaurant.ViewModels.Admin
                     "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
+
 
         private void RemovePreparatImage(object parameter)
         {

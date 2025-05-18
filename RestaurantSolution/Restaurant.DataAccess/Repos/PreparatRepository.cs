@@ -16,6 +16,9 @@ namespace Restaurant.DataAccess.Repos
         {
             return _context.Preparate
                 .Where(p => p.CategoryID == categoryId)
+                .Include(p => p.Fotos)  // Includerea relației cu fotografiile
+                .Include(p => p.PreparatAlergens)  // Includerea relației cu alergenii
+                    .ThenInclude(pa => pa.Alergen)  // Includerea entității Alergen
                 .AsNoTracking()
                 .ToList();
         }
@@ -28,7 +31,7 @@ namespace Restaurant.DataAccess.Repos
             int QuantityTotal,
             int CategoryID)
         {
-            
+
             _context.Database.ExecuteSqlRaw(
                 "EXEC spInsertPreparat " +
                 "@Denumire = {0}, @Price = {1}, " +

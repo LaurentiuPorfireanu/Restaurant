@@ -15,6 +15,7 @@ using Restaurant.UI.Views.Search;
 using Restaurant.ViewModels.Admin;
 using Restaurant.ViewModels.Main;
 using System;
+using System.IO;
 using System.Windows;
 
 namespace Restaurant.UI
@@ -68,7 +69,11 @@ namespace Restaurant.UI
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
+            string resourcesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+            if (!Directory.Exists(resourcesFolder))
+            {
+                Directory.CreateDirectory(resourcesFolder);
+            }
             // Configurare Dependency Injection
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
