@@ -2,7 +2,7 @@
 using Restaurant.Domain.Enums;
 using Restaurant.ViewModels.Base;
 using Restaurant.ViewModels.Commands;
-using Restaurant.ViewModels.Menu;
+using Restaurant.ViewModels.RestaurantMenu;
 using Restaurant.ViewModels.Search;
 using Restaurant.ViewModels.Order;
 using Restaurant.ViewModels.Admin;
@@ -117,7 +117,6 @@ namespace Restaurant.ViewModels.Main
 
         private void NavigateToMenu()
         {
-            // Creăm direct un view model pentru meniu, fără a referenția UI
             var menuViewModel = _serviceProvider.GetService(typeof(RestaurantMenuViewModel));
             CurrentView = menuViewModel;
         }
@@ -137,7 +136,9 @@ namespace Restaurant.ViewModels.Main
         private void NavigateToAdmin()
         {
             var adminViewModel = _serviceProvider.GetService(typeof(AdminPanelViewModel));
+            
             CurrentView = adminViewModel;
+            
         }
 
         private void ShowLoginDialog()

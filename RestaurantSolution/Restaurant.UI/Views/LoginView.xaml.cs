@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Login;
+using Restaurant.ViewModels.State;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,14 +35,18 @@ namespace Restaurant.UI.Views
 
         private void ViewModel_LoginSuccessful(object sender, EventArgs e)
         {
-            MessageBox.Show("Login successful! Redirect to main window will be implemented later.");
-            // TODO: Redirect to main window
+
+            var mainWindow = App.ServiceProvider.GetRequiredService<MainWindow>();
+            mainWindow.Show();
+            Close();
         }
 
         private void ViewModel_ContinueAsGuestRequested(object sender, EventArgs e)
         {
-            MessageBox.Show("Continue as guest! Redirect to main window will be implemented later.");
-            // TODO: Redirect to main window as guest
+            CurrentUserState.Instance.CurrentUser = null;
+            var mainWindow = App.ServiceProvider.GetRequiredService<MainWindow>();
+            mainWindow.Show();
+            Close();
         }
 
         private void ViewModel_CreateAccountRequested(object sender, EventArgs e)

@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET9_0;NETCOREAPP
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\App.xaml
-21424453612
+71672428322
 
-8-1260533219
+15-324392298
 235-2046505901
-Views\LoginView.xaml;Views\RegistrationView.xaml;
+Views\AdminPanelView.xaml;Views\LoginView.xaml;Views\MainWindow.xaml;Views\MyOrdersView.xaml;Views\RegistrationView.xaml;Views\RestaurantMenuView.xaml;Views\SearchView.xaml;
 
 False
 

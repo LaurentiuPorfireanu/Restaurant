@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\views\\adminpanelview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\views\\adminpanelview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\main\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\main\\mainwindowviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,14 +38,28 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\App.xaml.cs",
+              "RelativeDocumentMoniker": "Restaurant.UI\\App.xaml.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\App.xaml.cs",
+              "RelativeToolTip": "Restaurant.UI\\App.xaml.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAQwCcAAABKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T13:16:13.627Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AdminPanelView.xaml",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "RelativeDocumentMoniker": "Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "RelativeToolTip": "Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-05-18T12:05:12.19Z",
+              "Title": "MainWindowViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Main\\MainWindowViewModel.cs",
+              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Main\\MainWindowViewModel.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Main\\MainWindowViewModel.cs",
+              "RelativeToolTip": "Restaurant.ViewModels\\Main\\MainWindowViewModel.cs",
+              "ViewState": "AgIAAGoAAAAAAAAAAAAUwHoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T13:08:19.497Z",
               "EditorCaption": ""
             }
           ]

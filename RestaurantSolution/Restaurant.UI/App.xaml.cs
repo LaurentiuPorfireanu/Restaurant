@@ -7,6 +7,10 @@ using Restaurant.Services.Implementation;
 using Restaurant.Services.Implementations;
 using Restaurant.Services.Interfaces;
 using Restaurant.UI.Views;
+using Restaurant.UI.Views.Admin;
+using Restaurant.UI.Views.Menu;
+using Restaurant.UI.Views.Order;
+using Restaurant.UI.Views.Search;
 using System;
 using System.Windows;
 
@@ -48,15 +52,26 @@ namespace Restaurant.UI
             // Register views
             services.AddTransient<LoginView>();
             services.AddTransient<RegistrationView>();
-            //services.AddTransient<MainWindow>();
+            services.AddTransient<MainWindow>();
+            services.AddTransient<AdminPanelView>();
+            services.AddTransient<MyOrdersView>();
+            services.AddTransient<RestaurantMenuView>();
+            services.AddTransient<SearchView>();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            var loginWindow = ServiceProvider.GetRequiredService<LoginView>();
-            loginWindow.Show();
+            // Configurare Dependency Injection
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+
+            ServiceProvider = serviceCollection.BuildServiceProvider();
+
+            // Inițializare și afișare fereastră de login
+            var loginView = ServiceProvider.GetRequiredService<LoginView>();
+            loginView.Show();
         }
     }
 }

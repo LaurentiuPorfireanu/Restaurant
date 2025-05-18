@@ -9,10 +9,6 @@
         WindowStartupLocation="CenterScreen" 
         ResizeMode="NoResize">
 
-    <Window.Resources>
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-    </Window.Resources>
-
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -54,8 +50,17 @@
                    Text="{Binding ErrorMessage}" 
                    Foreground="Red" 
                    TextWrapping="Wrap" 
-                   Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}"
-                   Margin="0,0,0,15"/>
+                   Margin="0,0,0,15">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding HasError}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
 
         <!-- Login Button -->
         <Button Grid.Row="4" 
@@ -99,9 +104,18 @@
         <!-- Loading Indicator -->
         <ProgressBar Grid.Row="7" 
                      IsIndeterminate="True" 
-                     Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" 
                      Height="5" 
                      VerticalAlignment="Top" 
-                     Margin="0,15,0,0"/>
+                     Margin="0,15,0,0">
+            <ProgressBar.Style>
+                <Style TargetType="ProgressBar">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsLoading}" Value="False">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ProgressBar.Style>
+        </ProgressBar>
     </Grid>
 </Window>
