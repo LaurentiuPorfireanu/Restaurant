@@ -29,5 +29,7 @@ namespace Restaurant.UI.Views.Admin
             // Încărcare date la inițializare
             Loaded += async (s, e) => await viewModel.LoadInitialDataAsync();
         }
+
+       
     }
 }

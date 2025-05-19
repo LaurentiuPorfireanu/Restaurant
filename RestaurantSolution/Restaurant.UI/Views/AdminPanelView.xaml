@@ -26,7 +26,8 @@
                            Margin="0,0,0,5"/>
                 <TextBlock Text="Gestionează categorii, produse, meniuri, comenzi și rapoarte" 
                            FontSize="14" 
-                           Opacity="0.7"/>
+                           Opacity="0.7"
+                           TextWrapping="Wrap"/>
             </StackPanel>
 
             <!-- Indicator produse care se apropie de epuizare -->
@@ -55,10 +56,12 @@
                                Margin="0,0,8,0"/>
                     <StackPanel>
                         <TextBlock Text="Produse care se apropie de epuizare" 
-                                   FontWeight="SemiBold"/>
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap"/>
                         <TextBlock Text="{Binding LowStockCount, StringFormat='{}{0} produse necesită atenție'}" 
                                    Opacity="0.8" 
-                                   FontSize="12"/>
+                                   FontSize="12"
+                                   TextWrapping="Wrap"/>
                     </StackPanel>
                     <Button Content="Vizualizează" 
                             Command="{Binding ShowLowStockCommand}" 
@@ -68,7 +71,14 @@
         </Grid>
 
         <!-- Tab Control cu opțiuni administrare -->
-        <TabControl Grid.Row="1">
+        <TabControl Grid.Row="1" TabStripPlacement="Top">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Height" Value="Auto"/>
+                    <Setter Property="MinHeight" Value="30"/>
+                </Style>
+            </TabControl.Resources>
+
             <!-- Tab pentru Categorii -->
             <TabItem Header="Categorii">
                 <Grid Margin="10">
@@ -86,52 +96,30 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox Grid.Column="0" 
-                                 Text="{Binding CategoryName, UpdateSourceTrigger=PropertyChanged}" 
-                                 Padding="10" 
-                                 Margin="0,0,10,0" 
-                                 VerticalContentAlignment="Center"/>
+                     Text="{Binding CategoryName, UpdateSourceTrigger=PropertyChanged}" 
+                     Padding="10" 
+                     Margin="0,0,10,0" 
+                     VerticalContentAlignment="Center"/>
 
                         <Button Grid.Column="1" 
-                                Content="Adaugă" 
-                                Command="{Binding AddCategoryCommand}" 
-                                Padding="15,8" 
-                                Margin="0,0,10,0">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddCategoryEnabled}" Value="True">
-                                            <Setter Property="IsEnabled" Value="True" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                    Content="Adaugă" 
+                    Command="{Binding AddCategoryCommand}" 
+                    Padding="15,8" 
+                    Margin="0,0,10,0"/>
 
                         <Button Grid.Column="2" 
-                                Content="Actualizează" 
-                                Command="{Binding UpdateCategoryCommand}" 
-                                Padding="15,8">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsUpdateCategoryEnabled}" Value="True">
-                                            <Setter Property="IsEnabled" Value="True" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                    Content="Actualizează" 
+                    Command="{Binding UpdateCategoryCommand}" 
+                    Padding="15,8"/>
                     </Grid>
 
                     <!-- Lista de categorii -->
                     <DataGrid Grid.Row="1" 
-                              ItemsSource="{Binding Categories}" 
-                              AutoGenerateColumns="False" 
-                              CanUserAddRows="False" 
-                              SelectionMode="Single"
-                              SelectedItem="{Binding SelectedCategory}">
+                  ItemsSource="{Binding Categories}" 
+                  AutoGenerateColumns="False" 
+                  CanUserAddRows="False" 
+                  SelectionMode="Single"
+                  SelectedItem="{Binding SelectedCategory}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding CategoryId}" Width="50" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="*" IsReadOnly="True"/>
@@ -140,14 +128,14 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <Button Content="Editează" 
-                                                    Command="{Binding DataContext.EditCategoryCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                    CommandParameter="{Binding}" 
-                                                    Margin="0,0,5,0" 
-                                                    Padding="8,4"/>
+                                        Command="{Binding DataContext.EditCategoryCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                        CommandParameter="{Binding}" 
+                                        Margin="0,0,5,0" 
+                                        Padding="8,4"/>
                                             <Button Content="Șterge" 
-                                                    Command="{Binding DataContext.DeleteCategoryCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                    CommandParameter="{Binding}" 
-                                                    Padding="8,4"/>
+                                        Command="{Binding DataContext.DeleteCategoryCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                        CommandParameter="{Binding}" 
+                                        Padding="8,4"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -156,326 +144,704 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-
-            <!-- Tab pentru Preparate -->
             <TabItem Header="Preparate">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Vizualizare normală a preparatelor -->
-                    <Grid Grid.Row="0" Grid.RowSpan="2" Visibility="{Binding IsAddPreparatMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Buton pentru adăugare preparat nou -->
-                        <Button Grid.Row="0" 
-                Content="Adaugă Preparat Nou" 
-                Command="{Binding AddNewPreparatCommand}" 
-                HorizontalAlignment="Right" 
-                Padding="15,8" 
-                Margin="0,0,0,15"/>
-
-                        <!-- Lista de preparate -->
-                        <DataGrid Grid.Row="1" 
-                  ItemsSource="{Binding Preparate}" 
-                  AutoGenerateColumns="False" 
-                  CanUserAddRows="False" 
-                  SelectionMode="Single"
-                  SelectedItem="{Binding SelectedPreparat}">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Binding="{Binding PreparatID}" Width="50" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="*" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Preț" Binding="{Binding Price, StringFormat='{}{0:N2} Lei'}" Width="80" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Cantitate/Porție" Binding="{Binding QuantityPortie, StringFormat='{}{0}g'}" Width="120" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Stoc Total" Binding="{Binding QuantityTotal, StringFormat='{}{0}g'}" Width="100" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Categorie" Binding="{Binding Category.Name}" Width="120" IsReadOnly="True"/>
-                                <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Button Content="Editează" 
-                                        Command="{Binding DataContext.EditPreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                        CommandParameter="{Binding}" 
-                                        Margin="0,0,5,0" 
-                                        Padding="8,4"/>
-                                                <Button Content="Șterge" 
-                                        Command="{Binding DataContext.DeletePreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                        CommandParameter="{Binding}" 
-                                        Padding="8,4"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Grid>
-
-                    <!-- Formular pentru adăugare/editare preparat -->
-                    <Grid Grid.Row="0" Grid.RowSpan="2" 
-          Visibility="{Binding IsAddPreparatMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- Titlu -->
-                        <TextBlock Grid.Row="0" 
-                   Text="{Binding IsEditPreparatMode, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Editare Preparat|Adăugare Preparat Nou'}" 
-                   FontSize="20" 
-                   FontWeight="SemiBold" 
-                   Margin="0,0,0,15"/>
-
-                        <!-- Formular principal -->
-                        <Grid Grid.Row="1" Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Coloana 1 - Informații de bază -->
-                            <Grid Grid.Column="0" Margin="0,0,10,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <!-- Denumire -->
-                                <StackPanel Grid.Row="0" Margin="0,0,0,10">
-                                    <TextBlock Text="Denumire:" FontSize="14" Margin="0,0,0,5"/>
-                                    <TextBox Text="{Binding PreparatName, UpdateSourceTrigger=PropertyChanged}" 
-                              Padding="8"
-                              FontSize="14"/>
-                                </StackPanel>
-
-                                <!-- Preț -->
-                                <StackPanel Grid.Row="1" Margin="0,0,0,10">
-                                    <TextBlock Text="Preț (Lei):" FontSize="14" Margin="0,0,0,5"/>
-                                    <TextBox Text="{Binding PreparatPrice, UpdateSourceTrigger=PropertyChanged}" 
-                              Padding="8"
-                              FontSize="14"/>
-                                </StackPanel>
-
-                                <!-- Cantitate porție -->
-                                <StackPanel Grid.Row="2" Margin="0,0,0,10">
-                                    <TextBlock Text="Cantitate porție (g):" FontSize="14" Margin="0,0,0,5"/>
-                                    <TextBox Text="{Binding PreparatQuantityPortie, UpdateSourceTrigger=PropertyChanged}" 
-                              Padding="8"
-                              FontSize="14"/>
-                                </StackPanel>
-
-                                <!-- Cantitate totală -->
-                                <StackPanel Grid.Row="3" Margin="0,0,0,10">
-                                    <TextBlock Text="Cantitate totală în stoc (g):" FontSize="14" Margin="0,0,0,5"/>
-                                    <TextBox Text="{Binding PreparatQuantityTotal, UpdateSourceTrigger=PropertyChanged}" 
-                              Padding="8"
-                              FontSize="14"/>
-                                </StackPanel>
-
-                                <!-- Categorie -->
-                                <StackPanel Grid.Row="4" Margin="0,0,0,10">
-                                    <TextBlock Text="Categorie:" FontSize="14" Margin="0,0,0,5"/>
-                                    <ComboBox ItemsSource="{Binding Categories}" 
-                               SelectedItem="{Binding PreparatSelectedCategory}"
-                               DisplayMemberPath="Name"
-                               Padding="8"
-                               FontSize="14"/>
-                                </StackPanel>
-                            </Grid>
-
-                            <!-- Coloana 2 - Alergeni -->
-                            <Grid Grid.Column="1" Margin="10,0,0,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <!-- Titlu alergeni disponibili -->
-                                <TextBlock Grid.Row="0" 
-                            Text="Alergeni disponibili:" 
-                            FontSize="14" 
-                            Margin="0,0,0,5"/>
-
-                                <!-- Lista alergeni disponibili -->
-                                <ListBox Grid.Row="1" 
-                          ItemsSource="{Binding PreparatAvailableAlergens}" 
-                          DisplayMemberPath="Name"
-                          Margin="0,0,0,10"
-                          MinHeight="100">
-                                    <ListBox.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Adaugă la preparat" 
-                                      Command="{Binding AddPreparatAlergenCommand}" 
-                                      CommandParameter="{Binding PlacementTarget.SelectedItem, 
-                                        RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                                        </ContextMenu>
-                                    </ListBox.ContextMenu>
-                                </ListBox>
-
-                                <!-- Titlu alergeni selectați -->
-                                <TextBlock Grid.Row="2" 
-                            Text="Alergeni selectați:" 
-                            FontSize="14" 
-                            Margin="0,10,0,5"/>
-
-                                <!-- Lista alergeni selectați -->
-                                <ListBox Grid.Row="3" 
-                          ItemsSource="{Binding PreparatSelectedAlergens}" 
-                          DisplayMemberPath="Name"
-                          MinHeight="100">
-                                    <ListBox.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Elimină din preparat" 
-                                      Command="{Binding RemovePreparatAlergenCommand}" 
-                                      CommandParameter="{Binding PlacementTarget.SelectedItem, 
-                                        RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
-                                        </ContextMenu>
-                                    </ListBox.ContextMenu>
-                                </ListBox>
-                            </Grid>
-                        </Grid>
-
-                        <!-- Secțiunea de imagini -->
-                        <Grid Grid.Row="2">
+                        <!-- Vizualizare normală a preparatelor -->
+                        <Grid Grid.Row="0" Grid.RowSpan="2" Visibility="{Binding IsAddPreparatMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- Header secțiune imagini -->
-                            <Grid Grid.Row="0" Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                            <!-- Buton pentru adăugare preparat nou -->
+                            <Button Grid.Row="0" 
+                                    Content="Adaugă Preparat Nou" 
+                                    Command="{Binding AddNewPreparatCommand}" 
+                                    HorizontalAlignment="Right" 
+                                    Padding="15,8" 
+                                    Margin="0,0,0,15"/>
 
-                                <TextBlock Grid.Column="0" 
-                            Text="Imagini preparat:" 
-                            FontSize="16" 
-                            FontWeight="SemiBold"/>
-
-                                <Button Grid.Column="1" 
-                        Content="Adaugă imagini" 
-                        Command="{Binding AddPreparatImagesCommand}"
-                        Padding="10,5"/>
-                            </Grid>
-
-                            <!-- Lista de imagini -->
-                            <ScrollViewer Grid.Row="1" 
-                           VerticalScrollBarVisibility="Auto" 
-                           HorizontalScrollBarVisibility="Disabled">
-                                <ItemsControl ItemsSource="{Binding PreparatImages}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,0,0,10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <!-- Imagine preview -->
-                                                <Border Grid.Column="0" 
-                                        Width="80" 
-                                        Height="60" 
-                                        BorderThickness="1" 
-                                        BorderBrush="#CCCCCC" 
-                                        Margin="0,0,10,0">
-                                                    <Image Source="{Binding FullPath}" 
-                                            Stretch="UniformToFill"/>
-                                                </Border>
-
-                                                <!-- Nume imagine -->
-                                                <TextBlock Grid.Column="1" 
-                                            Text="{Binding ImagePath}" 
-                                            VerticalAlignment="Center"/>
-
-                                                <!-- Buton ștergere -->
-                                                <Button Grid.Column="2" 
-                                        Content="Șterge" 
-                                        Command="{Binding DataContext.RemovePreparatImageCommand, 
-                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}"
-                                        Padding="8,3"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+                            <!-- Lista de preparate -->
+                            <DataGrid Grid.Row="1" 
+                                      ItemsSource="{Binding Preparate}" 
+                                      AutoGenerateColumns="False" 
+                                      CanUserAddRows="False" 
+                                      SelectionMode="Single"
+                                      SelectedItem="{Binding SelectedPreparat}">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Height" Value="Auto"/>
+                                        <Setter Property="MinHeight" Value="25"/>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding PreparatID}" Width="50" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="*" IsReadOnly="True">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Preț" Binding="{Binding Price, StringFormat='{}{0:N2} Lei'}" Width="80" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Cantitate/Porție" Binding="{Binding QuantityPortie, StringFormat='{}{0}g'}" Width="120" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Stoc Total" Binding="{Binding QuantityTotal, StringFormat='{}{0}g'}" Width="100" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Categorie" Binding="{Binding Category.Name}" Width="120" IsReadOnly="True">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Content="Editează" 
+                                                            Command="{Binding DataContext.EditPreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                            CommandParameter="{Binding}" 
+                                                            Margin="0,0,5,0" 
+                                                            Padding="8,4"/>
+                                                    <Button Content="Șterge" 
+                                                            Command="{Binding DataContext.DeletePreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                            CommandParameter="{Binding}" 
+                                                            Padding="8,4"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
                         </Grid>
 
-                        <!-- Butoane acțiuni -->
-                        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
-                            <Button Content="Anulează" 
-                    Command="{Binding CancelPreparatEditCommand}" 
-                    Padding="15,8" 
-                    Margin="0,0,10,0"/>
+                        <!-- Formular pentru adăugare/editare preparat -->
+                        <Grid Grid.Row="0" Grid.RowSpan="2" 
+                              Visibility="{Binding IsAddPreparatMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                            <Button Content="Salvează" 
-                    Command="{Binding SavePreparatCommand}" 
-                    IsEnabled="{Binding CanSavePreparat}" 
-                    Padding="15,8"/>
-                        </StackPanel>
+                            <!-- Titlu -->
+                            <TextBlock Grid.Row="0" 
+                                       Text="{Binding IsEditPreparatMode, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Editare Preparat|Adăugare Preparat Nou'}" 
+                                       FontSize="20" 
+                                       FontWeight="SemiBold" 
+                                       Margin="0,0,0,15"
+                                       TextWrapping="Wrap"/>
+
+                            <!-- Formular principal -->
+                            <Grid Grid.Row="1" Margin="0,0,0,15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Coloana 1 - Informații de bază -->
+                                <Grid Grid.Column="0" Margin="0,0,10,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Denumire -->
+                                    <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                                        <TextBlock Text="Denumire:" FontSize="14" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding PreparatName, UpdateSourceTrigger=PropertyChanged}" 
+                                                 TextWrapping="Wrap"
+                                                 Padding="8"
+                                                 FontSize="14"/>
+                                    </StackPanel>
+
+                                    <!-- Preț -->
+                                    <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                                        <TextBlock Text="Preț (Lei):" FontSize="14" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding PreparatPrice, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Padding="8"
+                                                 FontSize="14"/>
+                                    </StackPanel>
+
+                                    <!-- Cantitate porție -->
+                                    <StackPanel Grid.Row="2" Margin="0,0,0,10">
+                                        <TextBlock Text="Cantitate porție (g):" FontSize="14" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding PreparatQuantityPortie, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Padding="8"
+                                                 FontSize="14"/>
+                                    </StackPanel>
+
+                                    <!-- Cantitate totală -->
+                                    <StackPanel Grid.Row="3" Margin="0,0,0,10">
+                                        <TextBlock Text="Cantitate totală în stoc (g):" FontSize="14" Margin="0,0,0,5"/>
+                                        <TextBox Text="{Binding PreparatQuantityTotal, UpdateSourceTrigger=PropertyChanged}" 
+                                                 Padding="8"
+                                                 FontSize="14"/>
+                                    </StackPanel>
+
+                                    <!-- Categorie -->
+                                    <StackPanel Grid.Row="4" Margin="0,0,0,10">
+                                        <TextBlock Text="Categorie:" FontSize="14" Margin="0,0,0,5"/>
+                                        <ComboBox ItemsSource="{Binding Categories}" 
+                                                  SelectedItem="{Binding PreparatSelectedCategory}"
+                                                  DisplayMemberPath="Name"
+                                                  Padding="8"
+                                                  FontSize="14"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Coloana 2 - Alergeni -->
+                                <Grid Grid.Column="1" Margin="10,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Titlu alergeni disponibili -->
+                                    <TextBlock Grid.Row="0" 
+                                              Text="Alergeni disponibili:" 
+                                              FontSize="14" 
+                                              Margin="0,0,0,5"/>
+
+                                    <!-- Lista alergeni disponibili -->
+                                    <ListBox Grid.Row="1" 
+                                            ItemsSource="{Binding PreparatAvailableAlergens}" 
+                                            DisplayMemberPath="Name"
+                                            Margin="0,0,0,10"
+                                            MinHeight="100">
+                                        <ListBox.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Adaugă la preparat" 
+                                                         Command="{Binding AddPreparatAlergenCommand}" 
+                                                         CommandParameter="{Binding PlacementTarget.SelectedItem, 
+                                                                           RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            </ContextMenu>
+                                        </ListBox.ContextMenu>
+                                    </ListBox>
+
+                                    <!-- Titlu alergeni selectați -->
+                                    <TextBlock Grid.Row="2" 
+                                              Text="Alergeni selectați:" 
+                                              FontSize="14" 
+                                              Margin="0,10,0,5"/>
+
+                                    <!-- Lista alergeni selectați -->
+                                    <ListBox Grid.Row="3" 
+                                            ItemsSource="{Binding PreparatSelectedAlergens}" 
+                                            DisplayMemberPath="Name"
+                                            MinHeight="100">
+                                        <ListBox.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Elimină din preparat" 
+                                                          Command="{Binding RemovePreparatAlergenCommand}" 
+                                                          CommandParameter="{Binding PlacementTarget.SelectedItem, 
+                                                                          RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                            </ContextMenu>
+                                        </ListBox.ContextMenu>
+                                    </ListBox>
+                                </Grid>
+                            </Grid>
+
+                            <!-- Secțiunea de imagini -->
+                            <Grid Grid.Row="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Header secțiune imagini -->
+                                <Grid Grid.Row="0" Margin="0,0,0,10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" 
+                                              Text="Imagini preparat:" 
+                                              FontSize="16" 
+                                              FontWeight="SemiBold"/>
+
+                                    <Button Grid.Column="1" 
+                                            Content="Adaugă imagini" 
+                                            Command="{Binding AddPreparatImagesCommand}"
+                                            Padding="10,5"/>
+                                </Grid>
+
+                                <!-- Lista de imagini -->
+                                <ScrollViewer Grid.Row="1" 
+                                            VerticalScrollBarVisibility="Auto" 
+                                            HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding PreparatImages}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,0,0,10">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Imagine preview -->
+                                                    <Border Grid.Column="0" 
+                                                            Width="80" 
+                                                            Height="60" 
+                                                            BorderThickness="1" 
+                                                            BorderBrush="#CCCCCC" 
+                                                            Margin="0,0,10,0">
+                                                        <Image Source="{Binding FullPath}" 
+                                                              Stretch="UniformToFill"/>
+                                                    </Border>
+
+                                                    <!-- Nume imagine -->
+                                                    <TextBlock Grid.Column="1" 
+                                                              Text="{Binding ImagePath}" 
+                                                              VerticalAlignment="Center"
+                                                              TextWrapping="Wrap"/>
+
+                                                    <!-- Buton ștergere -->
+                                                    <Button Grid.Column="2" 
+                                                            Content="Șterge" 
+                                                            Command="{Binding DataContext.RemovePreparatImageCommand, 
+                                                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                            CommandParameter="{Binding}"
+                                                            Padding="8,3"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+
+                            <!-- Butoane acțiuni -->
+                            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+                                <Button Content="Anulează" 
+                                        Command="{Binding CancelPreparatEditCommand}" 
+                                        Padding="15,8" 
+                                        Margin="0,0,10,0"/>
+
+                                <Button Content="Salvează" 
+                                        Command="{Binding SavePreparatCommand}" 
+                                        IsEnabled="{Binding CanSavePreparat}" 
+                                        Padding="15,8"/>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
-                </Grid>
+                </ScrollViewer>
             </TabItem>
 
             <!-- Tab pentru Meniuri -->
-            <!-- Fragment de adăugat în AdminPanelView.xaml, în cadrul TabControl -->
             <TabItem Header="Meniuri">
-                <Grid>
-                    <!-- Afișăm lista de meniuri când nu suntem în modul de editare/adăugare -->
-                    <Grid Visibility="{Binding MenuManagement.IsAddMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <!-- Afișăm lista de meniuri când nu suntem în modul de editare/adăugare -->
+                        <Grid Visibility="{Binding MenuManagement.IsAddMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Buton pentru a adăuga un meniu nou -->
+                            <Button Grid.Row="0" 
+                                    Content="Adaugă meniu nou" 
+                                    Command="{Binding AddNewMenuCommand}"
+                                    HorizontalAlignment="Right" 
+                                    Margin="0,10,0,10"
+                                    Padding="15,8"/>
+
+                            <!-- Lista de meniuri existente -->
+                            <DataGrid Grid.Row="1" 
+                                    ItemsSource="{Binding Menus}" 
+                                    AutoGenerateColumns="False"
+                                    CanUserAddRows="False"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedMenu}">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Height" Value="Auto"/>
+                                        <Setter Property="MinHeight" Value="25"/>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding MenuID}" Width="50" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="*" IsReadOnly="True">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Categorie" Binding="{Binding Category.Name}" Width="120" IsReadOnly="True">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Nr. preparate" Binding="{Binding MenuPreparate.Count}" Width="100" IsReadOnly="True"/>
+                                    <DataGridTextColumn Header="Preț" Binding="{Binding CalculatedPrice, StringFormat='{}{0:N2} Lei'}" Width="100" IsReadOnly="True"/>
+                                    <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Content="Editează" 
+                                                        Command="{Binding DataContext.EditMenuCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}"
+                                                        Margin="0,0,5,0"
+                                                        Padding="8,4"/>
+                                                    <Button Content="Șterge" 
+                                                        Command="{Binding DataContext.DeleteMenuCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}"
+                                                        Padding="8,4"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+
+                        <!-- Formularul de adăugare/editare meniu -->
+                        <Grid Visibility="{Binding MenuManagement.IsAddMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Titlul formularului -->
+                            <TextBlock Grid.Row="0" 
+                                    Text="{Binding MenuManagement.IsEditMode, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Editare meniu|Adăugare meniu nou'}"
+                                    FontSize="20"
+                                    FontWeight="SemiBold"
+                                    TextWrapping="Wrap"
+                                    Margin="0,10,0,15"/>
+
+                            <!-- Câmpuri pentru nume și categorie -->
+                            <Grid Grid.Row="1" Margin="0,0,0,15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Nume meniu -->
+                                <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
+                                    <TextBlock Text="Nume meniu:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding MenuManagement.MenuName, UpdateSourceTrigger=PropertyChanged}"
+                                            TextWrapping="Wrap"
+                                            Padding="5"/>
+                                </StackPanel>
+
+                                <!-- Categorie -->
+                                <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,10">
+                                    <TextBlock Text="Categorie:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                    <ComboBox ItemsSource="{Binding Categories}"
+                                            SelectedItem="{Binding MenuManagement.SelectedCategory}"
+                                            DisplayMemberPath="Name"
+                                            Padding="5"/>
+                                </StackPanel>
+
+                                <!-- Reducere -->
+                                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Reducere (%):" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding MenuManagement.DiscountPercentage, UpdateSourceTrigger=PropertyChanged}"
+                                            Padding="5"/>
+                                </StackPanel>
+
+                                <!-- Preț calculat -->
+                                <Grid Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" Text="Preț calculat:" FontWeight="SemiBold" Margin="0,0,0,5"/>
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                        <TextBlock Text="Original: " VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding MenuManagement.TotalPrice, StringFormat='{}{0:N2} Lei'}" 
+                                                FontWeight="Medium"
+                                                VerticalAlignment="Center"
+                                                Margin="0,0,15,0"/>
+                                        <TextBlock Text="Cu reducere: " VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding MenuManagement.DiscountedPrice, StringFormat='{}{0:N2} Lei'}" 
+                                                FontWeight="Bold"
+                                                VerticalAlignment="Center"
+                                                Foreground="Green"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+
+                            <!-- Lista de preparate disponibile și selectate -->
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Preparate disponibile -->
+                                <Grid Grid.Column="0">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" 
+                                            Text="Preparate disponibile:" 
+                                            FontWeight="SemiBold"
+                                            Margin="0,0,0,10"/>
+
+                                    <DataGrid Grid.Row="1"
+                                            ItemsSource="{Binding MenuManagement.AvailablePreparate}"
+                                            AutoGenerateColumns="False"
+                                            CanUserAddRows="False"
+                                            SelectionMode="Single">
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="MinHeight" Value="25"/>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Nume" Binding="{Binding DisplayName}" Width="*" IsReadOnly="True">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                            <DataGridTextColumn Header="Categorie" Binding="{Binding CategoryName}" Width="100" IsReadOnly="True">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                            <DataGridTextColumn Header="Preț" Binding="{Binding PriceFormatted}" Width="80" IsReadOnly="True"/>
+                                            <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Content="Adaugă" 
+                                                            Command="{Binding DataContext.MenuManagement.AddPreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}"
+                                                            Padding="8,4"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+
+                                <!-- Separator -->
+                                <Border Grid.Column="1" Width="1" Background="#CCCCCC" Margin="10,0"/>
+
+                                <!-- Preparate selectate -->
+                                <Grid Grid.Column="2">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Grid.Row="0" 
+                                            Text="Preparate în meniu:" 
+                                            FontWeight="SemiBold"
+                                            Margin="0,0,0,10"/>
+
+                                    <!-- Continuare pentru preparatele selectate în meniu -->
+                                    <DataGrid Grid.Row="1"
+                                            ItemsSource="{Binding MenuManagement.SelectedPreparate}"
+                                            AutoGenerateColumns="False"
+                                            CanUserAddRows="False"
+                                            SelectionMode="Single">
+                                        <DataGrid.RowStyle>
+                                            <Style TargetType="DataGridRow">
+                                                <Setter Property="Height" Value="Auto"/>
+                                                <Setter Property="MinHeight" Value="25"/>
+                                            </Style>
+                                        </DataGrid.RowStyle>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Nume" Binding="{Binding DisplayName}" Width="*" IsReadOnly="True">
+                                                <DataGridTextColumn.ElementStyle>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="TextWrapping" Value="Wrap"/>
+                                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    </Style>
+                                                </DataGridTextColumn.ElementStyle>
+                                            </DataGridTextColumn>
+                                            <DataGridTextColumn Header="Standard" Binding="{Binding StandardQuantity}" Width="130" IsReadOnly="True"/>
+                                            <DataGridTemplateColumn Header="Cantitate în meniu" Width="150">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox Grid.Column="0" 
+                                                                    Text="{Binding QuantityMenuPortie, UpdateSourceTrigger=PropertyChanged}"
+                                                                    VerticalContentAlignment="Center"/>
+                                                            <TextBlock Grid.Column="1" 
+                                                                    Text="g" 
+                                                                    VerticalAlignment="Center"
+                                                                    Margin="5,0,0,0"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="Preț" Binding="{Binding PriceFormatted}" Width="80" IsReadOnly="True"/>
+                                            <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate>
+                                                        <Button Content="Elimină" 
+                                                            Command="{Binding DataContext.MenuManagement.RemovePreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                            CommandParameter="{Binding}"
+                                                            Padding="8,4"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                            </Grid>
+
+                            <!-- Butoane de acțiune -->
+                            <StackPanel Grid.Row="3" 
+                                    Orientation="Horizontal" 
+                                    HorizontalAlignment="Right"
+                                    Margin="0,15,0,0">
+                                <Button Content="Anulează" 
+                                    Command="{Binding MenuManagement.CancelCommand}"
+                                    Padding="15,8"
+                                    Margin="0,0,10,0"/>
+                                <Button Content="Salvează meniul" 
+                                    Command="{Binding MenuManagement.SaveMenuCommand}"
+                                    Padding="15,8"
+                                    IsEnabled="{Binding MenuManagement.CanSaveMenu}"/>
+                            </StackPanel>
+
+                            <!-- Indicator de încărcare -->
+                            <Grid Grid.Row="0" Grid.RowSpan="4" 
+                                Background="#80FFFFFF"
+                                Visibility="{Binding MenuManagement.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Text="Se încarcă..." HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                    <ProgressBar IsIndeterminate="True" Width="200" Height="20"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+            <!-- Tab pentru Comenzi -->
+            <TabItem Header="Comenzi">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Buton pentru a adăuga un meniu nou -->
-                        <Button Grid.Row="0" 
-                    Content="Adaugă meniu nou" 
-                    Command="{Binding AddNewMenuCommand}"
-                    HorizontalAlignment="Right" 
-                    Margin="0,10,0,10"
-                    Padding="15,8"/>
+                        <!-- Filtre pentru comenzi -->
+                        <StackPanel Grid.Row="0" 
+                                    Orientation="Horizontal" 
+                                    Margin="0,0,0,15">
+                            <ToggleButton Content="Toate comenzile" 
+                                        IsChecked="{Binding IsAllOrdersSelected, Mode=TwoWay}"
+                                        Padding="15,8" 
+                                        Margin="0,0,10,0"/>
+                            <ToggleButton Content="Comenzi active" 
+                                        IsChecked="{Binding IsActiveOrdersSelected, Mode=TwoWay}"
+                                        Padding="15,8"/>
+                        </StackPanel>
 
-                        <!-- Lista de meniuri existente -->
+                        <!-- Lista de comenzi -->
                         <DataGrid Grid.Row="1" 
-                      ItemsSource="{Binding Menus}" 
-                      AutoGenerateColumns="False"
-                      CanUserAddRows="False"
-                      SelectionMode="Single"
-                      SelectedItem="{Binding SelectedMenu}">
+                                ItemsSource="{Binding Orders}" 
+                                AutoGenerateColumns="False" 
+                                CanUserAddRows="False" 
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedOrder}">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Height" Value="Auto"/>
+                                    <Setter Property="MinHeight" Value="25"/>
+                                </Style>
+                            </DataGrid.RowStyle>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Binding="{Binding MenuID}" Width="50" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="*" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Categorie" Binding="{Binding Category.Name}" Width="120" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Nr. preparate" Binding="{Binding MenuPreparate.Count}" Width="100" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Preț" Binding="{Binding CalculatedPrice, StringFormat='{}{0:N2} Lei'}" Width="100" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="ID" Binding="{Binding OrderID}" Width="50" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Cod" Binding="{Binding OrderCode}" Width="120" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Data" Binding="{Binding OrderDateFormatted}" Width="150" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Client" Binding="{Binding ClientName}" Width="*" IsReadOnly="True">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextWrapping" Value="Wrap"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Total" Binding="{Binding TotalCostFormatted}" Width="90" IsReadOnly="True"/>
+                                <DataGridTemplateColumn Header="Stare" Width="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="3" 
+                                                    Padding="5,2" 
+                                                    HorizontalAlignment="Left">
+                                                <Border.Background>
+                                                    <SolidColorBrush Color="{Binding StatusBackground}" />
+                                                </Border.Background>
+                                                <TextBlock Text="{Binding StatusText}" 
+                                                        Foreground="White" 
+                                                        FontSize="12"
+                                                        TextWrapping="Wrap"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <Button Content="Editează" 
-                                            Command="{Binding DataContext.EditMenuCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                            CommandParameter="{Binding}"
-                                            Margin="0,0,5,0"
-                                            Padding="8,4"/>
-                                                <Button Content="Șterge" 
-                                            Command="{Binding DataContext.DeleteMenuCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                            CommandParameter="{Binding}"
-                                            Padding="8,4"/>
+                                                <Button Content="Detalii" 
+                                                        Command="{Binding DataContext.ViewOrderDetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding}" 
+                                                        Margin="0,0,5,0" 
+                                                        Padding="8,4"/>
+                                                <Button Content="Actualizează stare" 
+                                                        Command="{Binding DataContext.UpdateOrderStatusCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding}" 
+                                                        Padding="8,4">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding CanUpdateStatus}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Visible" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -483,384 +849,120 @@
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
-
-                    <!-- Formularul de adăugare/editare meniu -->
-                    <Grid Visibility="{Binding MenuManagement.IsAddMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- Titlul formularului -->
-                        <TextBlock Grid.Row="0" 
-                       Text="{Binding MenuManagement.IsEditMode, Converter={StaticResource BooleanToStringConverter}, ConverterParameter='Editare meniu|Adăugare meniu nou'}"
-                       FontSize="20"
-                       FontWeight="SemiBold"
-                       Margin="0,10,0,15"/>
-
-                        <!-- Câmpuri pentru nume și categorie -->
-                        <Grid Grid.Row="1" Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!-- Nume meniu -->
-                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,10">
-                                <TextBlock Text="Nume meniu:" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding MenuManagement.MenuName, UpdateSourceTrigger=PropertyChanged}"
-                             Padding="5"/>
-                            </StackPanel>
-
-                            <!-- Categorie -->
-                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,10">
-                                <TextBlock Text="Categorie:" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                <ComboBox ItemsSource="{Binding Categories}"
-                              SelectedItem="{Binding MenuManagement.SelectedCategory}"
-                              DisplayMemberPath="Name"
-                              Padding="5"/>
-                            </StackPanel>
-
-                            <!-- Reducere -->
-                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,0">
-                                <TextBlock Text="Reducere (%):" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                <TextBox Text="{Binding MenuManagement.DiscountPercentage, UpdateSourceTrigger=PropertyChanged}"
-                             Padding="5"/>
-                            </StackPanel>
-
-                            <!-- Preț calculat -->
-                            <Grid Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" Text="Preț calculat:" FontWeight="SemiBold" Margin="0,0,0,5"/>
-                                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                                    <TextBlock Text="Original: " VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding MenuManagement.TotalPrice, StringFormat='{}{0:N2} Lei'}" 
-                                   FontWeight="Medium"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,15,0"/>
-                                    <TextBlock Text="Cu reducere: " VerticalAlignment="Center"/>
-                                    <TextBlock Text="{Binding MenuManagement.DiscountedPrice, StringFormat='{}{0:N2} Lei'}" 
-                                   FontWeight="Bold"
-                                   VerticalAlignment="Center"
-                                   Foreground="Green"/>
-                                </StackPanel>
-                            </Grid>
-                        </Grid>
-
-                        <!-- Lista de preparate disponibile și selectate -->
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Preparate disponibile -->
-                            <Grid Grid.Column="0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" 
-                               Text="Preparate disponibile:" 
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,10"/>
-
-                                <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding MenuManagement.AvailablePreparate}"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              SelectionMode="Single">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Nume" Binding="{Binding DisplayName}" Width="*" IsReadOnly="True"/>
-                                        <DataGridTextColumn Header="Categorie" Binding="{Binding CategoryName}" Width="100" IsReadOnly="True"/>
-                                        <DataGridTextColumn Header="Preț" Binding="{Binding PriceFormatted}" Width="80" IsReadOnly="True"/>
-                                        <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Button Content="Adaugă" 
-                                                Command="{Binding DataContext.MenuManagement.AddPreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                CommandParameter="{Binding}"
-                                                Padding="8,4"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </Grid>
-
-                            <!-- Separator -->
-                            <Border Grid.Column="1" Width="1" Background="#CCCCCC" Margin="10,0"/>
-
-                            <!-- Preparate selectate -->
-                            <Grid Grid.Column="2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <TextBlock Grid.Row="0" 
-                               Text="Preparate în meniu:" 
-                               FontWeight="SemiBold"
-                               Margin="0,0,0,10"/>
-
-                                <!-- Continuare pentru preparatele selectate în meniu -->
-                                <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding MenuManagement.SelectedPreparate}"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              SelectionMode="Single">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Nume" Binding="{Binding DisplayName}" Width="*" IsReadOnly="True"/>
-                                        <DataGridTextColumn Header="Standard" Binding="{Binding StandardQuantity}" Width="130" IsReadOnly="True"/>
-                                        <DataGridTemplateColumn Header="Cantitate în meniu" Width="150">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBox Grid.Column="0" 
-                                                     Text="{Binding QuantityMenuPortie, UpdateSourceTrigger=PropertyChanged}"
-                                                     VerticalContentAlignment="Center"/>
-                                                        <TextBlock Grid.Column="1" 
-                                                       Text="g" 
-                                                       VerticalAlignment="Center"
-                                                       Margin="5,0,0,0"/>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                        <DataGridTextColumn Header="Preț" Binding="{Binding PriceFormatted}" Width="80" IsReadOnly="True"/>
-                                        <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <Button Content="Elimină" 
-                                                Command="{Binding DataContext.MenuManagement.RemovePreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                CommandParameter="{Binding}"
-                                                Padding="8,4"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </Grid>
-                        </Grid>
-
-                        <!-- Butoane de acțiune -->
-                        <StackPanel Grid.Row="3" 
-                        Orientation="Horizontal" 
-                        HorizontalAlignment="Right"
-                        Margin="0,15,0,0">
-                            <Button Content="Anulează" 
-                        Command="{Binding MenuManagement.CancelCommand}"
-                        Padding="15,8"
-                        Margin="0,0,10,0"/>
-                            <Button Content="Salvează meniul" 
-                        Command="{Binding MenuManagement.SaveMenuCommand}"
-                        Padding="15,8"
-                        IsEnabled="{Binding MenuManagement.CanSaveMenu}"/>
-                        </StackPanel>
-
-                        <!-- Indicator de încărcare -->
-                        <Grid Grid.Row="0" Grid.RowSpan="4" 
-                  Background="#80FFFFFF"
-                  Visibility="{Binding MenuManagement.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <TextBlock Text="Se încarcă..." HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                                <ProgressBar IsIndeterminate="True" Width="200" Height="20"/>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </TabItem>
-            <!-- Tab pentru Comenzi -->
-            <TabItem Header="Comenzi">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Filtre pentru comenzi -->
-                    <StackPanel Grid.Row="0" 
-                                Orientation="Horizontal" 
-                                Margin="0,0,0,15">
-                        <ToggleButton Content="Toate comenzile" 
-                                      IsChecked="{Binding IsAllOrdersSelected, Mode=TwoWay}"
-                                      Padding="15,8" 
-                                      Margin="0,0,10,0"/>
-                        <ToggleButton Content="Comenzi active" 
-                                      IsChecked="{Binding IsActiveOrdersSelected, Mode=TwoWay}"
-                                      Padding="15,8"/>
-                    </StackPanel>
-
-                    <!-- Lista de comenzi -->
-                    <DataGrid Grid.Row="1" 
-                              ItemsSource="{Binding Orders}" 
-                              AutoGenerateColumns="False" 
-                              CanUserAddRows="False" 
-                              SelectionMode="Single"
-                              SelectedItem="{Binding SelectedOrder}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding OrderID}" Width="50" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Cod" Binding="{Binding OrderCode}" Width="120" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Data" Binding="{Binding OrderDateFormatted}" Width="150" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Client" Binding="{Binding ClientName}" Width="*" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Total" Binding="{Binding TotalCostFormatted}" Width="90" IsReadOnly="True"/>
-                            <DataGridTemplateColumn Header="Stare" Width="120">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Border CornerRadius="3" 
-                                                Padding="5,2" 
-                                                HorizontalAlignment="Left">
-                                            <Border.Background>
-                                                <SolidColorBrush Color="{Binding StatusBackground}" />
-                                            </Border.Background>
-                                            <TextBlock Text="{Binding StatusText}" 
-                                                       Foreground="White" 
-                                                       FontSize="12"/>
-                                        </Border>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button Content="Detalii" 
-                                                    Command="{Binding DataContext.ViewOrderDetailsCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                    CommandParameter="{Binding}" 
-                                                    Margin="0,0,5,0" 
-                                                    Padding="8,4"/>
-                                            <Button Content="Actualizează stare" 
-                                                    Command="{Binding DataContext.UpdateOrderStatusCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                    CommandParameter="{Binding}" 
-                                                    Padding="8,4">
-                                                <Button.Style>
-                                                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding CanUpdateStatus}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                            </Button>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
+                </ScrollViewer>
             </TabItem>
 
             <!-- Tab pentru Alergeni -->
             <TabItem Header="Alergeni">
-                <Grid Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <!-- Controale pentru adăugare/editare -->
-                    <Grid Grid.Row="0" Margin="0,0,0,15">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                        <!-- Controale pentru adăugare/editare -->
+                        <Grid Grid.Row="0" Margin="0,0,0,15">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TextBox Grid.Column="0" 
-                                 Text="{Binding AlergenName, UpdateSourceTrigger=PropertyChanged}" 
-                                 Padding="10" 
-                                 Margin="0,0,10,0" 
-                                 VerticalContentAlignment="Center"/>
+                            <TextBox Grid.Column="0" 
+                                    Text="{Binding AlergenName, UpdateSourceTrigger=PropertyChanged}" 
+                                    Padding="10" 
+                                    Margin="0,0,10,0" 
+                                    VerticalContentAlignment="Center"
+                                    TextWrapping="Wrap"/>
 
-                        <Button Grid.Column="1" 
-                                Content="Adaugă" 
-                                Command="{Binding AddAlergenCommand}" 
-                                Padding="15,8" 
-                                Margin="0,0,10,0">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsAddAlergenEnabled}" Value="True">
-                                            <Setter Property="IsEnabled" Value="True" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
+                            <Button Grid.Column="1" 
+                                    Content="Adaugă" 
+                                    Command="{Binding AddAlergenCommand}" 
+                                    Padding="15,8" 
+                                    Margin="0,0,10,0">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsAddAlergenEnabled}" Value="True">
+                                                <Setter Property="IsEnabled" Value="True" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Grid.Column="2" 
+                                    Content="Actualizează" 
+                                    Command="{Binding UpdateAlergenCommand}" 
+                                    Padding="15,8">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Setter Property="IsEnabled" Value="False" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsUpdateAlergenEnabled}" Value="True">
+                                                <Setter Property="IsEnabled" Value="True" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+
+                        <!-- Lista de alergeni -->
+                        <DataGrid Grid.Row="1" 
+                                ItemsSource="{Binding Alergens}" 
+                                AutoGenerateColumns="False" 
+                                CanUserAddRows="False" 
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedAlergen}">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Height" Value="Auto"/>
+                                    <Setter Property="MinHeight" Value="25"/>
                                 </Style>
-                            </Button.Style>
-                        </Button>
-
-                        <Button Grid.Column="2" 
-                                Content="Actualizează" 
-                                Command="{Binding UpdateAlergenCommand}" 
-                                Padding="15,8">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                    <Setter Property="IsEnabled" Value="False" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsUpdateAlergenEnabled}" Value="True">
-                                            <Setter Property="IsEnabled" Value="True" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding AlergenID}" Width="50" IsReadOnly="True"/>
+                                <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="*" IsReadOnly="True">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextWrapping" Value="Wrap"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button Content="Editează" 
+                                                        Command="{Binding DataContext.EditAlergenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding}" 
+                                                        Margin="0,0,5,0" 
+                                                        Padding="8,4"/>
+                                                <Button Content="Șterge" 
+                                                        Command="{Binding DataContext.DeleteAlergenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                                        CommandParameter="{Binding}" 
+                                                        Padding="8,4"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </Grid>
-
-                    <!-- Lista de alergeni -->
-                    <DataGrid Grid.Row="1" 
-                              ItemsSource="{Binding Alergens}" 
-                              AutoGenerateColumns="False" 
-                              CanUserAddRows="False" 
-                              SelectionMode="Single"
-                              SelectedItem="{Binding SelectedAlergen}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding AlergenID}" Width="50" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Nume" Binding="{Binding Name}" Width="*" IsReadOnly="True"/>
-                            <DataGridTemplateColumn Header="Acțiuni" Width="Auto">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button Content="Editează" 
-                                                    Command="{Binding DataContext.EditAlergenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                    CommandParameter="{Binding}" 
-                                                    Margin="0,0,5,0" 
-                                                    Padding="8,4"/>
-                                            <Button Content="Șterge" 
-                                                    Command="{Binding DataContext.DeleteAlergenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                    CommandParameter="{Binding}" 
-                                                    Padding="8,4"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
+                </ScrollViewer>
             </TabItem>
 
+            <!-- Tab pentru Rapoarte -->
+            <!-- Tab pentru Rapoarte -->
             <!-- Tab pentru Rapoarte -->
             <TabItem Header="Rapoarte">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
@@ -868,21 +970,113 @@
                     <!-- Selecție raport -->
                     <StackPanel Grid.Row="0" Margin="0,0,0,15">
                         <TextBlock Text="Selectați tipul de raport:" 
-                                   FontWeight="SemiBold" 
-                                   Margin="0,0,0,5"/>
-                        <ComboBox ItemsSource="{Binding ReportTypes}" 
-                                  SelectedItem="{Binding SelectedReportType}" 
-                                  DisplayMemberPath="Name" 
-                                  Padding="10,5" 
-                                  Width="300" 
-                                  HorizontalAlignment="Left"/>
+                       FontWeight="SemiBold" 
+                       Margin="0,0,0,5"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="300"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox Grid.Column="0"
+                          ItemsSource="{Binding ReportTypes}" 
+                          SelectedItem="{Binding SelectedReportType}" 
+                          DisplayMemberPath="Name" 
+                          Padding="10,5"/>
+
+                            <Button Grid.Column="1"
+                        Content="Generează raport" 
+                        Command="{Binding GenerateReportCommand}"
+                        Margin="10,0,0,0"
+                        Padding="10,5"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Filtre pentru raport (vizibile doar pentru anumite rapoarte) -->
+                    <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ShowReportFilters}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <Border BorderBrush="#E0E0E0" BorderThickness="1" Padding="10" CornerRadius="3">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Filtre pentru raportul "Comenzi per zi" -->
+                                <TextBlock Grid.Row="0" Grid.Column="0" 
+                               Text="Data început:" 
+                               Margin="0,0,10,0"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding IsOrdersReportSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <DatePicker Grid.Row="0" Grid.Column="1" 
+                                SelectedDate="{Binding ReportStartDate}"
+                                Margin="0,0,0,5"
+                                Visibility="{Binding IsOrdersReportSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" 
+                               Text="Data sfârșit:" 
+                               Margin="0,0,10,0"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding IsOrdersReportSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <DatePicker Grid.Row="1" Grid.Column="1" 
+                                SelectedDate="{Binding ReportEndDate}"
+                                Visibility="{Binding IsOrdersReportSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                <!-- Filtre pentru raportul "Produse cu stoc redus" -->
+                                <TextBlock Grid.Row="0" Grid.Column="0" 
+                               Text="Prag stoc minim:" 
+                               Margin="0,0,10,0"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding IsLowStockReportSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" 
+                             Text="{Binding LowStockThreshold, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,0,5"
+                             Visibility="{Binding IsLowStockReportSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                <!-- Filtre pentru raportul "Produse populare" -->
+                                <TextBlock Grid.Row="0" Grid.Column="0" 
+                               Text="Număr produse:" 
+                               Margin="0,0,10,0"
+                               VerticalAlignment="Center"
+                               Visibility="{Binding IsPopularProductsReportSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" 
+                             Text="{Binding TopProductsCount, UpdateSourceTrigger=PropertyChanged}"
+                             Margin="0,0,0,5"
+                             Visibility="{Binding IsPopularProductsReportSelected, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </Grid>
+                        </Border>
                     </StackPanel>
 
                     <!-- Conținut raport -->
-                    <Grid Grid.Row="1">
+                    <Grid Grid.Row="2">
+                        <!-- Indicator de încărcare -->
+                        <Grid Visibility="{Binding IsReportLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Rectangle Fill="#80FFFFFF" />
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <ProgressBar IsIndeterminate="True" Width="100" Height="4" Margin="0,0,0,10"/>
+                                <TextBlock Text="Se generează raportul..." HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- DataGrid pentru rapoarte -->
                         <DataGrid AutoGenerateColumns="True" 
-                                  ItemsSource="{Binding ReportData}" 
-                                  IsReadOnly="True">
+                      ItemsSource="{Binding ReportData}" 
+                      IsReadOnly="True">
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -895,10 +1089,11 @@
                             </DataGrid.Style>
                         </DataGrid>
 
-                        <TextBlock Text="Selectați un tip de raport pentru a-l genera" 
-                                   HorizontalAlignment="Center" 
-                                   VerticalAlignment="Center" 
-                                   Opacity="0.7">
+                        <!-- Mesaj când nu există date -->
+                        <TextBlock Text="Selectați un tip de raport și apăsați butonul 'Generează raport'" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       Opacity="0.7">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -913,7 +1108,8 @@
                     </Grid>
                 </Grid>
             </TabItem>
+
         </TabControl>
     </Grid>
-    
+
 </UserControl>

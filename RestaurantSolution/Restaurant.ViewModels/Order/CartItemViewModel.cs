@@ -19,6 +19,7 @@ namespace Restaurant.ViewModels.Order
         public decimal UnitPrice { get; set; }
         public string UnitPriceFormatted { get; set; }
 
+
         public int Quantity
         {
             get => _quantity;

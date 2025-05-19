@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 using Restaurant.Domain.Entities;
 using Restaurant.Domain.Enums;
@@ -9,6 +10,7 @@ using Restaurant.ViewModels.Order;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,6 +32,73 @@ namespace Restaurant.ViewModels.Admin
         private readonly IServiceProvider _serviceProvider;
 
         #endregion
+
+        private bool _showReportFilters;
+        private bool _isLowStockReportSelected;
+        private bool _isOrdersReportSelected;
+        private bool _isPopularProductsReportSelected;
+        private bool _isReportLoading;
+        private DateTime _reportStartDate;
+        private DateTime _reportEndDate;
+        private int _lowStockThreshold = 5;
+        private int _topProductsCount = 20;
+
+
+        public bool ShowReportFilters
+        {
+            get => _showReportFilters;
+            set => SetProperty(ref _showReportFilters, value);
+        }
+
+        public bool IsLowStockReportSelected
+        {
+            get => _isLowStockReportSelected;
+            set => SetProperty(ref _isLowStockReportSelected, value);
+        }
+
+        public bool IsOrdersReportSelected
+        {
+            get => _isOrdersReportSelected;
+            set => SetProperty(ref _isOrdersReportSelected, value);
+        }
+
+        public bool IsPopularProductsReportSelected
+        {
+            get => _isPopularProductsReportSelected;
+            set => SetProperty(ref _isPopularProductsReportSelected, value);
+        }
+
+        public bool IsReportLoading
+        {
+            get => _isReportLoading;
+            set => SetProperty(ref _isReportLoading, value);
+        }
+
+        public DateTime ReportStartDate
+        {
+            get => _reportStartDate;
+            set => SetProperty(ref _reportStartDate, value);
+        }
+
+        public DateTime ReportEndDate
+        {
+            get => _reportEndDate;
+            set => SetProperty(ref _reportEndDate, value);
+        }
+
+        public int LowStockThreshold
+        {
+            get => _lowStockThreshold;
+            set => SetProperty(ref _lowStockThreshold, value);
+        }
+
+        public int TopProductsCount
+        {
+            get => _topProductsCount;
+            set => SetProperty(ref _topProductsCount, value);
+        }
+
+        public ICommand GenerateReportCommand { get; }
 
         #region Collections
 
@@ -275,18 +344,7 @@ namespace Restaurant.ViewModels.Admin
             set => SetProperty(ref _selectedOrder, value);
         }
 
-        public ReportType SelectedReportType
-        {
-            get => _selectedReportType;
-            set
-            {
-                SetProperty(ref _selectedReportType, value);
-                if (value != null)
-                {
-                    GenerateReport(value);
-                }
-            }
-        }
+        
 
         public string CategoryName
         {
@@ -702,7 +760,22 @@ namespace Restaurant.ViewModels.Admin
 
             return true;
         }
-
+        public ReportType SelectedReportType
+        {
+            get => _selectedReportType;
+            set
+            {
+                if (SetProperty(ref _selectedReportType, value))
+                {
+                    OnReportTypeSelected(value);
+                    // Only call GenerateReport if value is not null
+                    if (value != null)
+                    {
+                        GenerateSelectedReport();
+                    }
+                }
+            }
+        }
         // Metoda care se apelează când se face click pe butonul "Adaugă Preparat Nou"
         private void AddNewPreparat()
         {
@@ -829,6 +902,24 @@ namespace Restaurant.ViewModels.Admin
             UpdateOrderStatusCommand = new RelayCommand(parameter => UpdateOrderStatus(parameter as OrderViewModel));
 
             ShowLowStockCommand = new RelayCommand(_ => ShowLowStockItems());
+            GenerateReportCommand = new RelayCommand(_ => GenerateSelectedReport());
+
+            // Initialize report dates
+            ReportStartDate = DateTime.Now.AddMonths(-1);
+            ReportEndDate = DateTime.Now;
+
+            // Initialize report types if not already done
+            if (ReportTypes == null)
+            {
+                ReportTypes = new ObservableCollection<ReportType>
+    {
+        new ReportType { Id = 1, Name = "Produse cu stoc redus" },
+        new ReportType { Id = 2, Name = "Comenzi per zi" },
+        new ReportType { Id = 3, Name = "Produse populare" },
+        new ReportType { Id = 4, Name = "Venituri per categorie" }
+    };
+            }
+
 
 
             AddPreparatModeCommand = new RelayCommand(_ => EnterAddPreparatMode());
@@ -852,6 +943,231 @@ namespace Restaurant.ViewModels.Admin
 
         #endregion
 
+
+         
+        
+
+        private void OnReportTypeSelected(ReportType reportType)
+        {
+            if (reportType == null)
+                return;
+
+            // Reset the report filter flags
+            IsLowStockReportSelected = false;
+            IsOrdersReportSelected = false;
+            IsPopularProductsReportSelected = false;
+
+            // Set the appropriate flag based on the selected report type
+            switch (reportType.Id)
+            {
+                case 1: // Low stock products
+                    IsLowStockReportSelected = true;
+                    ShowReportFilters = true;
+                    break;
+                case 2: // Orders per day
+                    IsOrdersReportSelected = true;
+                    ShowReportFilters = true;
+                    break;
+                case 3: // Popular products
+                    IsPopularProductsReportSelected = true;
+                    ShowReportFilters = true;
+                    break;
+                case 4: // Revenue per category
+                    ShowReportFilters = false;
+                    break;
+                default:
+                    ShowReportFilters = false;
+                    break;
+            }
+        }
+
+        private async void GenerateSelectedReport()
+        {
+            if (SelectedReportType == null)
+                return;
+
+            try
+            {
+                IsReportLoading = true;
+                ReportData.Clear();
+
+                switch (SelectedReportType.Id)
+                {
+                    case 1: // Low stock products
+                        await GenerateLowStockReportFromDatabase();
+                        break;
+                    case 2: // Orders per day
+                        await GenerateOrdersPerDayReportFromDatabase();
+                        break;
+                    case 3: // Popular products
+                        await GeneratePopularProductsReportFromDatabase();
+                        break;
+                    case 4: // Revenue per category
+                        await GenerateRevenuePerCategoryReportFromDatabase();
+                        break;
+                }
+
+                HasReportData = ReportData.Count > 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la generarea raportului: {ex.Message}", "Eroare",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                HasReportData = false;
+            }
+            finally
+            {
+                IsReportLoading = false;
+            }
+        }
+
+        private async Task GenerateLowStockReportFromDatabase()
+        {
+            await Task.Run(() =>
+            {
+                using (var connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("spReportLowStockProducts", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@LowStockThreshold", LowStockThreshold);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var item = new LowStockItemViewModel
+                                {
+                                    ProductName = reader["ProductName"].ToString(),
+                                    CurrentStock = Convert.ToInt32(reader["CurrentStock"]),
+                                    Category = reader["Category"].ToString(),
+                                    Status = reader["Status"].ToString()
+                                };
+
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    ReportData.Add(item);
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        private async Task GenerateOrdersPerDayReportFromDatabase()
+        {
+            await Task.Run(() =>
+            {
+                using (var connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("spReportOrdersPerDay", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@StartDate", ReportStartDate);
+                        command.Parameters.AddWithValue("@EndDate", ReportEndDate);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var item = new OrdersPerDayViewModel
+                                {
+                                    Date = Convert.ToDateTime(reader["Date"]),
+                                    DateFormatted = reader["DateFormatted"].ToString(),
+                                    OrderCount = Convert.ToInt32(reader["OrderCount"]),
+                                    TotalValue = Convert.ToDecimal(reader["TotalValue"]),
+                                    TotalValueFormatted = reader["TotalValueFormatted"].ToString()
+                                };
+
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    ReportData.Add(item);
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        private async Task GeneratePopularProductsReportFromDatabase()
+        {
+            await Task.Run(() =>
+            {
+                using (var connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("spReportPopularProducts", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@TopCount", TopProductsCount);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var item = new PopularProductViewModel
+                                {
+                                    ProductName = reader["ProductName"].ToString(),
+                                    OrderCount = Convert.ToInt32(reader["OrderCount"]),
+                                    TotalQuantity = Convert.ToInt32(reader["TotalQuantity"]),
+                                    Revenue = Convert.ToDecimal(reader["Revenue"]),
+                                    RevenueFormatted = reader["RevenueFormatted"].ToString()
+                                };
+
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    ReportData.Add(item);
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        private async Task GenerateRevenuePerCategoryReportFromDatabase()
+        {
+            await Task.Run(() =>
+            {
+                using (var connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand("spReportRevenuePerCategory", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                var item = new RevenuePerCategoryViewModel
+                                {
+                                    CategoryName = reader["CategoryName"].ToString(),
+                                    OrderCount = Convert.ToInt32(reader["OrderCount"]),
+                                    Revenue = Convert.ToDecimal(reader["Revenue"]),
+                                    RevenueFormatted = reader["RevenueFormatted"].ToString(),
+                                    PercentageOfTotal = Convert.ToDecimal(reader["PercentageOfTotal"])
+                                };
+
+                                Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    ReportData.Add(item);
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        private string GetConnectionString()
+        {
+            return System.Configuration.ConfigurationManager.ConnectionStrings["RestaurantDb"].ConnectionString;
+        }
 
         private void AddNewMenu()
         {
@@ -1365,38 +1681,7 @@ namespace Restaurant.ViewModels.Admin
 
         #region Report Operations
 
-        private void GenerateReport(ReportType reportType)
-        {
-            try
-            {
-                ReportData.Clear();
-
-                switch (reportType.Id)
-                {
-                    case 1: // Produse cu stoc redus
-                        GenerateLowStockReport();
-                        break;
-                    case 2: // Comenzi per zi
-                        GenerateOrdersPerDayReport();
-                        break;
-                    case 3: // Produse populare
-                        GeneratePopularProductsReport();
-                        break;
-                    case 4: // Venituri per categorie
-                        GenerateRevenuePerCategoryReport();
-                        break;
-                    default:
-                        MessageBox.Show($"Tipul de raport '{reportType.Name}' nu este implementat.",
-                            "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la generarea raportului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
+        
         private void ShowLowStockItems()
         {
             try
