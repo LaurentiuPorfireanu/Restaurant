@@ -18,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -38,19 +38,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AdminPanelViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "RelativeToolTip": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "ViewState": "AgIAAPQDAAAAAAAAAADwvwsEAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-19T19:30:00.289Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "AdminPanelView.xaml",
               "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\AdminPanelView.xaml",
@@ -58,7 +45,20 @@
               "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\AdminPanelView.xaml",
               "RelativeToolTip": "Restaurant.UI\\Views\\AdminPanelView.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-05-19T19:27:14.727Z",
+              "WhenOpened": "2025-05-19T20:07:37.325Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminPanelViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
+              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
+              "RelativeToolTip": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
+              "ViewState": "AgIAAJUEAAAAAAAAAAApwLUEAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-19T19:30:00.289Z",
               "EditorCaption": ""
             }
           ]

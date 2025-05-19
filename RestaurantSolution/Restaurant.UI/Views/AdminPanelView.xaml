@@ -71,7 +71,7 @@
         </Grid>
 
         <!-- Tab Control cu opțiuni administrare -->
-        <TabControl Grid.Row="1" TabStripPlacement="Top">
+        <TabControl Grid.Row="1" TabStripPlacement="Top" SelectedIndex="{Binding SelectedTabIndex}">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Height" Value="Auto"/>
@@ -205,11 +205,6 @@
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Button Content="Editează" 
-                                                            Command="{Binding DataContext.EditPreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
-                                                            CommandParameter="{Binding}" 
-                                                            Margin="0,0,5,0" 
-                                                            Padding="8,4"/>
                                                     <Button Content="Șterge" 
                                                             Command="{Binding DataContext.DeletePreparatCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" 
                                                             CommandParameter="{Binding}" 
@@ -498,11 +493,6 @@
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Button Content="Editează" 
-                                                        Command="{Binding DataContext.EditMenuCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                                        CommandParameter="{Binding}"
-                                                        Margin="0,0,5,0"
-                                                        Padding="8,4"/>
                                                     <Button Content="Șterge" 
                                                         Command="{Binding DataContext.DeleteMenuCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                         CommandParameter="{Binding}"
@@ -959,6 +949,7 @@
             <!-- Tab pentru Rapoarte -->
             <!-- Tab pentru Rapoarte -->
             <!-- Tab pentru Rapoarte -->
+            <!-- Tab pentru Rapoarte -->
             <TabItem Header="Rapoarte">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
@@ -1073,10 +1064,10 @@
                             </StackPanel>
                         </Grid>
 
-                        <!-- DataGrid pentru rapoarte -->
-                        <DataGrid AutoGenerateColumns="True" 
-                      ItemsSource="{Binding ReportData}" 
-                      IsReadOnly="True">
+                        <!-- DataGrid pentru rapoarte - IMPORTANT CHANGE HERE -->
+                        <DataGrid ItemsSource="{Binding ReportData}" 
+                      IsReadOnly="True"
+                      AutoGenerateColumns="True">
                             <DataGrid.Style>
                                 <Style TargetType="DataGrid">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -1108,6 +1099,8 @@
                     </Grid>
                 </Grid>
             </TabItem>
+
+
 
         </TabControl>
     </Grid>

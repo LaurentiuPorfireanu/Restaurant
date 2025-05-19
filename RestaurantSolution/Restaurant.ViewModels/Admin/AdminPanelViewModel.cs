@@ -293,8 +293,11 @@ namespace Restaurant.ViewModels.Admin
             get => _reportData;
             set
             {
-                SetProperty(ref _reportData, value);
-                HasReportData = value != null && value.Count > 0;
+                // Instead of just setting the property, create a new ObservableCollection
+                // This will force the DataGrid to completely re-evaluate and refresh
+                _reportData = new ObservableCollection<object>(value ?? new ObservableCollection<object>());
+                OnPropertyChanged(nameof(ReportData));
+                HasReportData = _reportData != null && _reportData.Count > 0;
             }
         }
 
@@ -657,7 +660,7 @@ namespace Restaurant.ViewModels.Admin
                 }
             }
         }
-
+  
 
 
         private void AddPreparatImages()
@@ -760,14 +763,22 @@ namespace Restaurant.ViewModels.Admin
 
             return true;
         }
-        public ReportType SelectedReportType
+        
+
+// Modify the SelectedReportType property to include data clearing
+public ReportType SelectedReportType
         {
             get => _selectedReportType;
             set
             {
                 if (SetProperty(ref _selectedReportType, value))
                 {
+                    // Clear report data first
+                    ReportData.Clear();
+                    HasReportData = false;
+
                     OnReportTypeSelected(value);
+
                     // Only call GenerateReport if value is not null
                     if (value != null)
                     {
@@ -944,13 +955,18 @@ namespace Restaurant.ViewModels.Admin
         #endregion
 
 
-         
-        
 
+
+
+        // Modify the OnReportTypeSelected method in AdminPanelViewModel.cs
         private void OnReportTypeSelected(ReportType reportType)
         {
             if (reportType == null)
                 return;
+
+            // Create a completely new empty collection to force UI refresh
+            ReportData = new ObservableCollection<object>();
+            HasReportData = false;
 
             // Reset the report filter flags
             IsLowStockReportSelected = false;
@@ -981,6 +997,7 @@ namespace Restaurant.ViewModels.Admin
             }
         }
 
+
         private async void GenerateSelectedReport()
         {
             if (SelectedReportType == null)
@@ -989,30 +1006,39 @@ namespace Restaurant.ViewModels.Admin
             try
             {
                 IsReportLoading = true;
-                ReportData.Clear();
+
+                // Create a completely new collection instead of just clearing the existing one
+                ReportData = new ObservableCollection<object>();
+                HasReportData = false;
+
+                // Create a temporary collection to hold the report results
+                var tempResults = new ObservableCollection<object>();
 
                 switch (SelectedReportType.Id)
                 {
                     case 1: // Low stock products
-                        await GenerateLowStockReportFromDatabase();
+                        await GenerateLowStockReportFromDatabase(tempResults);
                         break;
                     case 2: // Orders per day
-                        await GenerateOrdersPerDayReportFromDatabase();
+                        await GenerateOrdersPerDayReportFromDatabase(tempResults);
                         break;
                     case 3: // Popular products
-                        await GeneratePopularProductsReportFromDatabase();
+                        await GeneratePopularProductsReportFromDatabase(tempResults);
                         break;
                     case 4: // Revenue per category
-                        await GenerateRevenuePerCategoryReportFromDatabase();
+                        await GenerateRevenuePerCategoryReportFromDatabase(tempResults);
                         break;
                 }
 
+                // Set the ReportData property to the new collection
+                ReportData = tempResults;
                 HasReportData = ReportData.Count > 0;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Eroare la generarea raportului: {ex.Message}", "Eroare",
                     MessageBoxButton.OK, MessageBoxImage.Error);
+                ReportData = new ObservableCollection<object>();
                 HasReportData = false;
             }
             finally
@@ -1021,7 +1047,7 @@ namespace Restaurant.ViewModels.Admin
             }
         }
 
-        private async Task GenerateLowStockReportFromDatabase()
+        private async Task GenerateLowStockReportFromDatabase(ObservableCollection<object> results)
         {
             await Task.Run(() =>
             {
@@ -1047,7 +1073,7 @@ namespace Restaurant.ViewModels.Admin
 
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    ReportData.Add(item);
+                                    results.Add(item);
                                 });
                             }
                         }
@@ -1056,7 +1082,7 @@ namespace Restaurant.ViewModels.Admin
             });
         }
 
-        private async Task GenerateOrdersPerDayReportFromDatabase()
+        private async Task GenerateOrdersPerDayReportFromDatabase(ObservableCollection<object> results)
         {
             await Task.Run(() =>
             {
@@ -1084,7 +1110,7 @@ namespace Restaurant.ViewModels.Admin
 
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    ReportData.Add(item);
+                                    results.Add(item);
                                 });
                             }
                         }
@@ -1093,7 +1119,7 @@ namespace Restaurant.ViewModels.Admin
             });
         }
 
-        private async Task GeneratePopularProductsReportFromDatabase()
+        private async Task GeneratePopularProductsReportFromDatabase(ObservableCollection<object> results)
         {
             await Task.Run(() =>
             {
@@ -1120,7 +1146,7 @@ namespace Restaurant.ViewModels.Admin
 
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    ReportData.Add(item);
+                                    results.Add(item);
                                 });
                             }
                         }
@@ -1129,7 +1155,7 @@ namespace Restaurant.ViewModels.Admin
             });
         }
 
-        private async Task GenerateRevenuePerCategoryReportFromDatabase()
+        private async Task GenerateRevenuePerCategoryReportFromDatabase(ObservableCollection<object> results)
         {
             await Task.Run(() =>
             {
@@ -1155,7 +1181,7 @@ namespace Restaurant.ViewModels.Admin
 
                                 Application.Current.Dispatcher.Invoke(() =>
                                 {
-                                    ReportData.Add(item);
+                                    results.Add(item);
                                 });
                             }
                         }
@@ -1164,6 +1190,29 @@ namespace Restaurant.ViewModels.Admin
             });
         }
 
+
+        private int _selectedTabIndex;
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set => SetProperty(ref _selectedTabIndex, value);
+        }
+
+        private void ShowLowStockItems()
+        {
+            try
+            {
+                // First, switch to the Reports tab (assuming it's the 4th tab, index 3)
+                SelectedTabIndex = 5; // Adjust this index if the Reports tab is at a different position
+
+                // Then select the "Produse cu stoc redus" report and generate it
+                SelectedReportType = ReportTypes.FirstOrDefault(r => r.Id == 1);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la afișarea produselor cu stoc redus: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         private string GetConnectionString()
         {
             return System.Configuration.ConfigurationManager.ConnectionStrings["RestaurantDb"].ConnectionString;
@@ -1682,18 +1731,7 @@ namespace Restaurant.ViewModels.Admin
         #region Report Operations
 
         
-        private void ShowLowStockItems()
-        {
-            try
-            {
-                // Selectează raportul "Produse cu stoc redus" și generează-l
-                SelectedReportType = ReportTypes.FirstOrDefault(r => r.Id == 1);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la afișarea produselor cu stoc redus: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+        
 
         private void GenerateLowStockReport()
         {
