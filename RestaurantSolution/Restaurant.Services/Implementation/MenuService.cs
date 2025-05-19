@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Transactions;
 using Restaurant.Domain.Entities;
 using Restaurant.Services.Interfaces;
 using Restaurant.DataAccess.Interfaces;
@@ -10,280 +11,379 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Restaurant.Services.Implementation
 {
-    
     public class MenuService : IMenuService
     {
         private readonly IMenuRepository _repo;
         private readonly RestaurantContext _context;
 
-       
         public MenuService(IMenuRepository repo, RestaurantContext context)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        
         public IEnumerable<Menu> GetAllMenus()
         {
-            var menus = _repo.GetAll().ToList();
-            // Încărcăm și preparatele asociate fiecărui meniu
-            foreach (var menu in menus)
+            try
             {
-                menu.MenuPreparate = _context.MenuPreparate
-                    .Where(mp => mp.MenuID == menu.MenuID)
-                    .Include(mp => mp.Preparat)
-                    .ToList();
+                System.Diagnostics.Debug.WriteLine("MenuService: GetAllMenus called");
+                var menus = _repo.GetAll().ToList();
+                System.Diagnostics.Debug.WriteLine($"MenuService: Retrieved {menus.Count} menus");
+
+                return menus;
             }
-            return menus;
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in GetAllMenus - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw; // Re-throw the exception for handling at a higher level
+            }
         }
 
         public IEnumerable<Menu> GetAllMenusWithCategories()
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("MenuService: Apel GetAllMenusWithCategories");
-                var menus = _repo.GetAllWithCategories();
-                System.Diagnostics.Debug.WriteLine($"MenuService: {menus.Count()} meniuri încărcate cu categorii");
+                System.Diagnostics.Debug.WriteLine("MenuService: GetAllMenusWithCategories called");
+                var menus = _repo.GetAllWithCategories().ToList();
+                System.Diagnostics.Debug.WriteLine($"MenuService: Retrieved {menus.Count} menus with categories");
+
                 return menus;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"MenuService: Eroare la GetAllMenusWithCategories - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in GetAllMenusWithCategories - {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                throw; // Re-aruncăm excepția pentru a fi gestionată la nivel superior
+                throw; // Re-throw the exception for handling at a higher level
             }
         }
 
         public IEnumerable<Menu> GetMenusByCategory(int categoryId)
         {
             if (categoryId <= 0)
-                throw new ArgumentException("Category ID trebuie să fie pozitiv", nameof(categoryId));
+                throw new ArgumentException("Category ID must be positive", nameof(categoryId));
 
-            var menus = _repo.GetByCategory(categoryId).ToList();
-            // Încărcăm și preparatele asociate fiecărui meniu
-            foreach (var menu in menus)
+            try
             {
-                menu.MenuPreparate = _context.MenuPreparate
-                    .Where(mp => mp.MenuID == menu.MenuID)
-                    .Include(mp => mp.Preparat)
-                    .ToList();
+                System.Diagnostics.Debug.WriteLine($"MenuService: GetMenusByCategory called with categoryId={categoryId}");
+                var menus = _repo.GetByCategory(categoryId).ToList();
+                System.Diagnostics.Debug.WriteLine($"MenuService: Retrieved {menus.Count} menus for category {categoryId}");
+
+                return menus;
             }
-            return menus;
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in GetMenusByCategory - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
-        
         public Menu GetMenuById(int menuId)
         {
             if (menuId <= 0)
-                throw new ArgumentException("Menu ID trebuie să fie pozitiv", nameof(menuId));
+                throw new ArgumentException("Menu ID must be positive", nameof(menuId));
 
-            var menu = _repo.GetById(menuId);
-            if (menu != null)
+            try
             {
-                menu.MenuPreparate = _context.MenuPreparate
-                    .Where(mp => mp.MenuID == menu.MenuID)
-                    .Include(mp => mp.Preparat)
-                    .ToList();
+                System.Diagnostics.Debug.WriteLine($"MenuService: GetMenuById called with menuId={menuId}");
+                var menu = _repo.GetById(menuId);
+
+                if (menu == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"MenuService: No menu found with ID {menuId}");
+                    return null;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"MenuService: Retrieved menu '{menu.Name}' with ID {menuId}");
+                return menu;
             }
-            return menu;
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in GetMenuById - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
-       
         public int CreateMenu(string name, int categoryId)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Denumire obligatorie", nameof(name));
+                throw new ArgumentException("Menu name is required", nameof(name));
             if (categoryId <= 0)
-                throw new ArgumentException("Categorie invalidă", nameof(categoryId));
+                throw new ArgumentException("Category ID must be positive", nameof(categoryId));
 
-            // Creăm meniul în baza de date
-            var menu = new Menu
+            try
             {
-                Name = name,
-                CategoryID = categoryId
-            };
+                System.Diagnostics.Debug.WriteLine($"MenuService: CreateMenu called with name='{name}', categoryId={categoryId}");
 
-            _context.Menus.Add(menu);
-            _context.SaveChanges();
+                // Create menu using repository
+                int menuId = _repo.Insert(name, categoryId);
 
-            return menu.MenuID;
+                System.Diagnostics.Debug.WriteLine($"MenuService: Created new menu with ID {menuId}");
+                return menuId;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in CreateMenu - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
-       
         public void UpdateMenu(int menuId, string name, int categoryId)
         {
             if (menuId <= 0)
-                throw new ArgumentException("Menu ID invalid", nameof(menuId));
+                throw new ArgumentException("Menu ID must be positive", nameof(menuId));
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Denumire obligatorie", nameof(name));
+                throw new ArgumentException("Menu name is required", nameof(name));
             if (categoryId <= 0)
-                throw new ArgumentException("Categorie invalidă", nameof(categoryId));
+                throw new ArgumentException("Category ID must be positive", nameof(categoryId));
 
-            _repo.Update(menuId, name, categoryId);
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: UpdateMenu called with menuId={menuId}, name='{name}', categoryId={categoryId}");
+
+                _repo.Update(menuId, name, categoryId);
+
+                System.Diagnostics.Debug.WriteLine($"MenuService: Updated menu with ID {menuId}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in UpdateMenu - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
-        
         public void DeleteMenu(int menuId)
         {
             if (menuId <= 0)
-                throw new ArgumentException("Menu ID invalid", nameof(menuId));
+                throw new ArgumentException("Menu ID must be positive", nameof(menuId));
 
-            // Mai întâi ștergem toate legăturile cu preparatele
-            RemoveAllPreparateFromMenu(menuId);
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: DeleteMenu called with menuId={menuId}");
 
-            // Apoi ștergem meniul
-            _repo.Delete(menuId);
+                // First, remove all menu items
+                RemoveAllPreparateFromMenu(menuId);
+
+                // Then delete the menu
+                _repo.Delete(menuId);
+
+                System.Diagnostics.Debug.WriteLine($"MenuService: Deleted menu with ID {menuId}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in DeleteMenu - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
-       
         public void AddPreparatToMenu(int menuId, int preparatId, int quantityMenuPortie)
         {
             if (menuId <= 0)
-                throw new ArgumentException("Menu ID invalid", nameof(menuId));
+                throw new ArgumentException("Menu ID must be positive", nameof(menuId));
             if (preparatId <= 0)
-                throw new ArgumentException("Preparat ID invalid", nameof(preparatId));
+                throw new ArgumentException("Preparat ID must be positive", nameof(preparatId));
             if (quantityMenuPortie <= 0)
-                throw new ArgumentException("Cantitatea trebuie să fie pozitivă", nameof(quantityMenuPortie));
+                throw new ArgumentException("Quantity must be positive", nameof(quantityMenuPortie));
 
-            // Verificăm dacă legătura există deja
-            var existing = _context.MenuPreparate
-                .FirstOrDefault(mp => mp.MenuID == menuId && mp.PreparatID == preparatId);
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: AddPreparatToMenu called with menuId={menuId}, preparatId={preparatId}, quantity={quantityMenuPortie}");
 
-            if (existing != null)
-            {
-                // Dacă există, doar actualizăm cantitatea
-                existing.QuantityMenuPortie = quantityMenuPortie;
-            }
-            else
-            {
-                // Dacă nu există, creăm o nouă înregistrare
-                var menuPreparat = new MenuPreparat
+                // Use a transaction to ensure atomicity
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    MenuID = menuId,
-                    PreparatID = preparatId,
-                    QuantityMenuPortie = quantityMenuPortie
-                };
+                    try
+                    {
+                        // Check if the item already exists in the menu
+                        var existingItem = _context.MenuPreparate
+                            .FirstOrDefault(mp => mp.MenuID == menuId && mp.PreparatID == preparatId);
 
-                _context.MenuPreparate.Add(menuPreparat);
+                        if (existingItem != null)
+                        {
+                            // Update existing item
+                            System.Diagnostics.Debug.WriteLine($"MenuService: Updating existing menu item with new quantity {quantityMenuPortie}");
+                            existingItem.QuantityMenuPortie = quantityMenuPortie;
+                            _context.SaveChanges();
+                        }
+                        else
+                        {
+                            // Add new item through repository
+                            System.Diagnostics.Debug.WriteLine($"MenuService: Adding new menu item with quantity {quantityMenuPortie}");
+                            _repo.AddPreparat(menuId, preparatId, quantityMenuPortie);
+                        }
+
+                        transaction.Commit();
+                        System.Diagnostics.Debug.WriteLine($"MenuService: Successfully added/updated preparat {preparatId} to menu {menuId}");
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        System.Diagnostics.Debug.WriteLine($"MenuService: Transaction rolled back due to error: {ex.Message}");
+                        throw;
+                    }
+                }
             }
-
-            _context.SaveChanges();
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in AddPreparatToMenu - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
-        
         public void RemovePreparatFromMenu(int menuId, int preparatId)
         {
             if (menuId <= 0)
-                throw new ArgumentException("Menu ID invalid", nameof(menuId));
+                throw new ArgumentException("Menu ID must be positive", nameof(menuId));
             if (preparatId <= 0)
-                throw new ArgumentException("Preparat ID invalid", nameof(preparatId));
+                throw new ArgumentException("Preparat ID must be positive", nameof(preparatId));
 
-            var menuPreparat = _context.MenuPreparate
-                .FirstOrDefault(mp => mp.MenuID == menuId && mp.PreparatID == preparatId);
-
-            if (menuPreparat != null)
+            try
             {
-                _context.MenuPreparate.Remove(menuPreparat);
-                _context.SaveChanges();
+                System.Diagnostics.Debug.WriteLine($"MenuService: RemovePreparatFromMenu called with menuId={menuId}, preparatId={preparatId}");
+
+                _repo.RemovePreparat(menuId, preparatId);
+
+                System.Diagnostics.Debug.WriteLine($"MenuService: Removed preparat {preparatId} from menu {menuId}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in RemovePreparatFromMenu - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
             }
         }
 
-       
         public void RemoveAllPreparateFromMenu(int menuId)
         {
             if (menuId <= 0)
-                throw new ArgumentException("Menu ID invalid", nameof(menuId));
+                throw new ArgumentException("Menu ID must be positive", nameof(menuId));
 
-            var menuPreparate = _context.MenuPreparate
-                .Where(mp => mp.MenuID == menuId)
-                .ToList();
-
-            if (menuPreparate.Any())
+            try
             {
-                _context.MenuPreparate.RemoveRange(menuPreparate);
-                _context.SaveChanges();
+                System.Diagnostics.Debug.WriteLine($"MenuService: RemoveAllPreparateFromMenu called with menuId={menuId}");
+
+                _repo.RemoveAllPreparate(menuId);
+
+                System.Diagnostics.Debug.WriteLine($"MenuService: Removed all preparate from menu {menuId}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in RemoveAllPreparateFromMenu - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
             }
         }
 
-       
         public decimal CalculateMenuPrice(int menuId)
         {
             if (menuId <= 0)
-                throw new ArgumentException("Menu ID invalid", nameof(menuId));
+                throw new ArgumentException("Menu ID must be positive", nameof(menuId));
 
-            // Citim procentajul de discount direct din configurare
-            decimal discountPercentage = 10; // Valoare implicită
-
-            string configDiscount = ConfigurationManager.AppSettings["MenuDiscountPercentage"];
-            if (!string.IsNullOrEmpty(configDiscount) && decimal.TryParse(configDiscount, out decimal discountValue))
+            try
             {
-                discountPercentage = discountValue;
-                System.Diagnostics.Debug.WriteLine($"Discount-ul citit din configurare: {discountValue}%");
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine($"Se folosește discount-ul implicit: {discountPercentage}%");
-            }
+                System.Diagnostics.Debug.WriteLine($"MenuService: CalculateMenuPrice called with menuId={menuId}");
 
-            // Obținem toate preparatele din meniu și calculăm prețul total
-            var menuPreparate = _context.MenuPreparate
-                .Where(mp => mp.MenuID == menuId)
-                .Include(mp => mp.Preparat)
-                .ToList();
+                // Get discount percentage from configuration
+                decimal discountPercentage = 10; // Default value
 
-            if (!menuPreparate.Any())
-                return 0;
-
-            // Calculăm suma prețurilor preparatelor
-            decimal totalPrice = 0;
-            foreach (var mp in menuPreparate)
-            {
-                if (mp.Preparat != null)
+                string configDiscount = ConfigurationManager.AppSettings["MenuDiscountPercentage"];
+                if (!string.IsNullOrEmpty(configDiscount) && decimal.TryParse(configDiscount, out decimal discountValue))
                 {
-                    totalPrice += mp.Preparat.Price;
+                    discountPercentage = discountValue;
+                    System.Diagnostics.Debug.WriteLine($"MenuService: Using discount from configuration: {discountValue}%");
                 }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"MenuService: Using default discount: {discountPercentage}%");
+                }
+
+                // Get menu items
+                var menuItems = _context.MenuPreparate
+                    .Where(mp => mp.MenuID == menuId)
+                    .Include(mp => mp.Preparat)
+                    .ToList();
+
+                if (!menuItems.Any())
+                {
+                    System.Diagnostics.Debug.WriteLine($"MenuService: No items found for menu {menuId}, returning 0");
+                    return 0;
+                }
+
+                // Calculate total price
+                decimal totalPrice = 0;
+                foreach (var item in menuItems)
+                {
+                    if (item.Preparat != null)
+                    {
+                        totalPrice += item.Preparat.Price;
+                    }
+                }
+
+                // Apply discount
+                decimal finalPrice = Math.Round(totalPrice * (1 - discountPercentage / 100), 2);
+
+                System.Diagnostics.Debug.WriteLine($"MenuService: Calculated price for menu {menuId}: {finalPrice} Lei (Original: {totalPrice} Lei, Discount: {discountPercentage}%)");
+                return finalPrice;
             }
-
-            // Aplicăm reducerea
-            decimal discount = totalPrice * (discountPercentage / 100);
-            decimal finalPrice = totalPrice - discount;
-
-            return Math.Round(finalPrice, 2);
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in CalculateMenuPrice - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
 
-       
         public decimal CalculateMenuPrice(int menuId, decimal discountPercentage)
         {
             if (menuId <= 0)
-                throw new ArgumentException("Menu ID invalid", nameof(menuId));
+                throw new ArgumentException("Menu ID must be positive", nameof(menuId));
             if (discountPercentage < 0 || discountPercentage > 100)
-                throw new ArgumentException("Procentajul de reducere trebuie să fie între 0 și 100", nameof(discountPercentage));
+                throw new ArgumentException("Discount percentage must be between 0 and 100", nameof(discountPercentage));
 
-            // Obținem toate preparatele din meniu și calculăm prețul total
-            var menuPreparate = _context.MenuPreparate
-                .Where(mp => mp.MenuID == menuId)
-                .Include(mp => mp.Preparat)
-                .ToList();
-
-            if (!menuPreparate.Any())
-                return 0;
-
-            // Calculăm suma prețurilor preparatelor
-            decimal totalPrice = 0;
-            foreach (var mp in menuPreparate)
+            try
             {
-                if (mp.Preparat != null)
+                System.Diagnostics.Debug.WriteLine($"MenuService: CalculateMenuPrice called with menuId={menuId}, discountPercentage={discountPercentage}");
+
+                // Get menu items
+                var menuItems = _context.MenuPreparate
+                    .Where(mp => mp.MenuID == menuId)
+                    .Include(mp => mp.Preparat)
+                    .ToList();
+
+                if (!menuItems.Any())
                 {
-                    totalPrice += mp.Preparat.Price;
+                    System.Diagnostics.Debug.WriteLine($"MenuService: No items found for menu {menuId}, returning 0");
+                    return 0;
                 }
+
+                // Calculate total price
+                decimal totalPrice = 0;
+                foreach (var item in menuItems)
+                {
+                    if (item.Preparat != null)
+                    {
+                        totalPrice += item.Preparat.Price;
+                    }
+                }
+
+                // Apply discount
+                decimal finalPrice = Math.Round(totalPrice * (1 - discountPercentage / 100), 2);
+
+                System.Diagnostics.Debug.WriteLine($"MenuService: Calculated price for menu {menuId}: {finalPrice} Lei (Original: {totalPrice} Lei, Discount: {discountPercentage}%)");
+                return finalPrice;
             }
-
-            // Aplicăm reducerea
-            decimal discount = totalPrice * (discountPercentage / 100);
-            decimal finalPrice = totalPrice - discount;
-
-            return Math.Round(finalPrice, 2);
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MenuService: Error in CalculateMenuPrice with discount - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                throw;
+            }
         }
     }
 }

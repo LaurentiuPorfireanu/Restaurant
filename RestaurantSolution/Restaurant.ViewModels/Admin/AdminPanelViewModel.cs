@@ -865,22 +865,49 @@ namespace Restaurant.ViewModels.Admin
         private void EditMenu(MenuViewModel menuViewModel)
         {
             if (menuViewModel == null)
+            {
+                System.Diagnostics.Debug.WriteLine("AdminPanelViewModel: EditMenu called with null menuViewModel");
                 return;
+            }
 
-            // Obține meniul original din baza de date pentru a avea toate datele complete
-            var menuId = menuViewModel.MenuID; // Sau menuViewModel.Menu.MenuID dacă MenuViewModel încapsulează un obiect Menu
-            var menu = _menuService.GetMenuById(menuId);
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"AdminPanelViewModel: EditMenu called for menu ID: {menuViewModel.MenuID}, Name: {menuViewModel.Name}");
 
-            if (menu == null)
-                return;
+                // Obține meniul original din baza de date pentru a avea toate datele complete
+                var menuId = menuViewModel.MenuID;
+                var menu = _menuService.GetMenuById(menuId);
 
-            MenuManagement.Initialize(menu);
-            MenuManagement.IsEditMode = true;
+                if (menu == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"AdminPanelViewModel: Failed to load menu with ID {menuId} from database");
+                    MessageBox.Show("Nu s-a putut încărca meniul pentru editare.", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-            // Adăugăm handler pentru evenimentul CancelRequested
-            MenuManagement.CancelRequested += MenuManagement_CancelRequested;
+                System.Diagnostics.Debug.WriteLine($"AdminPanelViewModel: Menu loaded successfully from database: {menu.Name}");
+                System.Diagnostics.Debug.WriteLine($"AdminPanelViewModel: Category: {menu.Category?.Name ?? "null"}");
+                System.Diagnostics.Debug.WriteLine($"AdminPanelViewModel: Menu items count: {menu.MenuPreparate?.Count ?? 0}");
+
+                // Eliminăm orice abonament existent pentru a evita dublarea lor
+                MenuManagement.CancelRequested -= MenuManagement_CancelRequested;
+
+                // Adăugăm noul handler
+                MenuManagement.CancelRequested += MenuManagement_CancelRequested;
+
+                // Inițializăm formularul de editare
+                MenuManagement.Initialize(menu);
+                MenuManagement.IsEditMode = true;
+
+                System.Diagnostics.Debug.WriteLine("AdminPanelViewModel: Menu edit form initialized");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"AdminPanelViewModel: Error in EditMenu - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"AdminPanelViewModel: {ex.StackTrace}");
+                MessageBox.Show($"Eroare la încărcarea meniului pentru editare: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-
 
         private void MenuManagement_CancelRequested(object sender, EventArgs e)
         {

@@ -123,11 +123,20 @@ namespace Restaurant.ViewModels.Admin
             }
         }
 
-        public bool CanSaveMenu =>
-            !string.IsNullOrWhiteSpace(MenuName) &&
-            SelectedCategory != null &&
-            SelectedPreparate.Count >= 1 &&
-            !IsLoading;
+        public bool CanSaveMenu
+        {
+            get
+            {
+                bool nameValid = !string.IsNullOrWhiteSpace(MenuName);
+                bool categoryValid = SelectedCategory != null;
+                bool preparateValid = SelectedPreparate?.Count >= 1;
+                bool loadingValid = !IsLoading;
+
+                System.Diagnostics.Debug.WriteLine($"CanSaveMenu evaluat: nameValid={nameValid}, categoryValid={categoryValid}, preparateValid={preparateValid}, loadingValid={loadingValid}");
+
+                return nameValid && categoryValid && preparateValid && loadingValid;
+            }
+        }
 
         public ICommand AddPreparatCommand { get; }
         public ICommand RemovePreparatCommand { get; }
@@ -536,6 +545,32 @@ namespace Restaurant.ViewModels.Admin
                 OnPropertyChanged(nameof(DiscountedPrice));
                 OnPropertyChanged(nameof(CanSaveMenu));
             }
+
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Notificare explicită de proprietăți pentru UI
+                OnPropertyChanged(nameof(MenuName));
+                OnPropertyChanged(nameof(SelectedCategory));
+                OnPropertyChanged(nameof(SelectedPreparate));
+                OnPropertyChanged(nameof(AvailablePreparate));
+                OnPropertyChanged(nameof(IsAddMode));
+                OnPropertyChanged(nameof(IsEditMode));
+                OnPropertyChanged(nameof(TotalPrice));
+                OnPropertyChanged(nameof(DiscountedPrice));
+                OnPropertyChanged(nameof(CanSaveMenu));
+
+                // Forțează actualizarea comenzii
+                (SaveMenuCommand as RelayCommand)?.RaiseCanExecuteChanged();
+
+                // Debug pentru CanSaveMenu
+                System.Diagnostics.Debug.WriteLine($"CanSaveMenu după Initialize pe UI thread: {CanSaveMenu}");
+                bool nameValid = !string.IsNullOrWhiteSpace(MenuName);
+                bool categoryValid = SelectedCategory != null;
+                bool preparateValid = SelectedPreparate?.Count >= 1;
+                bool loadingValid = !IsLoading;
+                System.Diagnostics.Debug.WriteLine($"Condiții finale: nameValid={nameValid}, categoryValid={categoryValid}, preparateValid={preparateValid}, loadingValid={loadingValid}");
+            });
         }
 
       
