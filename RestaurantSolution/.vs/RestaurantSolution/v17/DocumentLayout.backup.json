@@ -5,18 +5,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\admin\\adminpanelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\admin\\adminpanelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\admin\\menumanagementviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\admin\\menumanagementviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\views\\adminpanelview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\views\\adminpanelview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{97B80865-E274-4BC3-B3AD-0BE925F80BD8}|Restaurant.Services\\Restaurant.Services.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.services\\implementation\\menuservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{97B80865-E274-4BC3-B3AD-0BE925F80BD8}|Restaurant.Services\\Restaurant.Services.csproj|solutionrelative:restaurant.services\\implementation\\menuservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -52,47 +40,9 @@
               "RelativeDocumentMoniker": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
               "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
               "RelativeToolTip": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "ViewState": "AgIAADADAAAAAAAAAAAiwDkDAABpAAAAAAAAAA==",
+              "ViewState": "AgIAAOMDAAAAAAAAAAAAAAcEAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-19T09:54:31.882Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MenuManagementViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\MenuManagementViewModel.cs",
-              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Admin\\MenuManagementViewModel.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\MenuManagementViewModel.cs",
-              "RelativeToolTip": "Restaurant.ViewModels\\Admin\\MenuManagementViewModel.cs",
-              "ViewState": "AgIAAHoAAAAAAAAAAAAzwFYBAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-19T10:04:50.879Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MenuService.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Implementation\\MenuService.cs",
-              "RelativeDocumentMoniker": "Restaurant.Services\\Implementation\\MenuService.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.Services\\Implementation\\MenuService.cs",
-              "RelativeToolTip": "Restaurant.Services\\Implementation\\MenuService.cs",
-              "ViewState": "AgIAAHMAAAAAAAAAAAAqwNYAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-19T09:58:22.459Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AdminPanelView.xaml",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "RelativeDocumentMoniker": "Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "RelativeToolTip": "Restaurant.UI\\Views\\AdminPanelView.xaml",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-05-19T09:53:07.218Z",
+              "WhenOpened": "2025-05-19T11:33:31.019Z",
               "EditorCaption": ""
             }
           ]

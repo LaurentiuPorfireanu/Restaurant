@@ -1,9 +1,10 @@
-﻿CREATE PROCEDURE spGetMenuById
+﻿CREATE OR ALTER PROCEDURE spGetMenuById
     @MenuID INT
 AS
 BEGIN
-    SELECT MenuID, Name, CategoryID
-    FROM Menu
-    WHERE MenuID = @MenuID;
+    SELECT m.MenuID, m.Name, m.CategoryID, c.Name AS CategoryName
+    FROM Menu m
+    LEFT JOIN Category c ON m.CategoryID = c.CategoryId
+    WHERE m.MenuID = @MenuID;
 END
 GO

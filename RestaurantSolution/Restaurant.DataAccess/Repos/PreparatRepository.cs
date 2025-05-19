@@ -16,9 +16,10 @@ namespace Restaurant.DataAccess.Repos
         {
             return _context.Preparate
                 .Where(p => p.CategoryID == categoryId)
-                .Include(p => p.Fotos)  // Includerea relației cu fotografiile
-                .Include(p => p.PreparatAlergens)  // Includerea relației cu alergenii
-                    .ThenInclude(pa => pa.Alergen)  // Includerea entității Alergen
+                .Include(p => p.Category)  // Important: includeți relația Category
+                .Include(p => p.Fotos)
+                .Include(p => p.PreparatAlergens)
+                    .ThenInclude(pa => pa.Alergen)
                 .AsNoTracking()
                 .ToList();
         }

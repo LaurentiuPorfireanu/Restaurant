@@ -17,8 +17,9 @@ namespace Restaurant.ViewModels
         public string Name => _menu?.Name ?? string.Empty;
         public int CategoryID => _menu?.CategoryID ?? 0;
         public Category Category => _menu?.Category;
+        public string CategoryName => Category?.Name ?? "Necunoscută";
         public ICollection<MenuPreparat> MenuPreparate => _menu?.MenuPreparate;
-        public int ItemCount => _menu?.MenuPreparate?.Count ?? 0;
+        public int MenuPreparateCount => MenuPreparate?.Count ?? 0;
 
         public Menu Menu
         {
@@ -26,16 +27,19 @@ namespace Restaurant.ViewModels
             set
             {
                 SetProperty(ref _menu, value);
-                CalculatePrice();
-                // Notificăm și proprietățile derivate
+                // Notificare pentru toate proprietățile dependente
                 OnPropertyChanged(nameof(MenuID));
                 OnPropertyChanged(nameof(Name));
                 OnPropertyChanged(nameof(CategoryID));
                 OnPropertyChanged(nameof(Category));
+                OnPropertyChanged(nameof(CategoryName));
                 OnPropertyChanged(nameof(MenuPreparate));
-                OnPropertyChanged(nameof(ItemCount));
+                OnPropertyChanged(nameof(MenuPreparateCount));
+                OnPropertyChanged(nameof(CalculatedPrice));
             }
         }
+    
+        
 
         public decimal CalculatedPrice
         {

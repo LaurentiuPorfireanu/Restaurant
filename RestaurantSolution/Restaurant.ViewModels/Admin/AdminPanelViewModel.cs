@@ -48,7 +48,7 @@ namespace Restaurant.ViewModels.Admin
         private Category _selectedCategory;
         private Preparat _selectedPreparat;
         private Alergen _selectedAlergen;
-        private Menu _selectedMenu;
+        private MenuViewModel _selectedMenu;
         private OrderViewModel _selectedOrder;
         private ReportType _selectedReportType;
 
@@ -263,7 +263,7 @@ namespace Restaurant.ViewModels.Admin
             }
         }
 
-        public Menu SelectedMenu
+        public MenuViewModel SelectedMenu
         {
             get => _selectedMenu;
             set => SetProperty(ref _selectedMenu, value);
@@ -857,6 +857,9 @@ namespace Restaurant.ViewModels.Admin
         {
             MenuManagement.Initialize(); // Inițializăm formularul pentru un meniu nou
             MenuManagement.IsAddMode = true;
+
+            // Adăugăm handler pentru evenimentul CancelRequested
+            MenuManagement.CancelRequested += MenuManagement_CancelRequested;
         }
 
         private void EditMenu(MenuViewModel menuViewModel)
@@ -865,14 +868,32 @@ namespace Restaurant.ViewModels.Admin
                 return;
 
             // Obține meniul original din baza de date pentru a avea toate datele complete
-            var menu = _menuService.GetMenuById(menuViewModel.MenuID);
+            var menuId = menuViewModel.MenuID; // Sau menuViewModel.Menu.MenuID dacă MenuViewModel încapsulează un obiect Menu
+            var menu = _menuService.GetMenuById(menuId);
+
             if (menu == null)
                 return;
 
             MenuManagement.Initialize(menu);
             MenuManagement.IsEditMode = true;
+
+            // Adăugăm handler pentru evenimentul CancelRequested
+            MenuManagement.CancelRequested += MenuManagement_CancelRequested;
         }
 
+
+        private void MenuManagement_CancelRequested(object sender, EventArgs e)
+        {
+            // Eliminăm handler-ul pentru a evita multiple subscriptions
+            MenuManagement.CancelRequested -= MenuManagement_CancelRequested;
+
+            // Resetăm proprietatea pentru a reveni la pagina cu lista de meniuri
+            MenuManagement.IsAddMode = false;
+            MenuManagement.IsEditMode = false;
+
+            // Reîncărcăm lista de meniuri pentru a ne asigura că este actualizată
+            LoadMenus();
+        }
         private void DeleteMenu(MenuViewModel menuViewModel)
         {
             if (menuViewModel == null)
@@ -888,7 +909,8 @@ namespace Restaurant.ViewModels.Admin
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    _menuService.DeleteMenu(menuViewModel.MenuID);
+                    var menuId = menuViewModel.MenuID; // Sau menuViewModel.Menu.MenuID
+                    _menuService.DeleteMenu(menuId);
                     LoadMenus(); // Reîncărcăm lista de meniuri
                     MessageBox.Show("Meniul a fost șters cu succes!", "Succes",
                         MessageBoxButton.OK, MessageBoxImage.Information);
@@ -979,7 +1001,9 @@ namespace Restaurant.ViewModels.Admin
         {
             try
             {
-                var menus = _menuService.GetAllMenus();
+                System.Diagnostics.Debug.WriteLine("Începe încărcarea meniurilor...");
+
+                var menus = _menuService.GetAllMenus(); // Sau GetAllMenusWithCategories() dacă ați implementat-o
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     Menus.Clear();
@@ -987,16 +1011,26 @@ namespace Restaurant.ViewModels.Admin
                     {
                         var menuVm = new MenuViewModel();
                         menuVm.Menu = menu;
+
+                        // Calcularea prețului pentru meniu (cu reducerea din configurare)
+                        decimal calculatedPrice = _menuService.CalculateMenuPrice(menu.MenuID);
+                        menuVm.CalculatedPrice = calculatedPrice;
+
                         Menus.Add(menuVm);
                     }
+
+                    System.Diagnostics.Debug.WriteLine($"Meniuri încărcate: {Menus.Count}");
                 });
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Eroare la încărcarea meniurilor: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 MessageBox.Show($"Eroare la încărcarea meniurilor: {ex.Message}", "Eroare",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
 
         private void LoadOrders()
         {

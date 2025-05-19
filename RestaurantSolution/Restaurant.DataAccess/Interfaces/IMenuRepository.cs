@@ -8,11 +8,11 @@ namespace Restaurant.DataAccess.Interfaces
         IEnumerable<Menu> GetAll();
         IEnumerable<Menu> GetByCategory(int categoryId);
         Menu GetById(int menuId);
-        void Insert(string name, int categoryId);
+        int Insert(string name, int categoryId);
         void Update(int menuId, string name, int categoryId);
         void Delete(int menuId);
 
-
+        public IEnumerable<Menu> GetAllWithCategories();
         void AddPreparat(int menuId, int preparatId, int quantityMenuPortie);
         void RemovePreparat(int menuId, int preparatId);
         void RemoveAllPreparate(int menuId);
