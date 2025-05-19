@@ -36,7 +36,7 @@ namespace Restaurant.ViewModels.Admin
         private ObservableCollection<Category> _categories;
         private ObservableCollection<Preparat> _preparate;
         private ObservableCollection<Alergen> _alergens;
-        private ObservableCollection<Menu> _menus;
+        private ObservableCollection<MenuViewModel> _menus;
         private ObservableCollection<OrderViewModel> _orders;
         private ObservableCollection<ReportType> _reportTypes;
         private ObservableCollection<object> _reportData;
@@ -169,6 +169,18 @@ namespace Restaurant.ViewModels.Admin
 
         #endregion
 
+        private MenuManagementViewModel _menuManagement;
+
+        public MenuManagementViewModel MenuManagement
+        {
+            get => _menuManagement;
+            set => SetProperty(ref _menuManagement, value);
+        }
+
+        public ICommand AddNewMenuCommand { get; }
+        public ICommand EditMenuCommand { get; }
+        public ICommand DeleteMenuCommand { get; }
+
         #region Properties
 
         public ObservableCollection<Category> Categories
@@ -189,7 +201,7 @@ namespace Restaurant.ViewModels.Admin
             set => SetProperty(ref _alergens, value);
         }
 
-        public ObservableCollection<Menu> Menus
+        public ObservableCollection<MenuViewModel> Menus
         {
             get => _menus;
             set => SetProperty(ref _menus, value);
@@ -380,10 +392,6 @@ namespace Restaurant.ViewModels.Admin
         public ICommand AddNewPreparatCommand { get; }
         public ICommand EditPreparatCommand { get; }
         public ICommand DeletePreparatCommand { get; }
-
-        public ICommand AddNewMenuCommand { get; }
-        public ICommand EditMenuCommand { get; }
-        public ICommand DeleteMenuCommand { get; }
 
         public ICommand ViewOrderDetailsCommand { get; }
         public ICommand UpdateOrderStatusCommand { get; }
@@ -786,12 +794,13 @@ namespace Restaurant.ViewModels.Admin
             _menuService = menuService ?? throw new ArgumentNullException(nameof(menuService));
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-           
+
             // Initialize Collections
+            MenuManagement = new MenuManagementViewModel(menuService, categoryService, preparatService);
             Categories = new ObservableCollection<Category>();
             Preparate = new ObservableCollection<Preparat>();
             Alergens = new ObservableCollection<Alergen>();
-            Menus = new ObservableCollection<Menu>();
+            Menus = new ObservableCollection<MenuViewModel>();
             Orders = new ObservableCollection<OrderViewModel>();
             ReportTypes = new ObservableCollection<ReportType>
             {
@@ -816,10 +825,6 @@ namespace Restaurant.ViewModels.Admin
 
             DeletePreparatCommand = new RelayCommand(parameter => DeletePreparat(parameter as Preparat));
 
-            AddNewMenuCommand = new RelayCommand(_ => AddNewMenu());
-            EditMenuCommand = new RelayCommand(parameter => EditMenu(parameter as Menu));
-            DeleteMenuCommand = new RelayCommand(parameter => DeleteMenu(parameter as Menu));
-
             ViewOrderDetailsCommand = new RelayCommand(parameter => ViewOrderDetails(parameter as OrderViewModel));
             UpdateOrderStatusCommand = new RelayCommand(parameter => UpdateOrderStatus(parameter as OrderViewModel));
 
@@ -833,6 +838,9 @@ namespace Restaurant.ViewModels.Admin
             RemovePreparatAlergenCommand = new RelayCommand(RemovePreparatAlergen);
             AddPreparatImagesCommand = new RelayCommand(_ => AddPreparatImages());
             RemovePreparatImageCommand = new RelayCommand(RemovePreparatImage);
+            AddNewMenuCommand = new RelayCommand(_ => AddNewMenu());
+            EditMenuCommand = new RelayCommand(param => EditMenu(param as MenuViewModel));
+            DeleteMenuCommand = new RelayCommand(param => DeleteMenu(param as MenuViewModel));
 
             PreparatAvailableAlergens = new ObservableCollection<Alergen>();
             PreparatSelectedAlergens = new ObservableCollection<Alergen>();
@@ -844,6 +852,54 @@ namespace Restaurant.ViewModels.Admin
 
         #endregion
 
+
+        private void AddNewMenu()
+        {
+            MenuManagement.Initialize(); // Inițializăm formularul pentru un meniu nou
+            MenuManagement.IsAddMode = true;
+        }
+
+        private void EditMenu(MenuViewModel menuViewModel)
+        {
+            if (menuViewModel == null)
+                return;
+
+            // Obține meniul original din baza de date pentru a avea toate datele complete
+            var menu = _menuService.GetMenuById(menuViewModel.MenuID);
+            if (menu == null)
+                return;
+
+            MenuManagement.Initialize(menu);
+            MenuManagement.IsEditMode = true;
+        }
+
+        private void DeleteMenu(MenuViewModel menuViewModel)
+        {
+            if (menuViewModel == null)
+                return;
+
+            try
+            {
+                var result = MessageBox.Show(
+                    $"Ești sigur că vrei să ștergi meniul '{menuViewModel.Name}'?",
+                    "Confirmare ștergere",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _menuService.DeleteMenu(menuViewModel.MenuID);
+                    LoadMenus(); // Reîncărcăm lista de meniuri
+                    MessageBox.Show("Meniul a fost șters cu succes!", "Succes",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la ștergerea meniului: {ex.Message}", "Eroare",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         #region Loading Methods
 
         public async Task LoadInitialDataAsync()
@@ -921,15 +977,25 @@ namespace Restaurant.ViewModels.Admin
 
         private void LoadMenus()
         {
-            var menus = _menuService.GetAllMenus();
-            Application.Current.Dispatcher.Invoke(() =>
+            try
             {
-                Menus.Clear();
-                foreach (var menu in menus)
+                var menus = _menuService.GetAllMenus();
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    Menus.Add(menu);
-                }
-            });
+                    Menus.Clear();
+                    foreach (var menu in menus)
+                    {
+                        var menuVm = new MenuViewModel();
+                        menuVm.Menu = menu;
+                        Menus.Add(menuVm);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la încărcarea meniurilor: {ex.Message}", "Eroare",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadOrders()
@@ -1168,52 +1234,6 @@ namespace Restaurant.ViewModels.Admin
 
         #endregion
 
-        #region Menu Operations
-
-        private void AddNewMenu()
-        {
-            // În producție, aici s-ar deschide un dialog/view pentru adăugarea unui meniu nou
-            MessageBox.Show("Funcționalitatea de adăugare a unui meniu nou va fi implementată într-o fereastră separată.",
-                "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void EditMenu(Menu menu)
-        {
-            if (menu == null)
-                return;
-
-            // În producție, aici s-ar deschide un dialog/view pentru editarea meniului selectat
-            MessageBox.Show($"Funcționalitatea de editare a meniului '{menu.Name}' va fi implementată într-o fereastră separată.",
-                "Informație", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void DeleteMenu(Menu menu)
-        {
-            try
-            {
-                if (menu == null)
-                    return;
-
-                var result = MessageBox.Show(
-                    $"Ești sigur că vrei să ștergi meniul '{menu.Name}'?",
-                    "Confirmare ștergere",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    _menuService.DeleteMenu(menu.MenuID);
-                    LoadMenus();
-                    MessageBox.Show("Meniul a fost șters cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la ștergerea meniului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        #endregion
 
         #region Order Operations
 

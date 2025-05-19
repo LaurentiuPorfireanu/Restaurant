@@ -64,5 +64,36 @@ namespace Restaurant.DataAccess.Repos
                 menuId);
         }
 
+
+        public void AddPreparat(int menuId, int preparatId, int quantityMenuPortie)
+        {
+            _context.Database.ExecuteSqlRaw(
+                "EXEC spInsertMenuPreparat @MenuID = {0}, @PreparatID = {1}, @QuantityMenuPortie = {2}",
+                menuId, preparatId, quantityMenuPortie);
+        }
+
+        public void RemovePreparat(int menuId, int preparatId)
+        {
+            _context.Database.ExecuteSqlRaw(
+                "EXEC spDeleteMenuPreparat @MenuID = {0}, @PreparatID = {1}",
+                menuId, preparatId);
+        }
+
+        public void RemoveAllPreparate(int menuId)
+        {
+            _context.Database.ExecuteSqlRaw(
+                "EXEC spDeleteAllMenuPreparate @MenuID = {0}",
+                menuId);
+        }
+
+        public IEnumerable<MenuPreparat> GetMenuPreparate(int menuId)
+        {
+            return _context.MenuPreparate
+                .FromSqlRaw("EXEC spGetMenuPreparate @MenuID = {0}", menuId)
+                .AsNoTracking()
+                .Include(mp => mp.Preparat)
+                .ToList();
+        }
+
     }
 }

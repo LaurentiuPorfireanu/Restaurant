@@ -11,5 +11,11 @@ namespace Restaurant.DataAccess.Interfaces
         void Insert(string name, int categoryId);
         void Update(int menuId, string name, int categoryId);
         void Delete(int menuId);
+
+
+        void AddPreparat(int menuId, int preparatId, int quantityMenuPortie);
+        void RemovePreparat(int menuId, int preparatId);
+        void RemoveAllPreparate(int menuId);
+        IEnumerable<MenuPreparat> GetMenuPreparate(int menuId);
     }
 }
