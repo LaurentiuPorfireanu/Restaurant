@@ -52,7 +52,7 @@ namespace Restaurant.UI.Views.Admin {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Restaurant.UI;V1.0.0.0;component/views/adminpanelview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Restaurant.UI;component/views/adminpanelview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\AdminPanelView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

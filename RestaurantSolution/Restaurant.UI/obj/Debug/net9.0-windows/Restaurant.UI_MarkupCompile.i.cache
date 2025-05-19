@@ -12,9 +12,9 @@ TRACE;DEBUG;NET;NET9_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR
 C:\Users\laurp\Desktop\Restaurant\RestaurantSolution\Restaurant.UI\App.xaml
 71672428322
 
-18914845993
+19-272873446
 235-2046505901
 Views\AdminPanelView.xaml;Views\LoginView.xaml;Views\MainWindow.xaml;Views\MyOrdersView.xaml;Views\RegistrationView.xaml;Views\RestaurantMenuView.xaml;Views\SearchView.xaml;
 
-True
+False
 

@@ -21,10 +21,45 @@ namespace Restaurant.DataAccess.Repositories
                    .ToList();
 
         public IEnumerable<Order> GetByUser(int userId)
-            => _context.Orders
-                   .FromSqlRaw("EXEC spGetOrdersByUser @p0", userId)
-                   .AsNoTracking()
-                   .ToList();
+        {
+            // Get the base orders from the stored procedure
+            var orders = _context.Orders
+                             .FromSqlRaw("EXEC spGetOrdersByUser @p0", userId)
+                             .AsNoTracking()
+                             .ToList();
+
+            // Load the related data for each order
+            foreach (var order in orders)
+            {
+                // Manually load OrderDishes with their Preparate
+                order.OrderDishes = _context.OrderDishes
+                                        .AsNoTracking()
+                                        .Where(od => od.OrderID == order.OrderID)
+                                        .ToList();
+
+                foreach (var dish in order.OrderDishes)
+                {
+                    dish.Preparat = _context.Preparate
+                                        .AsNoTracking()
+                                        .FirstOrDefault(p => p.PreparatID == dish.PreparatID);
+                }
+
+                // Manually load OrderMenus with their Menus
+                order.OrderMenus = _context.OrderMenus
+                                       .AsNoTracking()
+                                       .Where(om => om.OrderID == order.OrderID)
+                                       .ToList();
+
+                foreach (var menuItem in order.OrderMenus)
+                {
+                    menuItem.Menu = _context.Menus
+                                        .AsNoTracking()
+                                        .FirstOrDefault(m => m.MenuID == menuItem.MenuID);
+                }
+            }
+
+            return orders;
+        }
 
         public IEnumerable<Order> GetActive()
             => _context.Orders

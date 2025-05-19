@@ -22,6 +22,7 @@ namespace Restaurant.DataAccess.Repositories
             => _context.Users
                    .FromSqlRaw("EXEC spGetUserById @p0", id)
                    .AsNoTracking()
+                    .AsEnumerable()
                    .FirstOrDefault();
 
         public User GetByEmail(string email)

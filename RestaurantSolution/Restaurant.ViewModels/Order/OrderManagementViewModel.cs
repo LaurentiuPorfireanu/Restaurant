@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows;
 using System;
 using System.Configuration;
+using Restaurant.ViewModels.Order;
 
 public class OrderManagementViewModel : ViewModelBase
 {
@@ -607,50 +608,3 @@ public class OrderManagementViewModel : ViewModelBase
     }
 }
 
-// Enum to distinguish between dish and menu items in cart
-public enum CartItemType
-{
-    Dish,
-    Menu
-}
-
-// ViewModel for cart items
-public class CartItemViewModel : ViewModelBase
-{
-    private int _quantity;
-    private decimal _totalPrice;
-    private string _totalPriceFormatted;
-
-    public int ItemId { get; set; }
-    public CartItemType ItemType { get; set; }
-    public string Name { get; set; }
-    public decimal UnitPrice { get; set; }
-    public string UnitPriceFormatted { get; set; }
-
-    public int Quantity
-    {
-        get => _quantity;
-        set
-        {
-            SetProperty(ref _quantity, value);
-            TotalPrice = UnitPrice * Quantity;
-            TotalPriceFormatted = $"{TotalPrice:N2} Lei";
-        }
-    }
-
-    public decimal TotalPrice
-    {
-        get => _totalPrice;
-        set => SetProperty(ref _totalPrice, value);
-    }
-
-    public string TotalPriceFormatted
-    {
-        get => _totalPriceFormatted;
-        set => SetProperty(ref _totalPriceFormatted, value);
-    }
-
-    // Reference to original entities
-    public Restaurant.Domain.Entities.Preparat Preparat { get; set; }
-    public Restaurant.Domain.Entities.Menu Menu { get; set; }
-}

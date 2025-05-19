@@ -130,7 +130,7 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                                                 <Border.Background>
-                                                    <SolidColorBrush Color="{Binding StatusBackground}" />
+                                                    <SolidColorBrush Color="{Binding StatusBackground, Converter={StaticResource StringToColorConverter}}" />
                                                 </Border.Background>
                                                 <TextBlock Text="{Binding StatusText}" 
                                           Foreground="White" 
@@ -139,12 +139,12 @@
 
                                             <!-- Buton anulare comandă (doar pentru comenzi active) -->
                                             <Button Grid.Column="4" 
-                                                    Content="Anulează" 
-                                                    Command="{Binding DataContext.CancelOrderCommand, ElementName=MyOrdersRoot}"
-                                                    CommandParameter="{Binding OrderID}"
-                                                    Padding="10,5"
-                                                    VerticalAlignment="Center"
-                                                    HorizontalAlignment="Left">
+        Content="Anulează" 
+        Command="{Binding DataContext.CancelOrderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        CommandParameter="{Binding OrderID}"
+        Padding="10,5"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Left">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                                         <Setter Property="Visibility" Value="Collapsed" />

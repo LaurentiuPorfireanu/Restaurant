@@ -7,7 +7,8 @@
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
         <converters:BooleanToStringConverter x:Key="BooleanToStringConverter"/>
-       
+        <converters:StringToColorConverter x:Key="StringToColorConverter"/>
+
         <!-- Stiluri -->
         <Style x:Key="NavButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
