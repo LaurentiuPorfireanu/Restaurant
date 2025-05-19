@@ -16,5 +16,8 @@ namespace Restaurant.ViewModels.Menu
         public string PriceFormatted { get; set; }
         public bool IsAvailable { get; set; }
         public ObservableCollection<MenuPreparatViewModel> MenuPreparate { get; set; }
+
+        public Restaurant.Domain.Entities.Menu Menu { get; set; }
+        public decimal Price { get; set; }
     }
 }

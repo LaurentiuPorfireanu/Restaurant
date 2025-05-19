@@ -274,7 +274,7 @@ namespace Restaurant.ViewModels.Search
             return "Fără alergeni";
         }
 
-        private string GetMenuQuantityInfo(Menu menu)
+        private string GetMenuQuantityInfo(Restaurant.Domain.Entities.Menu menu)
         {
             if (menu.MenuPreparate != null && menu.MenuPreparate.Any())
             {
@@ -286,7 +286,7 @@ namespace Restaurant.ViewModels.Search
             return "N/A";
         }
 
-        private string GetMenuAlergenInfo(Menu menu)
+        private string GetMenuAlergenInfo(Restaurant.Domain.Entities.Menu menu)
         {
             if (menu.MenuPreparate != null && menu.MenuPreparate.Any())
             {
@@ -305,7 +305,7 @@ namespace Restaurant.ViewModels.Search
             return "Fără alergeni";
         }
 
-        private decimal CalculateMenuPrice(Menu menu)
+        private decimal CalculateMenuPrice(Restaurant.Domain.Entities.Menu menu)
         {
             if (menu.MenuPreparate == null || !menu.MenuPreparate.Any())
                 return 0;
@@ -317,7 +317,7 @@ namespace Restaurant.ViewModels.Search
             return totalPrice * (1 - discountPercentage / 100);
         }
 
-        private bool IsMenuAvailable(Menu menu)
+        private bool IsMenuAvailable(Restaurant.Domain.Entities.Menu menu)
         {
             if (menu.MenuPreparate == null || !menu.MenuPreparate.Any())
                 return false;

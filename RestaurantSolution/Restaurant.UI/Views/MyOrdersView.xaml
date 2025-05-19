@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             x:Name="MyOrdersRoot"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="900">
 
@@ -45,8 +46,7 @@
         <Border Grid.Row="2" 
                 BorderBrush="#E0E0E0" 
                 BorderThickness="1" 
-                Background="White"
-                Visibility="{Binding OrderManagement.IsAddMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                Background="White">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -128,7 +128,7 @@
                                             <!-- Buton anulare comandă (doar pentru comenzi active) -->
                                             <Button Grid.Column="4" 
                                                     Content="Anulează" 
-                                                    Command="{Binding DataContext.CancelOrderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    Command="{Binding DataContext.CancelOrderCommand, ElementName=MyOrdersRoot}"
                                                     CommandParameter="{Binding OrderID}"
                                                     Padding="10,5"
                                                     VerticalAlignment="Center">
@@ -143,6 +143,9 @@
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
+                                        
+                                        
+                                        
                                         </Grid>
                                     </Expander.Header>
 
@@ -294,11 +297,10 @@
                     </ItemsControl>
                 </ScrollViewer>
 
-                <!-- Indicator de încărcare -->
-                <Grid Grid.Row="1">
+                <!-- Indicator de încărcare - fixed to not appear on startup -->
+                <Grid Grid.Row="1" Visibility="Collapsed">
                     <Grid.Style>
                         <Style TargetType="Grid">
-                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsLoading}" Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -314,10 +316,9 @@
                 </Grid>
 
                 <!-- Mesaj când nu există comenzi -->
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" Visibility="Collapsed">
                     <Grid.Style>
                         <Style TargetType="Grid">
-                            <Setter Property="Visibility" Value="Collapsed" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding HasNoOrders}" Value="True">
                                     <Setter Property="Visibility" Value="Visible" />
@@ -343,9 +344,18 @@
             </Grid>
         </Border>
 
-        <!-- Formular pentru adăugare comandă nouă -->
+        <!-- Formular pentru adăugare comandă nouă - ACUM ASCUNS LA ÎNCĂRCARE -->
         <Grid Grid.Row="2" 
-              Visibility="{Binding OrderManagement.IsAddMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+              Visibility="Collapsed">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding OrderManagement.IsAddMode}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -380,7 +390,7 @@
                                Margin="0,0,0,10"/>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding OrderManagement.Categories}">
+                        <ItemsControl x:Name="CategoriesControl" ItemsSource="{Binding OrderManagement.Categories}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Expander Header="{Binding Name}" 
@@ -388,7 +398,9 @@
                                         <StackPanel>
                                             <!-- Preparate din categorie -->
                                             <ItemsControl ItemsSource="{Binding Preparate}" 
-                                                          Margin="10,5">
+                                                          Margin="10,5"
+                                                          x:Name="PreparateList"
+                                                          Tag="{Binding DataContext.OrderManagement, ElementName=MyOrdersRoot}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Margin="0,5">
@@ -406,9 +418,9 @@
                                                                        Margin="10,0" 
                                                                        FontWeight="SemiBold" 
                                                                        VerticalAlignment="Center"/>
-                                                            <Button Grid.Column="2" 
+                                                            <Button Grid.Column="2"
                                                                     Content="Adaugă" 
-                                                                    Command="{Binding DataContext.OrderManagement.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=3}}" 
+                                                                    Command="{Binding Tag.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
                                                                     CommandParameter="{Binding}" 
                                                                     Padding="8,3"/>
                                                         </Grid>
@@ -418,7 +430,9 @@
 
                                             <!-- Meniuri din categorie -->
                                             <ItemsControl ItemsSource="{Binding Menus}" 
-                                                          Margin="10,5">
+                                                          Margin="10,5"
+                                                          x:Name="MenusList"
+                                                          Tag="{Binding DataContext.OrderManagement, ElementName=MyOrdersRoot}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Margin="0,5">
@@ -436,9 +450,10 @@
                                                                        Margin="10,0" 
                                                                        FontWeight="SemiBold" 
                                                                        VerticalAlignment="Center"/>
-                                                            <Button Grid.Column="2" 
+
+                                                            <Button Grid.Column="2"
                                                                     Content="Adaugă" 
-                                                                    Command="{Binding DataContext.OrderManagement.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=3}}" 
+                                                                    Command="{Binding Tag.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
                                                                     CommandParameter="{Binding}" 
                                                                     Padding="8,3"/>
                                                         </Grid>
@@ -476,7 +491,8 @@
 
                     <!-- Lista produselor din coș -->
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding OrderManagement.CartItems}">
+                        <ItemsControl ItemsSource="{Binding OrderManagement.CartItems}" 
+                                     Tag="{Binding OrderManagement}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="#E0E0E0" 
@@ -495,7 +511,7 @@
                                                         Orientation="Horizontal" 
                                                         Margin="0,0,10,0">
                                                 <Button Content="-" 
-                                                        Command="{Binding DataContext.OrderManagement.DecrementQuantityCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.DecrementQuantityCommand}" 
                                                         CommandParameter="{Binding}" 
                                                         Width="25" 
                                                         Height="25"/>
@@ -505,7 +521,7 @@
                                                            Width="30" 
                                                            TextAlignment="Center"/>
                                                 <Button Content="+" 
-                                                        Command="{Binding DataContext.OrderManagement.IncrementQuantityCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.IncrementQuantityCommand}" 
                                                         CommandParameter="{Binding}" 
                                                         Width="25" 
                                                         Height="25"/>
@@ -526,7 +542,7 @@
                                             <!-- Buton ștergere -->
                                             <Button Grid.Column="3" 
                                                     Content="x" 
-                                                    Command="{Binding DataContext.OrderManagement.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                    Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.RemoveFromCartCommand}" 
                                                     CommandParameter="{Binding}" 
                                                     Width="25" 
                                                     Height="25" 
@@ -643,7 +659,6 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-
                         <!-- Linie de separare -->
                         <Border Grid.Row="4" 
                                 Grid.ColumnSpan="2" 
@@ -651,7 +666,6 @@
                                 BorderThickness="0,1,0,0" 
                                 Margin="0,0,0,10"/>
 
-                        <!-- Total general -->
                         <!-- Total general -->
                         <TextBlock Grid.Row="5" 
                                    Grid.Column="0" 
@@ -711,7 +725,16 @@
 
             <!-- Indicator de încărcare -->
             <Grid Grid.Row="0" Grid.RowSpan="3" 
-                  Visibility="{Binding OrderManagement.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  Visibility="Collapsed">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding OrderManagement.IsLoading}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
                 <Rectangle Fill="#80FFFFFF"/>
                 <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                     <ProgressBar IsIndeterminate="True" Width="100" Height="4" Margin="0,0,0,10"/>

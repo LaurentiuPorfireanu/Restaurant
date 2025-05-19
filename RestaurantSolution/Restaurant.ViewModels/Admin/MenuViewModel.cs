@@ -10,7 +10,7 @@ namespace Restaurant.ViewModels
 {
     public class MenuViewModel : ViewModelBase
     {
-        private Menu _menu;
+        private Restaurant.Domain.Entities.Menu _menu;
         private decimal _calculatedPrice;
 
         public int MenuID => _menu?.MenuID ?? 0;
@@ -21,7 +21,7 @@ namespace Restaurant.ViewModels
         public ICollection<MenuPreparat> MenuPreparate => _menu?.MenuPreparate;
         public int MenuPreparateCount => MenuPreparate?.Count ?? 0;
 
-        public Menu Menu
+        public Restaurant.Domain.Entities.Menu Menu
         {
             get => _menu;
             set

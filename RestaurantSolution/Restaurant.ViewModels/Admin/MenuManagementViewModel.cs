@@ -22,7 +22,7 @@ namespace Restaurant.ViewModels.Admin
         private Category _selectedCategory;
         private ObservableCollection<PreparatForMenuViewModel> _availablePreparate;
         private ObservableCollection<PreparatForMenuViewModel> _selectedPreparate;
-        private Menu _currentMenu;
+        private Restaurant.Domain.Entities.Menu _currentMenu;
         private decimal _totalPrice;
         private decimal _discountedPrice;
         private bool _isAddMode;
@@ -385,7 +385,7 @@ namespace Restaurant.ViewModels.Admin
         public event EventHandler CancelRequested;
 
       
-        public void Initialize(Menu menu = null)
+        public void Initialize(Restaurant.Domain.Entities.Menu menu = null)
         {
             IsLoading = true;
 

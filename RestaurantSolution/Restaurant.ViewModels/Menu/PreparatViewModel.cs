@@ -1,4 +1,5 @@
-﻿using Restaurant.ViewModels.Base;
+﻿using Restaurant.Domain.Entities;
+using Restaurant.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Restaurant.ViewModels.Menu
         public int QuantityTotal { get; set; }
         public string QuantityInfo { get; set; }
         public bool IsAvailable { get; set; }
+        public Preparat Preparat { get; set; }
         public string FirstImagePath { get; set; }
         public string AlergenInfo { get; set; }
     }

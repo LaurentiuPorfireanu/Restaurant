@@ -334,15 +334,61 @@ namespace Restaurant.ViewModels.Order
                     MessageBoxImage.Error);
             }
         }
+        private OrderManagementViewModel _orderManagement;
+
+        // Add this property to the public properties section
+        public OrderManagementViewModel OrderManagement
+        {
+            get => _orderManagement;
+            set
+            {
+                _orderManagement = value;
+                OnPropertyChanged(nameof(OrderManagement));
+            }
+        }
 
         private void ExecuteNewOrder()
         {
-            // TODO: Implementează crearea unei comenzi noi
-            MessageBox.Show(
-                "Funcționalitatea de creare a unei comenzi noi va fi implementată ulterior.",
-                "Informație",
-                MessageBoxButton.OK,
-                MessageBoxImage.Information);
+            // Initialize the OrderManagement for a new order
+            OrderManagement = new OrderManagementViewModel(
+                _orderService,
+                _preparatService,
+                _menuService,
+                _currentUser,
+                _categoryService);
+
+            // Load categories and available items
+            OrderManagement.Initialize();
+
+            // Switch to order creation mode
+            OrderManagement.IsAddMode = true;
+
+            // Subscribe to events
+            OrderManagement.OrderPlaced += OrderManagement_OrderPlaced;
+            OrderManagement.CancelRequested += OrderManagement_CancelRequested;
+        }
+
+        private void OrderManagement_OrderPlaced(object sender, EventArgs e)
+        {
+            // Reload orders after a new order is placed
+            LoadOrdersAsync();
+
+            // Reset view
+            OrderManagement.IsAddMode = false;
+
+            // Unsubscribe from events
+            OrderManagement.OrderPlaced -= OrderManagement_OrderPlaced;
+            OrderManagement.CancelRequested -= OrderManagement_CancelRequested;
+        }
+
+        private void OrderManagement_CancelRequested(object sender, EventArgs e)
+        {
+            // Reset view
+            OrderManagement.IsAddMode = false;
+
+            // Unsubscribe from events
+            OrderManagement.OrderPlaced -= OrderManagement_OrderPlaced;
+            OrderManagement.CancelRequested -= OrderManagement_CancelRequested;
         }
     }
 

@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\admin\\adminpanelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\admin\\adminpanelviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.ui\\views\\myordersview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{3895D282-5795-487C-89D8-4BEC1D79E31A}|Restaurant.UI\\Restaurant.UI.csproj|solutionrelative:restaurant.ui\\views\\myordersview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,14 +35,13 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AdminPanelViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "RelativeToolTip": "Restaurant.ViewModels\\Admin\\AdminPanelViewModel.cs",
-              "ViewState": "AgIAAF4DAAAAAAAAAAAiwIIDAAApAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-19T14:31:22.442Z",
+              "Title": "MyOrdersView.xaml",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\MyOrdersView.xaml",
+              "RelativeDocumentMoniker": "Restaurant.UI\\Views\\MyOrdersView.xaml",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.UI\\Views\\MyOrdersView.xaml",
+              "RelativeToolTip": "Restaurant.UI\\Views\\MyOrdersView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-05-19T15:10:43.539Z",
               "EditorCaption": ""
             }
           ]
