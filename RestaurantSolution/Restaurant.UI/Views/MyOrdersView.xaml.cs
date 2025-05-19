@@ -25,6 +25,8 @@ namespace Restaurant.UI.Views.Order
 
             DataContext = viewModel;
 
+
+
             // Încărcare date la inițializare
             Loaded += async (s, e) => await viewModel.LoadOrdersAsync();
         }

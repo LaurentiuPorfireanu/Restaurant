@@ -47,6 +47,16 @@
                 BorderBrush="#E0E0E0" 
                 BorderThickness="1" 
                 Background="White">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding OrderManagement.IsAddMode}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -60,11 +70,11 @@
                         BorderBrush="#E0E0E0">
                     <Grid Margin="15,10">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="120"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="130"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0" 
@@ -88,41 +98,43 @@
                 <!-- Lista de comenzi -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Orders}">
+                        
+                        
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Expander>
                                     <Expander.Header>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="180"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="130"/>
-                                                <ColumnDefinition Width="130"/>
-                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="1360"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="120"/>
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock Grid.Column="0" 
-                                                      Text="{Binding OrderDateFormatted}" 
-                                                      VerticalAlignment="Center"/>
+                                      Text="{Binding OrderDateFormatted}" 
+                                      VerticalAlignment="Center"/>
                                             <TextBlock Grid.Column="1" 
-                                                      Text="{Binding OrderCode}" 
-                                                      VerticalAlignment="Center"/>
+                                      Text="{Binding OrderCode}" 
+                                      VerticalAlignment="Center"/>
                                             <TextBlock Grid.Column="2" 
-                                                      Text="{Binding TotalCostFormatted}" 
-                                                      FontWeight="SemiBold" 
-                                                      VerticalAlignment="Center"/>
+                                      Text="{Binding TotalCostFormatted}" 
+                                      FontWeight="SemiBold" 
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Left"/>
                                             <Border Grid.Column="3" 
-                                                    CornerRadius="3" 
-                                                    Padding="5,2" 
-                                                    Margin="0,0,10,0"
-                                                    HorizontalAlignment="Left"
-                                                    VerticalAlignment="Center">
+                                    CornerRadius="3" 
+                                    Padding="5,2" 
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
                                                 <Border.Background>
                                                     <SolidColorBrush Color="{Binding StatusBackground}" />
                                                 </Border.Background>
                                                 <TextBlock Text="{Binding StatusText}" 
-                                                          Foreground="White" 
-                                                          FontSize="12"/>
+                                          Foreground="White" 
+                                          FontSize="12"/>
                                             </Border>
 
                                             <!-- Buton anulare comandă (doar pentru comenzi active) -->
@@ -131,7 +143,8 @@
                                                     Command="{Binding DataContext.CancelOrderCommand, ElementName=MyOrdersRoot}"
                                                     CommandParameter="{Binding OrderID}"
                                                     Padding="10,5"
-                                                    VerticalAlignment="Center">
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Left">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                                         <Setter Property="Visibility" Value="Collapsed" />
@@ -143,9 +156,6 @@
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
-                                        
-                                        
-                                        
                                         </Grid>
                                     </Expander.Header>
 
@@ -344,11 +354,11 @@
             </Grid>
         </Border>
 
-        <!-- Formular pentru adăugare comandă nouă - ACUM ASCUNS LA ÎNCĂRCARE -->
-        <Grid Grid.Row="2" 
-              Visibility="Collapsed">
+        <!-- Formular pentru adăugare comandă nouă -->
+        <Grid Grid.Row="2">
             <Grid.Style>
                 <Style TargetType="Grid">
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding OrderManagement.IsAddMode}" Value="True">
                             <Setter Property="Visibility" Value="Visible" />
@@ -364,10 +374,10 @@
 
             <!-- Titlu și informații generale -->
             <TextBlock Grid.Row="0" 
-                       Text="Comandă nouă" 
-                       FontSize="24" 
-                       FontWeight="SemiBold" 
-                       Margin="0,0,0,15"/>
+               Text="Comandă nouă" 
+               FontSize="24" 
+               FontWeight="SemiBold" 
+               Margin="0,0,0,15"/>
 
             <!-- Conținutul principal -->
             <Grid Grid.Row="1">
@@ -385,22 +395,22 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" 
-                               Text="Produse disponibile" 
-                               FontWeight="SemiBold" 
-                               Margin="0,0,0,10"/>
+                       Text="Produse disponibile" 
+                       FontWeight="SemiBold" 
+                       Margin="0,0,0,10"/>
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <ItemsControl x:Name="CategoriesControl" ItemsSource="{Binding OrderManagement.Categories}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Expander Header="{Binding Name}" 
-                                              Margin="0,0,0,5">
+                                      Margin="0,0,0,5">
                                         <StackPanel>
                                             <!-- Preparate din categorie -->
                                             <ItemsControl ItemsSource="{Binding Preparate}" 
-                                                          Margin="10,5"
-                                                          x:Name="PreparateList"
-                                                          Tag="{Binding DataContext.OrderManagement, ElementName=MyOrdersRoot}">
+                                                  Margin="10,5"
+                                                  x:Name="PreparateList"
+                                                  Tag="{Binding DataContext.OrderManagement, ElementName=MyOrdersRoot}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Margin="0,5">
@@ -411,18 +421,18 @@
                                                             </Grid.ColumnDefinitions>
 
                                                             <TextBlock Grid.Column="0" 
-                                                                       Text="{Binding Name}" 
-                                                                       VerticalAlignment="Center"/>
+                                                               Text="{Binding Name}" 
+                                                               VerticalAlignment="Center"/>
                                                             <TextBlock Grid.Column="1" 
-                                                                       Text="{Binding PriceFormatted}" 
-                                                                       Margin="10,0" 
-                                                                       FontWeight="SemiBold" 
-                                                                       VerticalAlignment="Center"/>
+                                                               Text="{Binding PriceFormatted}" 
+                                                               Margin="10,0" 
+                                                               FontWeight="SemiBold" 
+                                                               VerticalAlignment="Center"/>
                                                             <Button Grid.Column="2"
-                                                                    Content="Adaugă" 
-                                                                    Command="{Binding Tag.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
-                                                                    CommandParameter="{Binding}" 
-                                                                    Padding="8,3"/>
+                                                            Content="Adaugă" 
+                                                            Command="{Binding Tag.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                            CommandParameter="{Binding}" 
+                                                            Padding="8,3"/>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -430,9 +440,9 @@
 
                                             <!-- Meniuri din categorie -->
                                             <ItemsControl ItemsSource="{Binding Menus}" 
-                                                          Margin="10,5"
-                                                          x:Name="MenusList"
-                                                          Tag="{Binding DataContext.OrderManagement, ElementName=MyOrdersRoot}">
+                                                  Margin="10,5"
+                                                  x:Name="MenusList"
+                                                  Tag="{Binding DataContext.OrderManagement, ElementName=MyOrdersRoot}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Grid Margin="0,5">
@@ -443,19 +453,19 @@
                                                             </Grid.ColumnDefinitions>
 
                                                             <TextBlock Grid.Column="0" 
-                                                                       Text="{Binding Name}" 
-                                                                       VerticalAlignment="Center"/>
+                                                               Text="{Binding Name}" 
+                                                               VerticalAlignment="Center"/>
                                                             <TextBlock Grid.Column="1" 
-                                                                       Text="{Binding PriceFormatted}" 
-                                                                       Margin="10,0" 
-                                                                       FontWeight="SemiBold" 
-                                                                       VerticalAlignment="Center"/>
+                                                               Text="{Binding PriceFormatted}" 
+                                                               Margin="10,0" 
+                                                               FontWeight="SemiBold" 
+                                                               VerticalAlignment="Center"/>
 
                                                             <Button Grid.Column="2"
-                                                                    Content="Adaugă" 
-                                                                    Command="{Binding Tag.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
-                                                                    CommandParameter="{Binding}" 
-                                                                    Padding="8,3"/>
+                                                            Content="Adaugă" 
+                                                            Command="{Binding Tag.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                            CommandParameter="{Binding}" 
+                                                            Padding="8,3"/>
                                                         </Grid>
                                                     </DataTemplate>
                                                 </ItemsControl.ItemTemplate>
@@ -470,11 +480,11 @@
 
                 <!-- Separator -->
                 <GridSplitter Grid.Column="1" 
-                              Width="3" 
-                              Background="#E0E0E0" 
-                              HorizontalAlignment="Center" 
-                              VerticalAlignment="Stretch" 
-                              Margin="10,0"/>
+                      Width="3" 
+                      Background="#E0E0E0" 
+                      HorizontalAlignment="Center" 
+                      VerticalAlignment="Stretch" 
+                      Margin="10,0"/>
 
                 <!-- Coș de cumpărături și sumar -->
                 <Grid Grid.Column="2">
@@ -485,19 +495,19 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" 
-                               Text="Coșul meu" 
-                               FontWeight="SemiBold" 
-                               Margin="0,0,0,10"/>
+                       Text="Coșul meu" 
+                       FontWeight="SemiBold" 
+                       Margin="0,0,0,10"/>
 
                     <!-- Lista produselor din coș -->
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding OrderManagement.CartItems}" 
-                                     Tag="{Binding OrderManagement}">
+                             Tag="{Binding OrderManagement}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="#E0E0E0" 
-                                            BorderThickness="0,0,0,1" 
-                                            Padding="0,8">
+                                    BorderThickness="0,0,0,1" 
+                                    Padding="0,8">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -508,47 +518,47 @@
 
                                             <!-- Cantitate cu butoane +/- -->
                                             <StackPanel Grid.Column="0" 
-                                                        Orientation="Horizontal" 
-                                                        Margin="0,0,10,0">
+                                                Orientation="Horizontal" 
+                                                Margin="0,0,10,0">
                                                 <Button Content="-" 
-                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.DecrementQuantityCommand}" 
-                                                        CommandParameter="{Binding}" 
-                                                        Width="25" 
-                                                        Height="25"/>
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.DecrementQuantityCommand}" 
+                                                CommandParameter="{Binding}" 
+                                                Width="25" 
+                                                Height="25"/>
                                                 <TextBlock Text="{Binding Quantity}" 
-                                                           VerticalAlignment="Center" 
-                                                           HorizontalAlignment="Center" 
-                                                           Width="30" 
-                                                           TextAlignment="Center"/>
+                                                   VerticalAlignment="Center" 
+                                                   HorizontalAlignment="Center" 
+                                                   Width="30" 
+                                                   TextAlignment="Center"/>
                                                 <Button Content="+" 
-                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.IncrementQuantityCommand}" 
-                                                        CommandParameter="{Binding}" 
-                                                        Width="25" 
-                                                        Height="25"/>
+                                                Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.IncrementQuantityCommand}" 
+                                                CommandParameter="{Binding}" 
+                                                Width="25" 
+                                                Height="25"/>
                                             </StackPanel>
 
                                             <!-- Nume produs -->
                                             <TextBlock Grid.Column="1" 
-                                                       Text="{Binding Name}" 
-                                                       VerticalAlignment="Center"/>
+                                               Text="{Binding Name}" 
+                                               VerticalAlignment="Center"/>
 
                                             <!-- Preț total -->
                                             <TextBlock Grid.Column="2" 
-                                                       Text="{Binding TotalPriceFormatted}" 
-                                                       FontWeight="SemiBold" 
-                                                       VerticalAlignment="Center" 
-                                                       Margin="10,0"/>
+                                               Text="{Binding TotalPriceFormatted}" 
+                                               FontWeight="SemiBold" 
+                                               VerticalAlignment="Center" 
+                                               Margin="10,0"/>
 
                                             <!-- Buton ștergere -->
                                             <Button Grid.Column="3" 
-                                                    Content="x" 
-                                                    Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.RemoveFromCartCommand}" 
-                                                    CommandParameter="{Binding}" 
-                                                    Width="25" 
-                                                    Height="25" 
-                                                    Background="#FFE0E0" 
-                                                    Foreground="#D32F2F" 
-                                                    FontWeight="Bold"/>
+                                            Content="x" 
+                                            Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl}, Path=Tag.RemoveFromCartCommand}" 
+                                            CommandParameter="{Binding}" 
+                                            Width="25" 
+                                            Height="25" 
+                                            Background="#FFE0E0" 
+                                            Foreground="#D32F2F" 
+                                            FontWeight="Bold"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -574,29 +584,29 @@
 
                         <!-- Linie de separare -->
                         <Border Grid.Row="0" 
-                                Grid.ColumnSpan="2" 
-                                BorderBrush="#E0E0E0" 
-                                BorderThickness="0,1,0,0" 
-                                Margin="0,0,0,10"/>
+                        Grid.ColumnSpan="2" 
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="0,1,0,0" 
+                        Margin="0,0,0,10"/>
 
                         <!-- Subtotal -->
                         <TextBlock Grid.Row="1" 
-                                   Grid.Column="0" 
-                                   Text="Subtotal:" 
-                                   HorizontalAlignment="Right" 
-                                   Margin="0,0,10,5"/>
+                           Grid.Column="0" 
+                           Text="Subtotal:" 
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,10,5"/>
                         <TextBlock Grid.Row="1" 
-                                   Grid.Column="1" 
-                                   Text="{Binding OrderManagement.SubtotalFormatted}" 
-                                   HorizontalAlignment="Right" 
-                                   Margin="0,0,0,5"/>
+                           Grid.Column="1" 
+                           Text="{Binding OrderManagement.SubtotalFormatted}" 
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,0,5"/>
 
                         <!-- Discount (dacă există) -->
                         <TextBlock Grid.Row="2" 
-                                   Grid.Column="0" 
-                                   Text="Discount:" 
-                                   HorizontalAlignment="Right" 
-                                   Margin="0,0,10,5">
+                           Grid.Column="0" 
+                           Text="Discount:" 
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,10,5">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -609,11 +619,11 @@
                             </TextBlock.Style>
                         </TextBlock>
                         <TextBlock Grid.Row="2" 
-                                   Grid.Column="1" 
-                                   Text="{Binding OrderManagement.DiscountFormatted}" 
-                                   Foreground="#4CAF50" 
-                                   HorizontalAlignment="Right" 
-                                   Margin="0,0,0,5">
+                           Grid.Column="1" 
+                           Text="{Binding OrderManagement.DiscountFormatted}" 
+                           Foreground="#4CAF50" 
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,0,5">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -628,10 +638,10 @@
 
                         <!-- Cost livrare (dacă există) -->
                         <TextBlock Grid.Row="3" 
-                                   Grid.Column="0" 
-                                   Text="Cost livrare:" 
-                                   HorizontalAlignment="Right" 
-                                   Margin="0,0,10,10">
+                           Grid.Column="0" 
+                           Text="Cost livrare:" 
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,10,10">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -644,10 +654,10 @@
                             </TextBlock.Style>
                         </TextBlock>
                         <TextBlock Grid.Row="3" 
-                                   Grid.Column="1" 
-                                   Text="{Binding OrderManagement.DeliveryCostFormatted}" 
-                                   HorizontalAlignment="Right" 
-                                   Margin="0,0,0,10">
+                           Grid.Column="1" 
+                           Text="{Binding OrderManagement.DeliveryCostFormatted}" 
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,0,10">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -661,24 +671,24 @@
                         </TextBlock>
                         <!-- Linie de separare -->
                         <Border Grid.Row="4" 
-                                Grid.ColumnSpan="2" 
-                                BorderBrush="#E0E0E0" 
-                                BorderThickness="0,1,0,0" 
-                                Margin="0,0,0,10"/>
+                        Grid.ColumnSpan="2" 
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="0,1,0,0" 
+                        Margin="0,0,0,10"/>
 
                         <!-- Total general -->
                         <TextBlock Grid.Row="5" 
-                                   Grid.Column="0" 
-                                   Text="Total comandă:" 
-                                   FontWeight="Bold" 
-                                   HorizontalAlignment="Right" 
-                                   Margin="0,0,10,10"/>
+                           Grid.Column="0" 
+                           Text="Total comandă:" 
+                           FontWeight="Bold" 
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,10,10"/>
                         <TextBlock Grid.Row="5" 
-                                   Grid.Column="1" 
-                                   Text="{Binding OrderManagement.TotalCostFormatted}" 
-                                   FontWeight="Bold" 
-                                   HorizontalAlignment="Right" 
-                                   Margin="0,0,0,10"/>
+                           Grid.Column="1" 
+                           Text="{Binding OrderManagement.TotalCostFormatted}" 
+                           FontWeight="Bold" 
+                           HorizontalAlignment="Right" 
+                           Margin="0,0,0,10"/>
 
                         <!-- Informații de livrare -->
                         <Grid Grid.Row="6" Grid.ColumnSpan="2">
@@ -689,19 +699,19 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" 
-                                       Text="Adresă de livrare:" 
-                                       FontWeight="SemiBold" 
-                                       Margin="0,0,0,5"/>
+                               Text="Adresă de livrare:" 
+                               FontWeight="SemiBold" 
+                               Margin="0,0,0,5"/>
                             <TextBox Grid.Row="1" 
-                                     Text="{Binding OrderManagement.DeliveryAddress, UpdateSourceTrigger=PropertyChanged}" 
-                                     AcceptsReturn="True" 
-                                     TextWrapping="Wrap" 
-                                     Height="60" 
-                                     Margin="0,0,0,10"/>
+                             Text="{Binding OrderManagement.DeliveryAddress, UpdateSourceTrigger=PropertyChanged}" 
+                             AcceptsReturn="True" 
+                             TextWrapping="Wrap" 
+                             Height="60" 
+                             Margin="0,0,0,10"/>
 
                             <TextBlock Grid.Row="2" 
-                                       Text="{Binding OrderManagement.EstimatedDeliveryFormatted, StringFormat='Livrarea estimată: {0}'}" 
-                                       Margin="0,0,0,0"/>
+                               Text="{Binding OrderManagement.EstimatedDeliveryFormatted, StringFormat='Livrarea estimată: {0}'}" 
+                               Margin="0,0,0,0"/>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -709,23 +719,23 @@
 
             <!-- Butoane de acțiune -->
             <StackPanel Grid.Row="2" 
-                        Orientation="Horizontal" 
-                        HorizontalAlignment="Right" 
-                        Margin="0,15,0,0">
+                Orientation="Horizontal" 
+                HorizontalAlignment="Right" 
+                Margin="0,15,0,0">
                 <Button Content="Anulează" 
-                        Command="{Binding OrderManagement.CancelOrderCommand}" 
-                        Padding="20,10" 
-                        Margin="0,0,10,0"/>
+                Command="{Binding OrderManagement.CancelOrderCommand}" 
+                Padding="20,10" 
+                Margin="0,0,10,0"/>
                 <Button Content="Plasează comanda" 
-                        Command="{Binding OrderManagement.PlaceOrderCommand}" 
-                        Padding="20,10" 
-                        Background="#4CAF50" 
-                        Foreground="White"/>
+                Command="{Binding OrderManagement.PlaceOrderCommand}" 
+                Padding="20,10" 
+                Background="#4CAF50" 
+                Foreground="White"/>
             </StackPanel>
 
             <!-- Indicator de încărcare -->
             <Grid Grid.Row="0" Grid.RowSpan="3" 
-                  Visibility="Collapsed">
+          Visibility="Collapsed">
                 <Grid.Style>
                     <Style TargetType="Grid">
                         <Style.Triggers>

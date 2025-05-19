@@ -102,10 +102,10 @@ namespace Restaurant.ViewModels.Order
         public ICommand NewOrderCommand { get; }
 
         public MyOrdersViewModel(IOrderService orderService,
-                               ICategoryService categoryService,
-                               IPreparatService preparatService,
-                               IMenuService menuService,
-                               User currentUser)
+                        ICategoryService categoryService,
+                        IPreparatService preparatService,
+                        IMenuService menuService,
+                        User currentUser)
         {
             _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
             _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
@@ -114,6 +114,14 @@ namespace Restaurant.ViewModels.Order
             _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
 
             Orders = new ObservableCollection<OrderViewModel>();
+
+            // Initialize OrderManagement here
+            OrderManagement = new OrderManagementViewModel(
+                orderService,
+                preparatService,
+                menuService,
+                currentUser,
+                categoryService);
 
             // Inițializare comenzi
             CancelOrderCommand = new RelayCommand(ExecuteCancelOrder);
@@ -362,6 +370,8 @@ namespace Restaurant.ViewModels.Order
 
             // Switch to order creation mode
             OrderManagement.IsAddMode = true;
+
+            OnPropertyChanged(nameof(OrderManagement));
 
             // Subscribe to events
             OrderManagement.OrderPlaced += OrderManagement_OrderPlaced;

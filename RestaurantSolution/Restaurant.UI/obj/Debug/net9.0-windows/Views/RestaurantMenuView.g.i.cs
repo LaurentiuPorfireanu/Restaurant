@@ -52,7 +52,7 @@ namespace Restaurant.UI.Views.Menu {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Restaurant.UI;component/views/restaurantmenuview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Restaurant.UI;V1.0.0.0;component/views/restaurantmenuview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\RestaurantMenuView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

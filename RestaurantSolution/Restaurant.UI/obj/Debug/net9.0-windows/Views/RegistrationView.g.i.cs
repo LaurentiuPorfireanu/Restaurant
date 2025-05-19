@@ -76,7 +76,7 @@ namespace Restaurant.UI.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/Restaurant.UI;component/views/registrationview.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/Restaurant.UI;V1.0.0.0;component/views/registrationview.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\Views\RegistrationView.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
