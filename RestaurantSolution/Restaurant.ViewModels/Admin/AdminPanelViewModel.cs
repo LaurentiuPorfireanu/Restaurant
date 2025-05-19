@@ -1541,63 +1541,11 @@ namespace Restaurant.ViewModels.Admin
         #endregion
     }
 
-    #region View Models
+   
 
-    public class OrderViewModel : ViewModelBase
-    {
-        public int OrderID { get; set; }
-        public string OrderCode { get; set; }
-        public DateTime OrderDateTime { get; set; }
-        public string OrderDateFormatted { get; set; }
-        public string ClientName { get; set; }
-        public OrderStatus Status { get; set; }
-        public string StatusText { get; set; }
-        public string StatusBackground { get; set; }
-        public decimal TotalCost { get; set; }
-        public string TotalCostFormatted { get; set; }
-        public bool CanUpdateStatus { get; set; }
-    }
+   
 
-    public class ReportType
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+  
 
-    public class LowStockItemViewModel
-    {
-        public string ProductName { get; set; }
-        public int CurrentStock { get; set; }
-        public string Category { get; set; }
-        public string Status { get; set; }
-    }
-
-    public class OrdersPerDayViewModel
-    {
-        public DateTime Date { get; set; }
-        public string DateFormatted { get; set; }
-        public int OrderCount { get; set; }
-        public decimal TotalValue { get; set; }
-        public string TotalValueFormatted { get; set; }
-    }
-
-    public class PopularProductViewModel
-    {
-        public string ProductName { get; set; }
-        public int OrderCount { get; set; }
-        public int TotalQuantity { get; set; }
-        public decimal Revenue { get; set; }
-        public string RevenueFormatted { get; set; }
-    }
-
-    public class RevenuePerCategoryViewModel
-    {
-        public string CategoryName { get; set; }
-        public int OrderCount { get; set; }
-        public decimal Revenue { get; set; }
-        public string RevenueFormatted { get; set; }
-        public decimal PercentageOfTotal { get; set; }
-    }
-
-    #endregion
+    
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Restaurant.Domain.Entities;
 using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Base;
+using Restaurant.ViewModels.Menu;
 
 namespace Restaurant.ViewModels.RestaurantMenu
 {
@@ -217,42 +218,6 @@ namespace Restaurant.ViewModels.RestaurantMenu
         }
     }
 
-    public class CategoryViewModel : ViewModelBase
-    {
-        public int CategoryId { get; set; }
-        public string Name { get; set; }
-        public ObservableCollection<PreparatViewModel> Preparate { get; set; }
-        public ObservableCollection<MenuItemViewModel> Menus { get; set; }
-        public bool HasPreparate { get; set; }
-        public bool HasMenus { get; set; }
-    }
-
-    public class PreparatViewModel : ViewModelBase
-    {
-        public int PreparatId { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string PriceFormatted { get; set; }
-        public int QuantityPortie { get; set; }
-        public int QuantityTotal { get; set; }
-        public string QuantityInfo { get; set; }
-        public bool IsAvailable { get; set; }
-        public string FirstImagePath { get; set; }
-        public string AlergenInfo { get; set; }
-    }
-
-    public class MenuItemViewModel : ViewModelBase
-    {
-        public int MenuId { get; set; }
-        public string Name { get; set; }
-        public string PriceFormatted { get; set; }
-        public bool IsAvailable { get; set; }
-        public ObservableCollection<MenuPreparatViewModel> MenuPreparate { get; set; }
-    }
-
-    public class MenuPreparatViewModel : ViewModelBase
-    {
-        public string Name { get; set; }
-        public string Quantity { get; set; }
-    }
+   
+   
 }

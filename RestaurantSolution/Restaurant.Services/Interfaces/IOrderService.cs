@@ -22,5 +22,7 @@ namespace Restaurant.Services.Interfaces
             decimal totalCost);
         void UpdateOrderStatus(int orderId, OrderStatus status);
         void DeleteOrder(int orderId);
+
+
     }
 }

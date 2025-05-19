@@ -41,11 +41,12 @@
                     Margin="20,0,0,0"/>
         </StackPanel>
 
-        <!-- Lista de comenzi -->
+        <!-- Vizualizare listă comenzi -->
         <Border Grid.Row="2" 
                 BorderBrush="#E0E0E0" 
                 BorderThickness="1" 
-                Background="White">
+                Background="White"
+                Visibility="{Binding OrderManagement.IsAddMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -341,5 +342,382 @@
                 </Grid>
             </Grid>
         </Border>
+
+        <!-- Formular pentru adăugare comandă nouă -->
+        <Grid Grid.Row="2" 
+              Visibility="{Binding OrderManagement.IsAddMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Titlu și informații generale -->
+            <TextBlock Grid.Row="0" 
+                       Text="Comandă nouă" 
+                       FontSize="24" 
+                       FontWeight="SemiBold" 
+                       Margin="0,0,0,15"/>
+
+            <!-- Conținutul principal -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Lista de categorii și produse disponibile -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" 
+                               Text="Produse disponibile" 
+                               FontWeight="SemiBold" 
+                               Margin="0,0,0,10"/>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding OrderManagement.Categories}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Expander Header="{Binding Name}" 
+                                              Margin="0,0,0,5">
+                                        <StackPanel>
+                                            <!-- Preparate din categorie -->
+                                            <ItemsControl ItemsSource="{Binding Preparate}" 
+                                                          Margin="10,5">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Margin="0,5">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <TextBlock Grid.Column="0" 
+                                                                       Text="{Binding Name}" 
+                                                                       VerticalAlignment="Center"/>
+                                                            <TextBlock Grid.Column="1" 
+                                                                       Text="{Binding PriceFormatted}" 
+                                                                       Margin="10,0" 
+                                                                       FontWeight="SemiBold" 
+                                                                       VerticalAlignment="Center"/>
+                                                            <Button Grid.Column="2" 
+                                                                    Content="Adaugă" 
+                                                                    Command="{Binding DataContext.OrderManagement.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=3}}" 
+                                                                    CommandParameter="{Binding}" 
+                                                                    Padding="8,3"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+
+                                            <!-- Meniuri din categorie -->
+                                            <ItemsControl ItemsSource="{Binding Menus}" 
+                                                          Margin="10,5">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Margin="0,5">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <TextBlock Grid.Column="0" 
+                                                                       Text="{Binding Name}" 
+                                                                       VerticalAlignment="Center"/>
+                                                            <TextBlock Grid.Column="1" 
+                                                                       Text="{Binding PriceFormatted}" 
+                                                                       Margin="10,0" 
+                                                                       FontWeight="SemiBold" 
+                                                                       VerticalAlignment="Center"/>
+                                                            <Button Grid.Column="2" 
+                                                                    Content="Adaugă" 
+                                                                    Command="{Binding DataContext.OrderManagement.AddToCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=3}}" 
+                                                                    CommandParameter="{Binding}" 
+                                                                    Padding="8,3"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Expander>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+
+                <!-- Separator -->
+                <GridSplitter Grid.Column="1" 
+                              Width="3" 
+                              Background="#E0E0E0" 
+                              HorizontalAlignment="Center" 
+                              VerticalAlignment="Stretch" 
+                              Margin="10,0"/>
+
+                <!-- Coș de cumpărături și sumar -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" 
+                               Text="Coșul meu" 
+                               FontWeight="SemiBold" 
+                               Margin="0,0,0,10"/>
+
+                    <!-- Lista produselor din coș -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding OrderManagement.CartItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#E0E0E0" 
+                                            BorderThickness="0,0,0,1" 
+                                            Padding="0,8">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Cantitate cu butoane +/- -->
+                                            <StackPanel Grid.Column="0" 
+                                                        Orientation="Horizontal" 
+                                                        Margin="0,0,10,0">
+                                                <Button Content="-" 
+                                                        Command="{Binding DataContext.OrderManagement.DecrementQuantityCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                        CommandParameter="{Binding}" 
+                                                        Width="25" 
+                                                        Height="25"/>
+                                                <TextBlock Text="{Binding Quantity}" 
+                                                           VerticalAlignment="Center" 
+                                                           HorizontalAlignment="Center" 
+                                                           Width="30" 
+                                                           TextAlignment="Center"/>
+                                                <Button Content="+" 
+                                                        Command="{Binding DataContext.OrderManagement.IncrementQuantityCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                        CommandParameter="{Binding}" 
+                                                        Width="25" 
+                                                        Height="25"/>
+                                            </StackPanel>
+
+                                            <!-- Nume produs -->
+                                            <TextBlock Grid.Column="1" 
+                                                       Text="{Binding Name}" 
+                                                       VerticalAlignment="Center"/>
+
+                                            <!-- Preț total -->
+                                            <TextBlock Grid.Column="2" 
+                                                       Text="{Binding TotalPriceFormatted}" 
+                                                       FontWeight="SemiBold" 
+                                                       VerticalAlignment="Center" 
+                                                       Margin="10,0"/>
+
+                                            <!-- Buton ștergere -->
+                                            <Button Grid.Column="3" 
+                                                    Content="x" 
+                                                    Command="{Binding DataContext.OrderManagement.RemoveFromCartCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
+                                                    CommandParameter="{Binding}" 
+                                                    Width="25" 
+                                                    Height="25" 
+                                                    Background="#FFE0E0" 
+                                                    Foreground="#D32F2F" 
+                                                    FontWeight="Bold"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- Sumarul comenzii -->
+                    <Grid Grid.Row="2" Margin="0,15,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Linie de separare -->
+                        <Border Grid.Row="0" 
+                                Grid.ColumnSpan="2" 
+                                BorderBrush="#E0E0E0" 
+                                BorderThickness="0,1,0,0" 
+                                Margin="0,0,0,10"/>
+
+                        <!-- Subtotal -->
+                        <TextBlock Grid.Row="1" 
+                                   Grid.Column="0" 
+                                   Text="Subtotal:" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,0,10,5"/>
+                        <TextBlock Grid.Row="1" 
+                                   Grid.Column="1" 
+                                   Text="{Binding OrderManagement.SubtotalFormatted}" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,0,0,5"/>
+
+                        <!-- Discount (dacă există) -->
+                        <TextBlock Grid.Row="2" 
+                                   Grid.Column="0" 
+                                   Text="Discount:" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,0,10,5">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding OrderManagement.HasDiscount}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Grid.Row="2" 
+                                   Grid.Column="1" 
+                                   Text="{Binding OrderManagement.DiscountFormatted}" 
+                                   Foreground="#4CAF50" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,0,0,5">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding OrderManagement.HasDiscount}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Cost livrare (dacă există) -->
+                        <TextBlock Grid.Row="3" 
+                                   Grid.Column="0" 
+                                   Text="Cost livrare:" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,0,10,10">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding OrderManagement.HasDeliveryCost}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Grid.Row="3" 
+                                   Grid.Column="1" 
+                                   Text="{Binding OrderManagement.DeliveryCostFormatted}" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,0,0,10">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding OrderManagement.HasDeliveryCost}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Linie de separare -->
+                        <Border Grid.Row="4" 
+                                Grid.ColumnSpan="2" 
+                                BorderBrush="#E0E0E0" 
+                                BorderThickness="0,1,0,0" 
+                                Margin="0,0,0,10"/>
+
+                        <!-- Total general -->
+                        <!-- Total general -->
+                        <TextBlock Grid.Row="5" 
+                                   Grid.Column="0" 
+                                   Text="Total comandă:" 
+                                   FontWeight="Bold" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,0,10,10"/>
+                        <TextBlock Grid.Row="5" 
+                                   Grid.Column="1" 
+                                   Text="{Binding OrderManagement.TotalCostFormatted}" 
+                                   FontWeight="Bold" 
+                                   HorizontalAlignment="Right" 
+                                   Margin="0,0,0,10"/>
+
+                        <!-- Informații de livrare -->
+                        <Grid Grid.Row="6" Grid.ColumnSpan="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" 
+                                       Text="Adresă de livrare:" 
+                                       FontWeight="SemiBold" 
+                                       Margin="0,0,0,5"/>
+                            <TextBox Grid.Row="1" 
+                                     Text="{Binding OrderManagement.DeliveryAddress, UpdateSourceTrigger=PropertyChanged}" 
+                                     AcceptsReturn="True" 
+                                     TextWrapping="Wrap" 
+                                     Height="60" 
+                                     Margin="0,0,0,10"/>
+
+                            <TextBlock Grid.Row="2" 
+                                       Text="{Binding OrderManagement.EstimatedDeliveryFormatted, StringFormat='Livrarea estimată: {0}'}" 
+                                       Margin="0,0,0,0"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            <!-- Butoane de acțiune -->
+            <StackPanel Grid.Row="2" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="0,15,0,0">
+                <Button Content="Anulează" 
+                        Command="{Binding OrderManagement.CancelOrderCommand}" 
+                        Padding="20,10" 
+                        Margin="0,0,10,0"/>
+                <Button Content="Plasează comanda" 
+                        Command="{Binding OrderManagement.PlaceOrderCommand}" 
+                        Padding="20,10" 
+                        Background="#4CAF50" 
+                        Foreground="White"/>
+            </StackPanel>
+
+            <!-- Indicator de încărcare -->
+            <Grid Grid.Row="0" Grid.RowSpan="3" 
+                  Visibility="{Binding OrderManagement.IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Rectangle Fill="#80FFFFFF"/>
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <ProgressBar IsIndeterminate="True" Width="100" Height="4" Margin="0,0,0,10"/>
+                    <TextBlock Text="Se procesează..." HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </UserControl>

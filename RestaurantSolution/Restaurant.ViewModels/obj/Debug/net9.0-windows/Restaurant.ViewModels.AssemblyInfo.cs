@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Restaurant.ViewModels")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+391bef9960f7ae5ae50be9542600c9863bbcf605")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba90efc195dbe8158092b49adc9e2459f2f9929d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Restaurant.ViewModels")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Restaurant.ViewModels")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
