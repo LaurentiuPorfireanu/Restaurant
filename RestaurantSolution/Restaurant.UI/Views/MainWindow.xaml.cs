@@ -20,11 +20,10 @@ namespace Restaurant.UI.Views
             InitializeComponent();
             _serviceProvider = serviceProvider;
 
-            // Creează și setează ViewModel-ul
             _viewModel = new MainWindowViewModel();
             DataContext = _viewModel;
 
-            // Abonare la evenimentele din ViewModel
+      
             _viewModel.NavigationRequested += ViewModel_NavigationRequested;
             _viewModel.LoginRequested += ViewModel_LoginRequested;
             _viewModel.LogoutConfirmed += ViewModel_LogoutConfirmed;
@@ -61,7 +60,7 @@ namespace Restaurant.UI.Views
 
         private void ViewModel_LogoutConfirmed(object sender, EventArgs e)
         {
-            // Resetarea view-ului la meniu
+        
             ViewModel_NavigationRequested(sender, "Menu");
         }
     }

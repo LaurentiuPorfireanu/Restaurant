@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using Restaurant.Domain.Entities;
 using Restaurant.Domain.Enums;
 using Restaurant.Services.Interfaces;
+using Restaurant.ViewModels.Admin.Extras;
 using Restaurant.ViewModels.Base;
 using Restaurant.ViewModels.Commands;
 using Restaurant.ViewModels.Order;
@@ -44,6 +45,63 @@ namespace Restaurant.ViewModels.Admin
         private int _topProductsCount = 20;
 
 
+        private string _categoryName;
+        private string _alergenName;
+        private bool _hasLowStockItems;
+        private int _lowStockCount;
+        private bool _isLoading;
+        private bool _isAllOrdersSelected = true;
+        private bool _isActiveOrdersSelected;
+        private bool _hasReportData;
+
+
+        private string _preparatName;
+        private decimal _preparatPrice;
+        private int _preparatQuantityPortie;
+        private int _preparatQuantityTotal;
+        private Category _preparatSelectedCategory;
+        private ObservableCollection<Alergen> _preparatAvailableAlergens;
+        private ObservableCollection<Alergen> _preparatSelectedAlergens;
+        private ObservableCollection<PreparatImageItem> _preparatImages;
+        private Preparat _preparatBeingEdited;
+        private bool _isAddPreparatMode;
+        private bool _isEditPreparatMode;
+
+
+        private int _selectedTabIndex;
+
+        private MenuManagementViewModel _menuManagement;
+
+        private ObservableCollection<Category> _categories;
+        private ObservableCollection<Preparat> _preparate;
+        private ObservableCollection<Alergen> _alergens;
+        private ObservableCollection<MenuViewModel> _menus;
+        private ObservableCollection<OrderViewModel> _orders;
+        private ObservableCollection<ReportType> _reportTypes;
+        private ObservableCollection<object> _reportData;
+
+        private Category _selectedCategory;
+        private Preparat _selectedPreparat;
+        private Alergen _selectedAlergen;
+        private MenuViewModel _selectedMenu;
+        private OrderViewModel _selectedOrder;
+        private ReportType _selectedReportType;
+
+
+
+
+
+
+
+        #region Properties
+
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set => SetProperty(ref _selectedTabIndex, value);
+        }
+
+        
         public bool ShowReportFilters
         {
             get => _showReportFilters;
@@ -97,43 +155,6 @@ namespace Restaurant.ViewModels.Admin
             get => _topProductsCount;
             set => SetProperty(ref _topProductsCount, value);
         }
-
-        public ICommand GenerateReportCommand { get; }
-
-        #region Collections
-
-        private ObservableCollection<Category> _categories;
-        private ObservableCollection<Preparat> _preparate;
-        private ObservableCollection<Alergen> _alergens;
-        private ObservableCollection<MenuViewModel> _menus;
-        private ObservableCollection<OrderViewModel> _orders;
-        private ObservableCollection<ReportType> _reportTypes;
-        private ObservableCollection<object> _reportData;
-
-        #endregion
-
-        #region Selected Items
-
-        private Category _selectedCategory;
-        private Preparat _selectedPreparat;
-        private Alergen _selectedAlergen;
-        private MenuViewModel _selectedMenu;
-        private OrderViewModel _selectedOrder;
-        private ReportType _selectedReportType;
-
-        #endregion
-
-        private string _preparatName;
-        private decimal _preparatPrice;
-        private int _preparatQuantityPortie;
-        private int _preparatQuantityTotal;
-        private Category _preparatSelectedCategory;
-        private ObservableCollection<Alergen> _preparatAvailableAlergens;
-        private ObservableCollection<Alergen> _preparatSelectedAlergens;
-        private ObservableCollection<PreparatImageItem> _preparatImages;
-        private Preparat _preparatBeingEdited;
-        private bool _isAddPreparatMode;
-        private bool _isEditPreparatMode;
 
 
         public string PreparatName
@@ -225,20 +246,6 @@ namespace Restaurant.ViewModels.Admin
             !IsLoading;
 
 
-        #region Form Properties
-
-        private string _categoryName;
-        private string _alergenName;
-        private bool _hasLowStockItems;
-        private int _lowStockCount;
-        private bool _isLoading;
-        private bool _isAllOrdersSelected = true;
-        private bool _isActiveOrdersSelected;
-        private bool _hasReportData;
-
-        #endregion
-
-        private MenuManagementViewModel _menuManagement;
 
         public MenuManagementViewModel MenuManagement
         {
@@ -246,11 +253,30 @@ namespace Restaurant.ViewModels.Admin
             set => SetProperty(ref _menuManagement, value);
         }
 
-        public ICommand AddNewMenuCommand { get; }
-        public ICommand EditMenuCommand { get; }
-        public ICommand DeleteMenuCommand { get; }
 
-        #region Properties
+        public ReportType SelectedReportType
+        {
+            get => _selectedReportType;
+            set
+            {
+                if (SetProperty(ref _selectedReportType, value))
+                {
+                    // Clear report data first
+                    ReportData.Clear();
+                    HasReportData = false;
+
+                    OnReportTypeSelected(value);
+
+                    // Only call GenerateReport if value is not null
+                    if (value != null)
+                    {
+                        GenerateSelectedReport();
+                    }
+                }
+            }
+        }
+
+
 
         public ObservableCollection<Category> Categories
         {
@@ -440,6 +466,10 @@ namespace Restaurant.ViewModels.Admin
 
         #region Commands
 
+        public ICommand GenerateReportCommand { get; }
+        public ICommand AddNewMenuCommand { get; }
+        public ICommand EditMenuCommand { get; }
+        public ICommand DeleteMenuCommand { get; }
         public ICommand AddCategoryCommand { get; }
         public ICommand UpdateCategoryCommand { get; }
         public ICommand DeleteCategoryCommand { get; }
@@ -469,400 +499,8 @@ namespace Restaurant.ViewModels.Admin
 
         #endregion
 
-
-        private void EnterAddPreparatMode()
-        {
-            try
-            {
-                // Resetează formularul
-                PreparatName = string.Empty;
-                PreparatPrice = 0;
-                PreparatQuantityPortie = 100;
-                PreparatQuantityTotal = 0;
-                PreparatSelectedCategory = Categories.FirstOrDefault();
-
-                // Încarcă toți alergenii disponibili
-                PreparatAvailableAlergens.Clear();
-                PreparatSelectedAlergens.Clear();
-                PreparatImages.Clear();
-
-                foreach (var alergen in _alergenService.GetAllAlergens())
-                {
-                    PreparatAvailableAlergens.Add(alergen);
-                }
-
-                // Activează modul de adăugare
-                IsAddPreparatMode = true;
-                IsEditPreparatMode = false;
-                _preparatBeingEdited = null;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la inițializarea formularului pentru preparat nou: {ex.Message}",
-                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        private void SavePreparat()
-        {
-            System.Diagnostics.Debug.WriteLine("Metoda SavePreparat() a fost apelată la: " + DateTime.Now);
-
-            try
-            {
-                if (!ValidatePreparat())
-                    return;
-
-                int preparatId;
-
-                if (IsAddPreparatMode)
-                {
-                    // Adaugă preparat nou și salvează ID-ul returnat
-                    preparatId = _preparatService.CreatePreparat(
-                        PreparatName,
-                        PreparatPrice,
-                        PreparatQuantityPortie,
-                        PreparatQuantityTotal,
-                        PreparatSelectedCategory.CategoryId);
-
-                    // Salvează imaginile folosind ID-ul preparatului nou creat
-                    SaveImages(preparatId);
-
-                    // Salvează alergenii pentru noul preparat
-                    SaveAlergens(preparatId);
-
-                    MessageBox.Show("Preparatul a fost adăugat cu succes!", "Succes",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else if (IsEditPreparatMode && _preparatBeingEdited != null)
-                {
-                    preparatId = _preparatBeingEdited.PreparatID;
-
-                    // Actualizează preparat existent
-                    _preparatService.UpdatePreparat(
-                        preparatId,
-                        PreparatName,
-                        PreparatPrice,
-                        PreparatQuantityPortie,
-                        PreparatQuantityTotal,
-                        PreparatSelectedCategory.CategoryId);
-
-                    // Salvează imaginile pentru preparatul editat
-                    SaveImages(preparatId);
-
-                    // Salvează alergenii pentru preparatul editat
-                    SaveAlergens(preparatId);
-
-                    MessageBox.Show("Preparatul a fost actualizat cu succes!", "Succes",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-
-                // Reîncarcă lista de preparate
-                LoadPreparate();
-
-                // Dezactivează modul de adăugare/editare
-                IsAddPreparatMode = false;
-                IsEditPreparatMode = false;
-                _preparatBeingEdited = null;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la salvarea preparatului: {ex.Message}",
-                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        // Metodă nouă pentru salvarea alergenilor
-        private void SaveAlergens(int preparatId)
-        {
-            if (preparatId <= 0)
-            {
-                System.Diagnostics.Debug.WriteLine("ID preparat invalid în SaveAlergens");
-                return;
-            }
-
-            try
-            {
-                // Dacă editam un preparat, ar trebui să ștergem asocierile vechi
-                if (IsEditPreparatMode)
-                {
-                    // Șterge vechile asocieri de alergeni pentru acest preparat
-                    var existingAlergens = _preparatBeingEdited?.PreparatAlergens?.Select(pa => pa.AlergenID) ?? Enumerable.Empty<int>();
-
-                    foreach (var alergenId in existingAlergens)
-                    {
-                        _preparatService.RemovePreparatAlergen(preparatId, alergenId);
-                    }
-                }
-
-                // Adaugă noile asocieri de alergeni
-                foreach (var alergen in PreparatSelectedAlergens)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Adăugare alergen {alergen.Name} (ID: {alergen.AlergenID}) la preparatul cu ID: {preparatId}");
-                    _preparatService.AddPreparatAlergen(preparatId, alergen.AlergenID);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Eroare la salvarea alergenilor: {ex.Message}");
-            }
-        }
-        private void SaveImages(int preparatId)
-        {
-            // Nu mai creăm un preparat nou, ci folosim ID-ul primit ca parametru
-            if (preparatId <= 0)
-            {
-                System.Diagnostics.Debug.WriteLine("ID preparat invalid în SaveImages");
-                return;
-            }
-
-            try
-            {
-                // Adăugăm imaginile pentru preparatul cu ID-ul specificat
-                foreach (var image in PreparatImages)
-                {
-                    _preparatService.AddPreparatImage(preparatId, image.ImagePath);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Eroare la salvarea imaginilor: {ex.Message}");
-            }
-        }
-
-
-
-        private void CancelPreparatEdit()
-        {
-            IsAddPreparatMode = false;
-            IsEditPreparatMode = false;
-            _preparatBeingEdited = null;
-        }
-
-        private void AddPreparatAlergen(object parameter)
-        {
-            if (parameter is Alergen alergen)
-            {
-                if (!PreparatSelectedAlergens.Contains(alergen))
-                {
-                    PreparatSelectedAlergens.Add(alergen);
-                    PreparatAvailableAlergens.Remove(alergen);
-                }
-            }
-        }
-
-        private void RemovePreparatAlergen(object parameter)
-        {
-            if (parameter is Alergen alergen)
-            {
-                if (PreparatSelectedAlergens.Contains(alergen))
-                {
-                    PreparatSelectedAlergens.Remove(alergen);
-                    PreparatAvailableAlergens.Add(alergen);
-                }
-            }
-        }
-  
-
-
-        private void AddPreparatImages()
-        {
-            try
-            {
-                var dialog = new OpenFileDialog
-                {
-                    Filter = "Fișiere imagine (*.jpg;*.jpeg;*.png;*.gif)|*.jpg;*.jpeg;*.png;*.gif",
-                    Multiselect = true,
-                    Title = "Selectează imaginile pentru preparat"
-                };
-
-                if (dialog.ShowDialog() == true)
-                {
-                    // Ensure Resources directory exists
-                    string resourcesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
-                    Directory.CreateDirectory(resourcesFolder);
-
-                    foreach (var fileName in dialog.FileNames)
-                    {
-                        // Generate unique filename
-                        string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(fileName)}";
-                        string destinationPath = Path.Combine(resourcesFolder, uniqueFileName);
-
-                        // Copy file to Resources folder
-                        File.Copy(fileName, destinationPath, true);
-
-                        // Use consistent path format with forward slashes
-                        string relativePath = "Resources/" + uniqueFileName;
-
-                        // Add image to list
-                        PreparatImages.Add(new PreparatImageItem
-                        {
-                            ImagePath = relativePath,
-                            FullPath = Path.GetFullPath(destinationPath) // Use absolute path for display
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la adăugarea imaginilor: {ex.Message}",
-                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-
-
-
-        private void RemovePreparatImage(object parameter)
-        {
-            if (parameter is PreparatImageItem image)
-            {
-                PreparatImages.Remove(image);
-            }
-        }
-
-        private bool ValidatePreparat()
-        {
-            // Validare nume
-            if (string.IsNullOrWhiteSpace(PreparatName))
-            {
-                MessageBox.Show("Numele preparatului este obligatoriu.", "Validare",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            // Validare preț
-            if (PreparatPrice < 0)
-            {
-                MessageBox.Show("Prețul trebuie să fie >= 0.", "Validare",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            // Validare cantitate porție
-            if (PreparatQuantityPortie <= 0)
-            {
-                MessageBox.Show("Cantitatea per porție trebuie să fie > 0.", "Validare",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            // Validare cantitate totală
-            if (PreparatQuantityTotal < 0)
-            {
-                MessageBox.Show("Cantitatea totală trebuie să fie >= 0.", "Validare",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            // Validare categorie
-            if (PreparatSelectedCategory == null)
-            {
-                MessageBox.Show("Trebuie selectată o categorie.", "Validare",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                return false;
-            }
-
-            return true;
-        }
         
-
-// Modify the SelectedReportType property to include data clearing
-public ReportType SelectedReportType
-        {
-            get => _selectedReportType;
-            set
-            {
-                if (SetProperty(ref _selectedReportType, value))
-                {
-                    // Clear report data first
-                    ReportData.Clear();
-                    HasReportData = false;
-
-                    OnReportTypeSelected(value);
-
-                    // Only call GenerateReport if value is not null
-                    if (value != null)
-                    {
-                        GenerateSelectedReport();
-                    }
-                }
-            }
-        }
-        // Metoda care se apelează când se face click pe butonul "Adaugă Preparat Nou"
-        private void AddNewPreparat()
-        {
-            EnterAddPreparatMode();
-        }
-
-        // Metoda care se apelează când se face click pe butonul "Editează" pentru un preparat
-        private void EditPreparat(Preparat preparat)
-        {
-            if (preparat == null)
-                return;
-
-            try
-            {
-                _preparatBeingEdited = preparat;
-
-                // Populează formularul cu datele preparatului
-                PreparatName = preparat.Name;
-                PreparatPrice = preparat.Price;
-                PreparatQuantityPortie = preparat.QuantityPortie;
-                PreparatQuantityTotal = preparat.QuantityTotal;
-
-                // Setează categoria
-                PreparatSelectedCategory = Categories.FirstOrDefault(c => c.CategoryId == preparat.CategoryID);
-
-                // Încarcă alergenii
-                PreparatAvailableAlergens.Clear();
-                PreparatSelectedAlergens.Clear();
-
-                // Populează lista de alergeni disponibili și selectați
-                var allAlergens = _alergenService.GetAllAlergens();
-                var selectedAlergenIds = preparat.PreparatAlergens?.Select(pa => pa.AlergenID) ?? Enumerable.Empty<int>();
-
-                foreach (var alergen in allAlergens)
-                {
-                    if (selectedAlergenIds.Contains(alergen.AlergenID))
-                    {
-                        PreparatSelectedAlergens.Add(alergen);
-                    }
-                    else
-                    {
-                        PreparatAvailableAlergens.Add(alergen);
-                    }
-                }
-
-                // Încarcă imaginile
-                PreparatImages.Clear();
-
-                // Dacă există imagini asociate preparatului, le adăugăm în listă
-                if (preparat.Fotos != null)
-                {
-                    foreach (var foto in preparat.Fotos)
-                    {
-                        string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, foto.ImagePath);
-
-                        PreparatImages.Add(new PreparatImageItem
-                        {
-                            ImagePath = foto.ImagePath,
-                            FullPath = fullPath
-                        });
-                    }
-                }
-
-                // Activează modul de editare
-                IsAddPreparatMode = false;
-                IsEditPreparatMode = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la încărcarea datelor preparatului: {ex.Message}",
-                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-
-
+       
         #region Constructor
 
         public AdminPanelViewModel(ICategoryService categoryService,
@@ -957,8 +595,483 @@ public ReportType SelectedReportType
 
 
 
+        #region AlergensMethodes
+        private void SaveAlergens(int preparatId)
+        {
+            if (preparatId <= 0)
+            {
+                System.Diagnostics.Debug.WriteLine("ID preparat invalid în SaveAlergens");
+                return;
+            }
 
-        // Modify the OnReportTypeSelected method in AdminPanelViewModel.cs
+            try
+            {
+
+                if (IsEditPreparatMode)
+                {
+
+                    var existingAlergens = _preparatBeingEdited?.PreparatAlergens?.Select(pa => pa.AlergenID) ?? Enumerable.Empty<int>();
+
+                    foreach (var alergenId in existingAlergens)
+                    {
+                        _preparatService.RemovePreparatAlergen(preparatId, alergenId);
+                    }
+                }
+
+
+                foreach (var alergen in PreparatSelectedAlergens)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Adăugare alergen {alergen.Name} (ID: {alergen.AlergenID}) la preparatul cu ID: {preparatId}");
+                    _preparatService.AddPreparatAlergen(preparatId, alergen.AlergenID);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Eroare la salvarea alergenilor: {ex.Message}");
+            }
+        }
+        private void LoadAlergens()
+        {
+            var alergens = _alergenService.GetAllAlergens();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Alergens.Clear();
+                foreach (var alergen in alergens)
+                {
+                    Alergens.Add(alergen);
+                }
+            });
+        }
+        private void AddPreparatAlergen(object parameter)
+        {
+            if (parameter is Alergen alergen)
+            {
+                if (!PreparatSelectedAlergens.Contains(alergen))
+                {
+                    PreparatSelectedAlergens.Add(alergen);
+                    PreparatAvailableAlergens.Remove(alergen);
+                }
+            }
+        }
+        private void RemovePreparatAlergen(object parameter)
+        {
+            if (parameter is Alergen alergen)
+            {
+                if (PreparatSelectedAlergens.Contains(alergen))
+                {
+                    PreparatSelectedAlergens.Remove(alergen);
+                    PreparatAvailableAlergens.Add(alergen);
+                }
+            }
+        }
+        private void AddAlergen()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(AlergenName))
+                    return;
+
+                _alergenService.CreateAlergen(AlergenName);
+                LoadAlergens();
+                AlergenName = string.Empty;
+                MessageBox.Show("Alergenul a fost adăugat cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la adăugarea alergenului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void UpdateAlergen()
+        {
+            try
+            {
+                if (SelectedAlergen == null || string.IsNullOrWhiteSpace(AlergenName))
+                    return;
+
+                _alergenService.UpdateAlergen(SelectedAlergen.AlergenID, AlergenName);
+                LoadAlergens();
+                MessageBox.Show("Alergenul a fost actualizat cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la actualizarea alergenului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void DeleteAlergen(Alergen alergen)
+        {
+            try
+            {
+                if (alergen == null)
+                    return;
+
+                var result = MessageBox.Show(
+                    $"Ești sigur că vrei să ștergi alergenul '{alergen.Name}'?",
+                    "Confirmare ștergere",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _alergenService.DeleteAlergen(alergen.AlergenID);
+                    LoadAlergens();
+                    MessageBox.Show("Alergenul a fost șters cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la ștergerea alergenului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void EditAlergen(Alergen alergen)
+        {
+            if (alergen == null)
+                return;
+
+            SelectedAlergen = alergen;
+            AlergenName = alergen.Name;
+        }
+
+
+
+
+        #endregion
+
+
+
+        #region PreparatMethodes
+
+        private void LoadPreparate()
+        {
+            var allPreparate = new List<Preparat>();
+
+            foreach (var category in Categories)
+            {
+                var preparateInCategory = _preparatService.GetPreparateByCategory(category.CategoryId);
+                allPreparate.AddRange(preparateInCategory);
+            }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Preparate.Clear();
+                foreach (var preparat in allPreparate)
+                {
+                    Preparate.Add(preparat);
+                }
+            });
+        }
+
+        private void EnterAddPreparatMode()
+        {
+            try
+            {
+
+                PreparatName = string.Empty;
+                PreparatPrice = 0;
+                PreparatQuantityPortie = 100;
+                PreparatQuantityTotal = 0;
+                PreparatSelectedCategory = Categories.FirstOrDefault();
+
+                // Încarcă toți alergenii disponibili
+                PreparatAvailableAlergens.Clear();
+                PreparatSelectedAlergens.Clear();
+                PreparatImages.Clear();
+
+                foreach (var alergen in _alergenService.GetAllAlergens())
+                {
+                    PreparatAvailableAlergens.Add(alergen);
+                }
+
+                // Activează modul de adăugare
+                IsAddPreparatMode = true;
+                IsEditPreparatMode = false;
+                _preparatBeingEdited = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la inițializarea formularului pentru preparat nou: {ex.Message}",
+                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void SavePreparat()
+        {
+            System.Diagnostics.Debug.WriteLine("Metoda SavePreparat() a fost apelată la: " + DateTime.Now);
+
+            try
+            {
+                if (!ValidatePreparat())
+                    return;
+
+                int preparatId;
+
+                if (IsAddPreparatMode)
+                {
+
+                    preparatId = _preparatService.CreatePreparat(
+                        PreparatName,
+                        PreparatPrice,
+                        PreparatQuantityPortie,
+                        PreparatQuantityTotal,
+                        PreparatSelectedCategory.CategoryId);
+
+
+                    SaveImages(preparatId);
+
+
+                    SaveAlergens(preparatId);
+
+                    MessageBox.Show("Preparatul a fost adăugat cu succes!", "Succes",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else if (IsEditPreparatMode && _preparatBeingEdited != null)
+                {
+                    preparatId = _preparatBeingEdited.PreparatID;
+
+
+                    _preparatService.UpdatePreparat(
+                        preparatId,
+                        PreparatName,
+                        PreparatPrice,
+                        PreparatQuantityPortie,
+                        PreparatQuantityTotal,
+                        PreparatSelectedCategory.CategoryId);
+
+
+                    SaveImages(preparatId);
+
+
+                    SaveAlergens(preparatId);
+
+                    MessageBox.Show("Preparatul a fost actualizat cu succes!", "Succes",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+
+                LoadPreparate();
+
+
+                IsAddPreparatMode = false;
+                IsEditPreparatMode = false;
+                _preparatBeingEdited = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la salvarea preparatului: {ex.Message}",
+                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void AddNewPreparat()
+        {
+            EnterAddPreparatMode();
+        }
+
+
+        private void EditPreparat(Preparat preparat)
+        {
+            if (preparat == null)
+                return;
+
+            try
+            {
+                _preparatBeingEdited = preparat;
+
+
+                PreparatName = preparat.Name;
+                PreparatPrice = preparat.Price;
+                PreparatQuantityPortie = preparat.QuantityPortie;
+                PreparatQuantityTotal = preparat.QuantityTotal;
+
+
+                PreparatSelectedCategory = Categories.FirstOrDefault(c => c.CategoryId == preparat.CategoryID);
+
+
+                PreparatAvailableAlergens.Clear();
+                PreparatSelectedAlergens.Clear();
+
+
+                var allAlergens = _alergenService.GetAllAlergens();
+                var selectedAlergenIds = preparat.PreparatAlergens?.Select(pa => pa.AlergenID) ?? Enumerable.Empty<int>();
+
+                foreach (var alergen in allAlergens)
+                {
+                    if (selectedAlergenIds.Contains(alergen.AlergenID))
+                    {
+                        PreparatSelectedAlergens.Add(alergen);
+                    }
+                    else
+                    {
+                        PreparatAvailableAlergens.Add(alergen);
+                    }
+                }
+
+                // Încarcă imaginile
+                PreparatImages.Clear();
+
+                // Dacă există imagini asociate preparatului, le adăugăm în listă
+                if (preparat.Fotos != null)
+                {
+                    foreach (var foto in preparat.Fotos)
+                    {
+                        string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, foto.ImagePath);
+
+                        PreparatImages.Add(new PreparatImageItem
+                        {
+                            ImagePath = foto.ImagePath,
+                            FullPath = fullPath
+                        });
+                    }
+                }
+
+                // Activează modul de editare
+                IsAddPreparatMode = false;
+                IsEditPreparatMode = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la încărcarea datelor preparatului: {ex.Message}",
+                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CancelPreparatEdit()
+        {
+            IsAddPreparatMode = false;
+            IsEditPreparatMode = false;
+            _preparatBeingEdited = null;
+        }
+
+        private void AddPreparatImages()
+        {
+            try
+            {
+                var dialog = new OpenFileDialog
+                {
+                    Filter = "Fișiere imagine (*.jpg;*.jpeg;*.png;*.gif)|*.jpg;*.jpeg;*.png;*.gif",
+                    Multiselect = true,
+                    Title = "Selectează imaginile pentru preparat"
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    // Ensure Resources directory exists
+                    string resourcesFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+                    Directory.CreateDirectory(resourcesFolder);
+
+                    foreach (var fileName in dialog.FileNames)
+                    {
+                        // Generate unique filename
+                        string uniqueFileName = $"{Guid.NewGuid()}{Path.GetExtension(fileName)}";
+                        string destinationPath = Path.Combine(resourcesFolder, uniqueFileName);
+
+                        // Copy file to Resources folder
+                        File.Copy(fileName, destinationPath, true);
+
+                        // Use consistent path format with forward slashes
+                        string relativePath = "Resources/" + uniqueFileName;
+
+                        // Add image to list
+                        PreparatImages.Add(new PreparatImageItem
+                        {
+                            ImagePath = relativePath,
+                            FullPath = Path.GetFullPath(destinationPath) // Use absolute path for display
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la adăugarea imaginilor: {ex.Message}",
+                    "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void RemovePreparatImage(object parameter)
+        {
+            if (parameter is PreparatImageItem image)
+            {
+                PreparatImages.Remove(image);
+            }
+        }
+
+        private bool ValidatePreparat()
+        {
+            // Validare nume
+            if (string.IsNullOrWhiteSpace(PreparatName))
+            {
+                MessageBox.Show("Numele preparatului este obligatoriu.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Validare preț
+            if (PreparatPrice < 0)
+            {
+                MessageBox.Show("Prețul trebuie să fie >= 0.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Validare cantitate porție
+            if (PreparatQuantityPortie <= 0)
+            {
+                MessageBox.Show("Cantitatea per porție trebuie să fie > 0.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Validare cantitate totală
+            if (PreparatQuantityTotal < 0)
+            {
+                MessageBox.Show("Cantitatea totală trebuie să fie >= 0.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            // Validare categorie
+            if (PreparatSelectedCategory == null)
+            {
+                MessageBox.Show("Trebuie selectată o categorie.", "Validare",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            return true;
+        }
+
+        private void DeletePreparat(Preparat preparat)
+        {
+            try
+            {
+                if (preparat == null)
+                    return;
+
+                var result = MessageBox.Show(
+                    $"Ești sigur că vrei să ștergi preparatul '{preparat.Name}'?",
+                    "Confirmare ștergere",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _preparatService.DeletePreparat(preparat.PreparatID);
+                    LoadPreparate();
+                    MessageBox.Show("Preparatul a fost șters cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la ștergerea preparatului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+
+
+
+        #endregion
+
+
+
+        #region ReportMethodes
         private void OnReportTypeSelected(ReportType reportType)
         {
             if (reportType == null)
@@ -996,7 +1109,6 @@ public ReportType SelectedReportType
                     break;
             }
         }
-
 
         private async void GenerateSelectedReport()
         {
@@ -1191,39 +1303,53 @@ public ReportType SelectedReportType
         }
 
 
-        private int _selectedTabIndex;
-        public int SelectedTabIndex
-        {
-            get => _selectedTabIndex;
-            set => SetProperty(ref _selectedTabIndex, value);
-        }
 
-        private void ShowLowStockItems()
+        #endregion
+
+       
+        #region MenuManagement
+
+        private void LoadMenus()
         {
             try
             {
-                // First, switch to the Reports tab (assuming it's the 4th tab, index 3)
-                SelectedTabIndex = 5; // Adjust this index if the Reports tab is at a different position
+                System.Diagnostics.Debug.WriteLine("Începe încărcarea meniurilor...");
 
-                // Then select the "Produse cu stoc redus" report and generate it
-                SelectedReportType = ReportTypes.FirstOrDefault(r => r.Id == 1);
+                var menus = _menuService.GetAllMenus();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Menus.Clear();
+                    foreach (var menu in menus)
+                    {
+                        var menuVm = new MenuViewModel();
+                        menuVm.Menu = menu;
+
+
+                        decimal calculatedPrice = _menuService.CalculateMenuPrice(menu.MenuID);
+                        menuVm.CalculatedPrice = calculatedPrice;
+
+                        Menus.Add(menuVm);
+                    }
+
+                    System.Diagnostics.Debug.WriteLine($"Meniuri încărcate: {Menus.Count}");
+                });
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Eroare la afișarea produselor cu stoc redus: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Diagnostics.Debug.WriteLine($"Eroare la încărcarea meniurilor: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
+                MessageBox.Show($"Eroare la încărcarea meniurilor: {ex.Message}", "Eroare",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        private string GetConnectionString()
-        {
-            return System.Configuration.ConfigurationManager.ConnectionStrings["RestaurantDb"].ConnectionString;
-        }
+
 
         private void AddNewMenu()
         {
-            MenuManagement.Initialize(); // Inițializăm formularul pentru un meniu nou
+            MenuManagement.Initialize();
             MenuManagement.IsAddMode = true;
 
-            // Adăugăm handler pentru evenimentul CancelRequested
+
             MenuManagement.CancelRequested += MenuManagement_CancelRequested;
         }
 
@@ -1239,7 +1365,7 @@ public ReportType SelectedReportType
             {
                 System.Diagnostics.Debug.WriteLine($"AdminPanelViewModel: EditMenu called for menu ID: {menuViewModel.MenuID}, Name: {menuViewModel.Name}");
 
-                // Obține meniul original din baza de date pentru a avea toate datele complete
+
                 var menuId = menuViewModel.MenuID;
                 var menu = _menuService.GetMenuById(menuId);
 
@@ -1276,14 +1402,14 @@ public ReportType SelectedReportType
 
         private void MenuManagement_CancelRequested(object sender, EventArgs e)
         {
-            // Eliminăm handler-ul pentru a evita multiple subscriptions
+
             MenuManagement.CancelRequested -= MenuManagement_CancelRequested;
 
-            // Resetăm proprietatea pentru a reveni la pagina cu lista de meniuri
+
             MenuManagement.IsAddMode = false;
             MenuManagement.IsEditMode = false;
 
-            // Reîncărcăm lista de meniuri pentru a ne asigura că este actualizată
+
             LoadMenus();
         }
         private void DeleteMenu(MenuViewModel menuViewModel)
@@ -1301,9 +1427,9 @@ public ReportType SelectedReportType
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    var menuId = menuViewModel.MenuID; // Sau menuViewModel.Menu.MenuID
+                    var menuId = menuViewModel.MenuID;
                     _menuService.DeleteMenu(menuId);
-                    LoadMenus(); // Reîncărcăm lista de meniuri
+                    LoadMenus();
                     MessageBox.Show("Meniul a fost șters cu succes!", "Succes",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -1314,116 +1440,12 @@ public ReportType SelectedReportType
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        #region Loading Methods
-
-        public async Task LoadInitialDataAsync()
-        {
-            IsLoading = true;
-
-            try
-            {
-                await Task.Run(() =>
-                {
-                    LoadCategories();
-                    LoadPreparate();
-                    LoadAlergens();
-                    LoadMenus();
-                    LoadOrders();
-                    CheckLowStockItems();
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la încărcarea datelor: {ex.Message}", "Eroare",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                IsLoading = false;
-            }
-        }
-
-        private void LoadCategories()
-        {
-            var categories = _categoryService.GetAllCategories();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Categories.Clear();
-                foreach (var category in categories)
-                {
-                    Categories.Add(category);
-                }
-            });
-        }
-
-        private void LoadPreparate()
-        {
-            var allPreparate = new List<Preparat>();
-
-            foreach (var category in Categories)
-            {
-                var preparateInCategory = _preparatService.GetPreparateByCategory(category.CategoryId);
-                allPreparate.AddRange(preparateInCategory);
-            }
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Preparate.Clear();
-                foreach (var preparat in allPreparate)
-                {
-                    Preparate.Add(preparat);
-                }
-            });
-        }
-
-        private void LoadAlergens()
-        {
-            var alergens = _alergenService.GetAllAlergens();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Alergens.Clear();
-                foreach (var alergen in alergens)
-                {
-                    Alergens.Add(alergen);
-                }
-            });
-        }
-
-        private void LoadMenus()
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine("Începe încărcarea meniurilor...");
-
-                var menus = _menuService.GetAllMenus(); // Sau GetAllMenusWithCategories() dacă ați implementat-o
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    Menus.Clear();
-                    foreach (var menu in menus)
-                    {
-                        var menuVm = new MenuViewModel();
-                        menuVm.Menu = menu;
-
-                        // Calcularea prețului pentru meniu (cu reducerea din configurare)
-                        decimal calculatedPrice = _menuService.CalculateMenuPrice(menu.MenuID);
-                        menuVm.CalculatedPrice = calculatedPrice;
-
-                        Menus.Add(menuVm);
-                    }
-
-                    System.Diagnostics.Debug.WriteLine($"Meniuri încărcate: {Menus.Count}");
-                });
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Eroare la încărcarea meniurilor: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                MessageBox.Show($"Eroare la încărcarea meniurilor: {ex.Message}", "Eroare",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
 
+        #endregion
+
+
+        #region Order Methods
         private void LoadOrders()
         {
             if (IsAllOrdersSelected)
@@ -1435,7 +1457,6 @@ public ReportType SelectedReportType
                 LoadActiveOrders();
             }
         }
-
         private void LoadAllOrders()
         {
             var orders = _orderService.GetAllOrders();
@@ -1461,23 +1482,68 @@ public ReportType SelectedReportType
                 }
             });
         }
-
-        private void CheckLowStockItems()
+        private void ViewOrderDetails(OrderViewModel order)
         {
-            // Simulare verificare produse cu stoc redus
-            // În mod normal, se folosește un parametru de configurare pentru pragul minim
-            const int lowStockThreshold = 5;
+            if (order == null)
+                return;
 
-            var lowStockItems = Preparate.Where(p => p.QuantityTotal <= lowStockThreshold).ToList();
 
-            Application.Current.Dispatcher.Invoke(() =>
+            MessageBox.Show($"Detalii comandă: {order.OrderCode}\nClient: {order.ClientName}\nTotal: {order.TotalCostFormatted}",
+                "Detalii Comandă", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        private void UpdateOrderStatus(OrderViewModel order)
+        {
+            if (order == null)
+                return;
+
+            try
             {
-                HasLowStockItems = lowStockItems.Count > 0;
-                LowStockCount = lowStockItems.Count;
-            });
+
+                var nextStatus = GetNextOrderStatus(order.Status);
+
+                var result = MessageBox.Show(
+                    $"Dorești să actualizezi starea comenzii {order.OrderCode} de la '{GetStatusName(order.Status)}' la '{GetStatusName(nextStatus)}'?",
+                    "Confirmare actualizare stare comandă",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _orderService.UpdateOrderStatus(order.OrderID, nextStatus);
+                    LoadOrders();
+                    MessageBox.Show("Starea comenzii a fost actualizată cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la actualizarea stării comenzii: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private OrderStatus GetNextOrderStatus(OrderStatus currentStatus)
+        {
+            return currentStatus switch
+            {
+                OrderStatus.Registered => OrderStatus.InPreparation,
+                OrderStatus.InPreparation => OrderStatus.OutforDelivery,
+                OrderStatus.OutforDelivery => OrderStatus.Delievered,
+                _ => OrderStatus.Canceled
+            };
+        }
+        private string GetStatusName(OrderStatus status)
+        {
+            return status switch
+            {
+                OrderStatus.Registered => "Înregistrată",
+                OrderStatus.InPreparation => "În pregătire",
+                OrderStatus.OutforDelivery => "În livrare",
+                OrderStatus.Delievered => "Livrată",
+                OrderStatus.Canceled => "Anulată",
+                _ => "Necunoscut"
+            };
         }
 
         #endregion
+
 
         #region Category Operations
 
@@ -1555,265 +1621,8 @@ public ReportType SelectedReportType
 
         #endregion
 
-        #region Alergen Operations
-
-        private void AddAlergen()
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(AlergenName))
-                    return;
-
-                _alergenService.CreateAlergen(AlergenName);
-                LoadAlergens();
-                AlergenName = string.Empty;
-                MessageBox.Show("Alergenul a fost adăugat cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la adăugarea alergenului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void UpdateAlergen()
-        {
-            try
-            {
-                if (SelectedAlergen == null || string.IsNullOrWhiteSpace(AlergenName))
-                    return;
-
-                _alergenService.UpdateAlergen(SelectedAlergen.AlergenID, AlergenName);
-                LoadAlergens();
-                MessageBox.Show("Alergenul a fost actualizat cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la actualizarea alergenului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void DeleteAlergen(Alergen alergen)
-        {
-            try
-            {
-                if (alergen == null)
-                    return;
-
-                var result = MessageBox.Show(
-                    $"Ești sigur că vrei să ștergi alergenul '{alergen.Name}'?",
-                    "Confirmare ștergere",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    _alergenService.DeleteAlergen(alergen.AlergenID);
-                    LoadAlergens();
-                    MessageBox.Show("Alergenul a fost șters cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la ștergerea alergenului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private void EditAlergen(Alergen alergen)
-        {
-            if (alergen == null)
-                return;
-
-            SelectedAlergen = alergen;
-            AlergenName = alergen.Name;
-        }
-
-        #endregion
-
-        #region Preparat Operations
-
-
-        private void DeletePreparat(Preparat preparat)
-        {
-            try
-            {
-                if (preparat == null)
-                    return;
-
-                var result = MessageBox.Show(
-                    $"Ești sigur că vrei să ștergi preparatul '{preparat.Name}'?",
-                    "Confirmare ștergere",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    _preparatService.DeletePreparat(preparat.PreparatID);
-                    LoadPreparate();
-                    MessageBox.Show("Preparatul a fost șters cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la ștergerea preparatului: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        #endregion
-
-
-        #region Order Operations
-
-        private void ViewOrderDetails(OrderViewModel order)
-        {
-            if (order == null)
-                return;
-
-            // În producție, aici s-ar deschide un dialog/view pentru vizualizarea detaliilor comenzii
-            MessageBox.Show($"Detalii comandă: {order.OrderCode}\nClient: {order.ClientName}\nTotal: {order.TotalCostFormatted}",
-                "Detalii Comandă", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void UpdateOrderStatus(OrderViewModel order)
-        {
-            if (order == null)
-                return;
-
-            try
-            {
-                // În producție, aici s-ar deschide un dialog pentru selectarea noii stări a comenzii
-                var nextStatus = GetNextOrderStatus(order.Status);
-
-                var result = MessageBox.Show(
-                    $"Dorești să actualizezi starea comenzii {order.OrderCode} de la '{GetStatusName(order.Status)}' la '{GetStatusName(nextStatus)}'?",
-                    "Confirmare actualizare stare comandă",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    _orderService.UpdateOrderStatus(order.OrderID, nextStatus);
-                    LoadOrders();
-                    MessageBox.Show("Starea comenzii a fost actualizată cu succes!", "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Eroare la actualizarea stării comenzii: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private OrderStatus GetNextOrderStatus(OrderStatus currentStatus)
-        {
-            return currentStatus switch
-            {
-                OrderStatus.Registered => OrderStatus.InPreparation,
-                OrderStatus.InPreparation => OrderStatus.OutforDelivery,
-                OrderStatus.OutforDelivery => OrderStatus.Delievered,
-                _ => OrderStatus.Canceled // Fallback, nu ar trebui să se ajungă aici
-            };
-        }
-
-        private string GetStatusName(OrderStatus status)
-        {
-            return status switch
-            {
-                OrderStatus.Registered => "Înregistrată",
-                OrderStatus.InPreparation => "În pregătire",
-                OrderStatus.OutforDelivery => "În livrare",
-                OrderStatus.Delievered => "Livrată",
-                OrderStatus.Canceled => "Anulată",
-                _ => "Necunoscut"
-            };
-        }
-
-        #endregion
-
-        #region Report Operations
 
         
-        
-
-        private void GenerateLowStockReport()
-        {
-            const int lowStockThreshold = 5;
-
-            var lowStockItems = Preparate
-                .Where(p => p.QuantityTotal <= lowStockThreshold)
-                .Select(p => new LowStockItemViewModel
-                {
-                    ProductName = p.Name,
-                    CurrentStock = p.QuantityTotal,
-                    Category = p.Category?.Name ?? "Necunoscut",
-                    Status = p.QuantityTotal == 0 ? "Epuizat" : "Nivel scăzut"
-                })
-                .OrderBy(item => item.CurrentStock)
-                .ToList();
-
-            foreach (var item in lowStockItems)
-            {
-                ReportData.Add(item);
-            }
-        }
-
-        private void GenerateOrdersPerDayReport()
-        {
-            // Grupează comenzile după zi și calculează numărul și valoarea totală
-            var ordersPerDay = _orderService.GetAllOrders()
-                .GroupBy(o => o.OrderDateTime.Date)
-                .Select(g => new OrdersPerDayViewModel
-                {
-                    Date = g.Key,
-                    DateFormatted = g.Key.ToString("dd.MM.yyyy"),
-                    OrderCount = g.Count(),
-                    TotalValue = g.Sum(o => o.TotalCost),
-                    TotalValueFormatted = $"{g.Sum(o => o.TotalCost):N2} Lei"
-                })
-                .OrderByDescending(item => item.Date)
-                .ToList();
-
-            foreach (var item in ordersPerDay)
-            {
-                ReportData.Add(item);
-            }
-        }
-
-        private void GeneratePopularProductsReport()
-        {
-            // Simulare raport de popularitate a produselor (în practică s-ar face o interogare complexă pe baza comenzilor)
-            var popularProducts = new List<PopularProductViewModel>
-            {
-                new PopularProductViewModel { ProductName = "Supă cremă de ciuperci", OrderCount = 45, TotalQuantity = 45, Revenue = 1350.00m, RevenueFormatted = "1,350.00 Lei" },
-                new PopularProductViewModel { ProductName = "Pizza Margherita", OrderCount = 38, TotalQuantity = 38, Revenue = 1520.00m, RevenueFormatted = "1,520.00 Lei" },
-                new PopularProductViewModel { ProductName = "Paste Carbonara", OrderCount = 32, TotalQuantity = 32, Revenue = 1280.00m, RevenueFormatted = "1,280.00 Lei" },
-                new PopularProductViewModel { ProductName = "Limonadă", OrderCount = 30, TotalQuantity = 30, Revenue = 450.00m, RevenueFormatted = "450.00 Lei" },
-                new PopularProductViewModel { ProductName = "Salată Caesar", OrderCount = 25, TotalQuantity = 25, Revenue = 875.00m, RevenueFormatted = "875.00 Lei" }
-            };
-
-            foreach (var item in popularProducts)
-            {
-                ReportData.Add(item);
-            }
-        }
-
-        private void GenerateRevenuePerCategoryReport()
-        {
-            // Simulare raport de venituri pe categorii (în practică s-ar face o interogare complexă)
-            var revenuePerCategory = new List<RevenuePerCategoryViewModel>
-            {
-                new RevenuePerCategoryViewModel { CategoryName = "Fel principal", OrderCount = 150, Revenue = 12000.00m, RevenueFormatted = "12,000.00 Lei", PercentageOfTotal = 40.0m },
-                new RevenuePerCategoryViewModel { CategoryName = "Aperitive", OrderCount = 120, Revenue = 6000.00m, RevenueFormatted = "6,000.00 Lei", PercentageOfTotal = 20.0m },
-                new RevenuePerCategoryViewModel { CategoryName = "Desert", OrderCount = 100, Revenue = 3000.00m, RevenueFormatted = "3,000.00 Lei", PercentageOfTotal = 10.0m },
-                new RevenuePerCategoryViewModel { CategoryName = "Băuturi", OrderCount = 200, Revenue = 4500.00m, RevenueFormatted = "4,500.00 Lei", PercentageOfTotal = 15.0m },
-                new RevenuePerCategoryViewModel { CategoryName = "Meniuri", OrderCount = 80, Revenue = 4500.00m, RevenueFormatted = "4,500.00 Lei", PercentageOfTotal = 15.0m }
-            };
-
-            foreach (var item in revenuePerCategory)
-            {
-                ReportData.Add(item);
-            }
-        }
-
-        #endregion
 
         #region Helper Methods
         private string GetStatusText(OrderStatus status)
@@ -1860,15 +1669,109 @@ public ReportType SelectedReportType
                 CanUpdateStatus = order.Status != OrderStatus.Delievered && order.Status != OrderStatus.Canceled
             };
         }
+        private void SaveImages(int preparatId)
+        {
+
+            if (preparatId <= 0)
+            {
+                System.Diagnostics.Debug.WriteLine("ID preparat invalid în SaveImages");
+                return;
+            }
+
+            try
+            {
+
+                foreach (var image in PreparatImages)
+                {
+                    _preparatService.AddPreparatImage(preparatId, image.ImagePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Eroare la salvarea imaginilor: {ex.Message}");
+            }
+        }
+        private void ShowLowStockItems()
+        {
+            try
+            {
+                // First, switch to the Reports tab (assuming it's the 4th tab, index 3)
+                SelectedTabIndex = 5; // Adjust this index if the Reports tab is at a different position
+
+
+                SelectedReportType = ReportTypes.FirstOrDefault(r => r.Id == 1);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la afișarea produselor cu stoc redus: {ex.Message}", "Eroare", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private string GetConnectionString()
+        {
+            return System.Configuration.ConfigurationManager.ConnectionStrings["RestaurantDb"].ConnectionString;
+        }
+        public async Task LoadInitialDataAsync()
+        {
+            IsLoading = true;
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    LoadCategories();
+                    LoadPreparate();
+                    LoadAlergens();
+                    LoadMenus();
+                    LoadOrders();
+                    CheckLowStockItems();
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Eroare la încărcarea datelor: {ex.Message}", "Eroare",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private void LoadCategories()
+        {
+            var categories = _categoryService.GetAllCategories();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Categories.Clear();
+                foreach (var category in categories)
+                {
+                    Categories.Add(category);
+                }
+            });
+        }
+
+        private void CheckLowStockItems()
+        {
+
+            const int lowStockThreshold = 5;
+
+            var lowStockItems = Preparate.Where(p => p.QuantityTotal <= lowStockThreshold).ToList();
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                HasLowStockItems = lowStockItems.Count > 0;
+                LowStockCount = lowStockItems.Count;
+            });
+        }
+
+
 
         #endregion
+
+
+
+
+
     }
 
-   
-
-   
-
-  
-
-    
 }

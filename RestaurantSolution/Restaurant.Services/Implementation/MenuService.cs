@@ -36,7 +36,7 @@ namespace Restaurant.Services.Implementation
             {
                 System.Diagnostics.Debug.WriteLine($"MenuService: Error in GetAllMenus - {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                throw; // Re-throw the exception for handling at a higher level
+                throw; 
             }
         }
 
@@ -54,7 +54,7 @@ namespace Restaurant.Services.Implementation
             {
                 System.Diagnostics.Debug.WriteLine($"MenuService: Error in GetAllMenusWithCategories - {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                throw; // Re-throw the exception for handling at a higher level
+                throw; 
             }
         }
 

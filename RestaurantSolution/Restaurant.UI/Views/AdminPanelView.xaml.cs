@@ -15,7 +15,7 @@ namespace Restaurant.UI.Views.Admin
         {
             InitializeComponent();
 
-            // Inițializare ViewModel și setare ca DataContext
+     
             var viewModel = new AdminPanelViewModel(
                 categoryService,
                 preparatService,
@@ -26,7 +26,7 @@ namespace Restaurant.UI.Views.Admin
 
             DataContext = viewModel;
 
-            // Încărcare date la inițializare
+
             Loaded += async (s, e) => await viewModel.LoadInitialDataAsync();
         }
 

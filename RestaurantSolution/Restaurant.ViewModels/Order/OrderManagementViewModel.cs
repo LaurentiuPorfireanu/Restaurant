@@ -1,17 +1,16 @@
-﻿// Add this class to the Order folder in ViewModels project
-using Restaurant.Domain.Entities;
+﻿using Restaurant.Domain.Entities;
 using Restaurant.Domain.Enums;
 using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Base;
 using Restaurant.ViewModels.Commands;
-using Restaurant.ViewModels.Menu;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows;
 using System;
 using System.Configuration;
-using Restaurant.ViewModels.Order;
+using Restaurant.ViewModels.Menu.Extras;
+using Restaurant.ViewModels.Order.Extras;
 
 public class OrderManagementViewModel : ViewModelBase
 {
@@ -30,6 +29,16 @@ public class OrderManagementViewModel : ViewModelBase
     private decimal _discount;
     private decimal _deliveryCost;
     private decimal _totalCost;
+
+    public ICommand AddToCartCommand { get; }
+    public ICommand RemoveFromCartCommand { get; }
+    public ICommand IncrementQuantityCommand { get; }
+    public ICommand DecrementQuantityCommand { get; }
+    public ICommand PlaceOrderCommand { get; }
+    public ICommand CancelOrderCommand { get; }
+
+    public event EventHandler OrderPlaced;
+    public event EventHandler CancelRequested;
 
     // Properties
     public bool IsAddMode
@@ -123,19 +132,10 @@ public class OrderManagementViewModel : ViewModelBase
 
     public string EstimatedDeliveryFormatted => EstimatedDelivery?.ToString("dd.MM.yyyy HH:mm") ?? "Nespecificat";
 
-    // Commands
-    public ICommand AddToCartCommand { get; }
-    public ICommand RemoveFromCartCommand { get; }
-    public ICommand IncrementQuantityCommand { get; }
-    public ICommand DecrementQuantityCommand { get; }
-    public ICommand PlaceOrderCommand { get; }
-    public ICommand CancelOrderCommand { get; }
+    
+  
 
-    // Events
-    public event EventHandler OrderPlaced;
-    public event EventHandler CancelRequested;
 
-    // Constructor
     public OrderManagementViewModel(
         IOrderService orderService,
         IPreparatService preparatService,
@@ -159,27 +159,27 @@ public class OrderManagementViewModel : ViewModelBase
         PlaceOrderCommand = new RelayCommand(_ => PlaceOrder(), _ => CanPlaceOrder());
         CancelOrderCommand = new RelayCommand(_ => CancelOrder());
 
-        // Initialize default values
+       
         DeliveryAddress = _currentUser.Address;
 
-        // Calculate estimated delivery time (1 hour from now)
+        
         EstimatedDelivery = DateTime.Now.AddHours(1);
     }
 
-    // Methods
+
     public void Initialize()
     {
         IsLoading = true;
 
         try
         {
-            // Load categories, dishes, and menus
+           
             LoadCategories();
 
-            // Clear cart
+           
             CartItems.Clear();
 
-            // Reset calculations
+           
             RecalculateSubtotal();
         }
         catch (Exception ex)
@@ -209,11 +209,11 @@ public class OrderManagementViewModel : ViewModelBase
                 Menus = new ObservableCollection<MenuItemViewModel>()
             };
 
-            // Load dishes in this category
+            
             var preparate = _preparatService.GetPreparateByCategory(category.CategoryId);
             foreach (var preparat in preparate)
             {
-                if (preparat.QuantityTotal > 0) // Only show available items
+                if (preparat.QuantityTotal > 0) 
                 {
                     categoryVm.Preparate.Add(new PreparatViewModel
                     {
@@ -227,7 +227,7 @@ public class OrderManagementViewModel : ViewModelBase
                 }
             }
 
-            // Load menus in this category
+           
             var menus = _menuService.GetMenusByCategory(category.CategoryId);
             foreach (var menu in menus)
             {
@@ -248,7 +248,7 @@ public class OrderManagementViewModel : ViewModelBase
                 }
             }
 
-            // Only add categories that have items
+            
             if (categoryVm.Preparate.Count > 0 || categoryVm.Menus.Count > 0)
             {
                 categoryVm.HasPreparate = categoryVm.Preparate.Count > 0;
@@ -268,9 +268,9 @@ public class OrderManagementViewModel : ViewModelBase
 
     private decimal CalculateMenuPrice(Restaurant.Domain.Entities.Menu menu)
     {
-        decimal discountPercentage = 10; // Default 10% discount
+        decimal discountPercentage = 10; 
 
-        // Try to get discount from configuration
+        
         string configDiscount = ConfigurationManager.AppSettings["MenuDiscountPercentage"];
         if (!string.IsNullOrEmpty(configDiscount) && decimal.TryParse(configDiscount, out decimal parsedDiscount))
         {
@@ -291,7 +291,6 @@ public class OrderManagementViewModel : ViewModelBase
     {
         if (parameter is PreparatViewModel preparatVm && preparatVm.Preparat != null)
         {
-            // Check if item is already in cart
             var existingItem = CartItems.FirstOrDefault(i =>
                 i.ItemType == CartItemType.Dish && i.ItemId == preparatVm.PreparatId);
 
@@ -391,7 +390,7 @@ public class OrderManagementViewModel : ViewModelBase
     {
         Subtotal = CartItems.Sum(item => item.TotalPrice);
 
-        // Apply discounts and delivery cost based on configuration
+        
         ApplyOrderDiscount();
         ApplyDeliveryCost();
     }

@@ -12,7 +12,7 @@ namespace Restaurant.UI.Views.Menu
         {
             InitializeComponent();
 
-            // Inițializare ViewModel și setare ca DataContext
+            
             var viewModel = new RestaurantMenuViewModel(
                 categoryService,
                 preparatService,
@@ -20,7 +20,7 @@ namespace Restaurant.UI.Views.Menu
 
             DataContext = viewModel;
 
-            // Încărcare date la inițializare
+         
             Loaded += async (s, e) => await viewModel.LoadDataAsync();
         }
     }

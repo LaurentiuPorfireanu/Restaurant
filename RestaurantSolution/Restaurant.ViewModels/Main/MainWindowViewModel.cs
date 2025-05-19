@@ -83,7 +83,7 @@ namespace Restaurant.ViewModels.Main
 
         public MainWindowViewModel()
         {
-            // Inițializare comenzi
+            
             NavigateToMenuCommand = new RelayCommand(_ => RequestNavigation("Menu"));
             NavigateToSearchCommand = new RelayCommand(_ => RequestNavigation("Search"));
             NavigateToMyOrdersCommand = new RelayCommand(_ => RequestNavigation("MyOrders"), _ => IsClientLoggedIn);
@@ -91,7 +91,7 @@ namespace Restaurant.ViewModels.Main
             LoginCommand = new RelayCommand(_ => LoginRequested?.Invoke(this, EventArgs.Empty));
             LogoutCommand = new RelayCommand(_ => ConfirmLogout());
 
-            // Verifică dacă există un utilizator autentificat
+           
             if (CurrentUserState.Instance.CurrentUser != null)
             {
                 InitializeForUser(CurrentUserState.Instance.CurrentUser);

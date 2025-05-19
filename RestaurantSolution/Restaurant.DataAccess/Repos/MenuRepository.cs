@@ -106,11 +106,10 @@ namespace Restaurant.DataAccess.Repos
             try
             {
                 System.Diagnostics.Debug.WriteLine($"MenuRepository: GetById called with menuId={menuId}");
-
-                // Obține doar informațiile de bază despre meniu, fără a adăuga operatori LINQ
+                
                 var menu = _context.Menus
                     .FromSqlRaw("EXEC spGetMenuById @MenuID", new Microsoft.Data.SqlClient.SqlParameter("@MenuID", menuId))
-                    .AsEnumerable() // Adaugă AsEnumerable() înainte de a folosi FirstOrDefault()
+                    .AsEnumerable() 
                     .FirstOrDefault();
 
                 if (menu == null)
@@ -121,14 +120,14 @@ namespace Restaurant.DataAccess.Repos
 
                 System.Diagnostics.Debug.WriteLine($"MenuRepository: Menu found: {menu.Name}, CategoryID: {menu.CategoryID}");
 
-                // Încarcă categoria separat
+       
                 menu.Category = _context.Categories.FirstOrDefault(c => c.CategoryId == menu.CategoryID);
                 if (menu.Category != null)
                     System.Diagnostics.Debug.WriteLine($"MenuRepository: Category loaded: {menu.Category.Name}");
                 else
                     System.Diagnostics.Debug.WriteLine("MenuRepository: Failed to load category");
 
-                // Încarcă preparatele meniului separat
+          
                 menu.MenuPreparate = _context.MenuPreparate
                     .Where(mp => mp.MenuID == menuId)
                     .Include(mp => mp.Preparat)

@@ -19,10 +19,10 @@ namespace Restaurant.UI.Views
             _viewModel = new LoginViewModel(authService);
             DataContext = _viewModel;
 
-            // Handle password changes (since PasswordBox doesn't support binding)
+          
             PasswordBox.PasswordChanged += PasswordBox_PasswordChanged;
 
-            // Handle successful login
+   
             _viewModel.LoginSuccessful += ViewModel_LoginSuccessful;
             _viewModel.ContinueAsGuestRequested += ViewModel_ContinueAsGuestRequested;
             _viewModel.CreateAccountRequested += ViewModel_CreateAccountRequested;
@@ -51,7 +51,7 @@ namespace Restaurant.UI.Views
 
         private void ViewModel_CreateAccountRequested(object sender, EventArgs e)
         {
-            // Deschide fereastra pentru crearea contului
+       
             var registrationView = App.ServiceProvider.GetRequiredService<RegistrationView>();
             registrationView.Show();
             Close();

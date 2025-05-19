@@ -296,7 +296,8 @@ namespace Restaurant.ViewModels.Search
                     .Where(pa => pa.Alergen != null)
                     .Select(pa => pa.Alergen.Name)
                     .Distinct()
-                    .Where(name => !string.IsNullOrEmpty(name));
+                    .Where(name => !string.IsNullOrEmpty(name))
+                    .OrderBy(name => name); // Sort allergens alphabetically for better readability
 
                 if (allAlergens.Any())
                     return $"Alergeni: {string.Join(", ", allAlergens)}";

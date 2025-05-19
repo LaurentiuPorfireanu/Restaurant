@@ -9,7 +9,7 @@ namespace Restaurant.ViewModels
 {
     public class PreparatImageItem : ViewModelBase
     {
-        public string ImagePath { get; set; } // Calea relativă care va fi stocată în baza de date
-        public string FullPath { get; set; } // Calea completă pentru afișare în aplicație
+        public string ImagePath { get; set; } 
+        public string FullPath { get; set; } 
     }
 }

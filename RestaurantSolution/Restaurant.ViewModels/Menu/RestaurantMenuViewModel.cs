@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Restaurant.Domain.Entities;
 using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Base;
-using Restaurant.ViewModels.Menu;
+using Restaurant.ViewModels.Menu.Extras;
 
 namespace Restaurant.ViewModels.RestaurantMenu
 {

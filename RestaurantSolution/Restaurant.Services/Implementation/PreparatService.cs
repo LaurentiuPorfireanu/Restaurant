@@ -1,5 +1,4 @@
-﻿// Restaurant.Services/Implementation/PreparatService.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Restaurant.Domain.Entities;
 using Restaurant.Services.Interfaces;
@@ -13,7 +12,7 @@ namespace Restaurant.Services.Implementations
     public class PreparatService : IPreparatService
     {
         private readonly IPreparatRepository _repo;
-        private readonly RestaurantContext _context; // Added for direct operations with images and allergens
+        private readonly RestaurantContext _context; 
 
         public PreparatService(IPreparatRepository repo, RestaurantContext context)
         {
@@ -47,7 +46,7 @@ namespace Restaurant.Services.Implementations
             if (categoryId <= 0)
                 throw new ArgumentException("Categorie invalidă", nameof(categoryId));
 
-            // Creare preparat nou
+          
             var preparat = new Preparat
             {
                 Name = name,
@@ -60,7 +59,7 @@ namespace Restaurant.Services.Implementations
             _context.Preparate.Add(preparat);
             _context.SaveChanges();
 
-            return preparat.PreparatID; // Return the ID of the newly created preparat
+            return preparat.PreparatID; 
         }
 
         public void UpdatePreparat(
@@ -102,7 +101,7 @@ namespace Restaurant.Services.Implementations
             if (string.IsNullOrWhiteSpace(imagePath))
                 throw new ArgumentException("Cale imagine invalidă", nameof(imagePath));
 
-            // Verifică dacă calea imaginii conține directorul Resources
+            
             if (!imagePath.Contains("Resources"))
                 throw new ArgumentException("Imaginile trebuie să fie salvate în directorul Resources", nameof(imagePath));
 
@@ -116,7 +115,6 @@ namespace Restaurant.Services.Implementations
             _context.SaveChanges();
         }
 
-        // Verifică dacă metoda are implementare corectă
         public void AddPreparatAlergen(int preparatId, int alergenId)
         {
             if (preparatId <= 0)
@@ -124,13 +122,12 @@ namespace Restaurant.Services.Implementations
             if (alergenId <= 0)
                 throw new ArgumentException("ID alergen invalid", nameof(alergenId));
 
-            // Verifică dacă asocierea există deja
             var existing = _context.PreparatAlergens
                 .FirstOrDefault(pa => pa.PreparatID == preparatId && pa.AlergenID == alergenId);
 
             if (existing == null)
             {
-                // Adăugăm cod de diagnostic
+                
                 System.Diagnostics.Debug.WriteLine($"Adăugare alergen {alergenId} la preparatul {preparatId}");
 
                 var preparatAlergen = new PreparatAlergen
@@ -142,7 +139,7 @@ namespace Restaurant.Services.Implementations
                 _context.PreparatAlergens.Add(preparatAlergen);
                 _context.SaveChanges();
 
-                // Verificăm că a fost adăugat corect
+              
                 var added = _context.PreparatAlergens
                     .FirstOrDefault(pa => pa.PreparatID == preparatId && pa.AlergenID == alergenId);
 

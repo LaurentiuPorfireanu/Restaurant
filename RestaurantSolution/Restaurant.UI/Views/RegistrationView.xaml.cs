@@ -18,12 +18,12 @@ namespace Restaurant.UI.Views
             _viewModel = new RegistrationViewModel(userService, authService);
             DataContext = _viewModel;
 
-            // Gestionarea evenimentelor pentru PasswordBox și ConfirmPasswordBox
+            
             PasswordBox.PasswordChanged += PasswordBox_PasswordChanged;
             ConfirmPasswordBox.PasswordChanged += ConfirmPasswordBox_PasswordChanged;
             AdminKeyBox.PasswordChanged += AdminKeyBox_PasswordChanged;
 
-            // Abonare la evenimentele din ViewModel
+           
             _viewModel.RegistrationSuccessful += ViewModel_RegistrationSuccessful;
             _viewModel.BackToLoginRequested += ViewModel_BackToLoginRequested;
         }
@@ -45,7 +45,7 @@ namespace Restaurant.UI.Views
 
         private void ViewModel_RegistrationSuccessful(object sender, EventArgs e)
         {
-            // Navigare înapoi la fereastra de login
+           
             var loginView = App.ServiceProvider.GetRequiredService<LoginView>();
             loginView.Show();
             Close();
@@ -53,7 +53,7 @@ namespace Restaurant.UI.Views
 
         private void ViewModel_BackToLoginRequested(object sender, EventArgs e)
         {
-            // Navigare înapoi la fereastra de login
+            
             var loginView = App.ServiceProvider.GetRequiredService<LoginView>();
             loginView.Show();
             Close();

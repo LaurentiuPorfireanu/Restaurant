@@ -18,6 +18,14 @@ namespace Restaurant.ViewModels.Login
         private string _errorMessage;
         private bool _isLoading;
 
+        public ICommand LoginCommand { get; }
+        public ICommand ContinueAsGuestCommand { get; }
+        public ICommand CreateAccountCommand { get; }
+
+        public event EventHandler LoginSuccessful;
+        public event EventHandler ContinueAsGuestRequested;
+        public event EventHandler CreateAccountRequested;
+
         public string Email
         {
             get => _email;
@@ -65,13 +73,6 @@ namespace Restaurant.ViewModels.Login
 
         public bool CanLogin => !string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(Password) && !IsLoading;
 
-        public ICommand LoginCommand { get; }
-        public ICommand ContinueAsGuestCommand { get; }
-        public ICommand CreateAccountCommand { get; }
-
-        public event EventHandler LoginSuccessful;
-        public event EventHandler ContinueAsGuestRequested;
-        public event EventHandler CreateAccountRequested;
 
         public LoginViewModel(IAuthenticationService authService)
         {
@@ -92,7 +93,7 @@ namespace Restaurant.ViewModels.Login
                 var user = await _authService.AuthenticateAsync(Email, Password);
                 if (user != null)
                 {
-                    // Afișează mesajul direct din ViewModel
+                    
                     MessageBox.Show("Login successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     CurrentUserState.Instance.CurrentUser = user;
@@ -115,16 +116,16 @@ namespace Restaurant.ViewModels.Login
 
         private void ExecuteContinueAsGuest(object parameter)
         {
-            // Setează CurrentUser ca null sau un utilizator "guest" special
+            
             CurrentUserState.Instance.CurrentUser = null;
 
-            // Notifică View-ul că utilizatorul vrea să continue ca vizitator
+           
             ContinueAsGuestRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private void ExecuteCreateAccount(object parameter)
         {
-            // Notifică View-ul că utilizatorul vrea să creeze un cont nou
+            
             CreateAccountRequested?.Invoke(this, EventArgs.Empty);
         }
     }

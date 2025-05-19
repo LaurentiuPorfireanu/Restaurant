@@ -16,7 +16,7 @@ namespace Restaurant.DataAccess.Repos
         {
             return _context.Preparate
                 .Where(p => p.CategoryID == categoryId)
-                .Include(p => p.Category)  // Important: includeți relația Category
+                .Include(p => p.Category)  
                 .Include(p => p.Fotos)
                 .Include(p => p.PreparatAlergens)
                     .ThenInclude(pa => pa.Alergen)

@@ -6,7 +6,6 @@ using Restaurant.DataAccess.Repositories;
 using Restaurant.Services.Implementation;
 using Restaurant.Services.Implementations;
 using Restaurant.Services.Interfaces;
-using Restaurant.UI.Services;
 using Restaurant.UI.Views;
 using Restaurant.UI.Views.Admin;
 using Restaurant.UI.Views.Menu;

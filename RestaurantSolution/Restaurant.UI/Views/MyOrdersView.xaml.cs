@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Order;
+using Restaurant.ViewModels.Order.Extras;
 using Restaurant.ViewModels.State;
 
 namespace Restaurant.UI.Views.Order
@@ -14,7 +15,7 @@ namespace Restaurant.UI.Views.Order
         {
             InitializeComponent();
 
-            // Inițializare ViewModel și setare ca DataContext
+         
             var currentUser = CurrentUserState.Instance.CurrentUser;
             var viewModel = new MyOrdersViewModel(
                 orderService,
@@ -27,7 +28,7 @@ namespace Restaurant.UI.Views.Order
 
 
 
-            // Încărcare date la inițializare
+           
             Loaded += async (s, e) => await viewModel.LoadOrdersAsync();
         }
     }

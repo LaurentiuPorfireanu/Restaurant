@@ -17,7 +17,7 @@ namespace Restaurant.UI.Converters
                 }
                 catch
                 {
-                    return Colors.Gray; // Default color in case of error
+                    return Colors.Gray; 
                 }
             }
             return Colors.Gray;

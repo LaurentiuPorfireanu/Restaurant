@@ -12,7 +12,7 @@ namespace Restaurant.UI.Views.Search
         {
             InitializeComponent();
 
-            // Inițializare ViewModel și setare ca DataContext
+            
             var viewModel = new SearchViewModel(
                 categoryService,
                 preparatService,

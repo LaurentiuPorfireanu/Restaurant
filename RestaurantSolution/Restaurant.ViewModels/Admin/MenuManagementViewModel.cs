@@ -1,5 +1,4 @@
-﻿// Restaurant.ViewModels/Admin/MenuManagementViewModel.cs
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
@@ -9,6 +8,7 @@ using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Base;
 using Restaurant.ViewModels.Commands;
 using System.Configuration;
+using Restaurant.ViewModels.Admin.Extras;
 
 namespace Restaurant.ViewModels.Admin
 {
@@ -201,7 +201,7 @@ namespace Restaurant.ViewModels.Admin
 
         private void SaveMenu()
         {
-            // Verificăm validarea înainte de a seta IsLoading
+            
             if (string.IsNullOrWhiteSpace(MenuName) || SelectedCategory == null || SelectedPreparate.Count < 1)
             {
                 string errorMessage = "Nu se poate salva meniul. Verificați următoarele:";
@@ -219,8 +219,8 @@ namespace Restaurant.ViewModels.Admin
                 return;
             }
 
-            // Verificăm dacă prețul total depășește threshold-ul din configurare
-            decimal orderThreshold = 100; // Valoare implicită
+           
+            decimal orderThreshold = 100; 
 
             string configThreshold = ConfigurationManager.AppSettings["OrderDiscountThreshold"];
             if (!string.IsNullOrEmpty(configThreshold) && decimal.TryParse(configThreshold, out decimal thresholdValue))
@@ -233,10 +233,10 @@ namespace Restaurant.ViewModels.Admin
                 System.Diagnostics.Debug.WriteLine($"Se folosește threshold-ul implicit: {orderThreshold} Lei");
             }
 
-            // Calculăm prețul total al meniului
+            
             decimal totalPrice = TotalPrice;
 
-            // Verificăm dacă prețul total depășește threshold-ul
+            
             if (totalPrice > orderThreshold)
             {
                 string warningMessage = $"Atenție: Prețul total al meniului ({totalPrice:N2} Lei) depășește pragul recomandat de {orderThreshold:N2} Lei.\n\nDoriți să continuați oricum?";
@@ -247,13 +247,13 @@ namespace Restaurant.ViewModels.Admin
                 if (result == MessageBoxResult.No)
                 {
                     System.Diagnostics.Debug.WriteLine("Utilizatorul a ales să nu continue");
-                    return; // Ieșim din metodă dacă utilizatorul a ales No
+                    return;
                 }
 
                 System.Diagnostics.Debug.WriteLine("Utilizatorul a ales să continue");
             }
 
-            // După validare, setăm IsLoading
+           
             IsLoading = true;
 
             try
@@ -264,14 +264,14 @@ namespace Restaurant.ViewModels.Admin
                 System.Diagnostics.Debug.WriteLine($"SelectedPreparate.Count: {SelectedPreparate.Count}");
                 System.Diagnostics.Debug.WriteLine($"IsLoading: {IsLoading}");
 
-                // Dacă am ajuns aici, validarea a trecut
+                
                 System.Diagnostics.Debug.WriteLine("Validare reușită, continuă salvarea...");
 
                 int menuId;
 
                 if (IsAddMode)
                 {
-                    // Cream un nou meniu
+                    
                     System.Diagnostics.Debug.WriteLine($"Începe crearea unui nou meniu: '{MenuName}', CategoryId: {SelectedCategory.CategoryId}");
 
                     try
@@ -283,12 +283,12 @@ namespace Restaurant.ViewModels.Admin
                     {
                         System.Diagnostics.Debug.WriteLine($"Eroare la crearea meniului: {ex.Message}");
                         System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                        throw; // Re-aruncăm excepția pentru a fi gestionată în blocul catch exterior
+                        throw; 
                     }
                 }
                 else
                 {
-                    // Actualizăm meniul existent
+                  
                     menuId = _currentMenu.MenuID;
                     System.Diagnostics.Debug.WriteLine($"Actualizare meniu existent ID: {menuId}");
 
@@ -301,11 +301,11 @@ namespace Restaurant.ViewModels.Admin
                     {
                         System.Diagnostics.Debug.WriteLine($"Eroare la actualizarea meniului: {ex.Message}");
                         System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                        throw; // Re-aruncăm excepția pentru a fi gestionată în blocul catch exterior
+                        throw; 
                     }
                 }
 
-                // Ștergem toate preparatele existente din meniu
+               
                 System.Diagnostics.Debug.WriteLine($"Ștergere preparate existente pentru meniul ID: {menuId}");
                 try
                 {
@@ -316,10 +316,10 @@ namespace Restaurant.ViewModels.Admin
                 {
                     System.Diagnostics.Debug.WriteLine($"Eroare la ștergerea preparatelor: {ex.Message}");
                     System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                    throw; // Re-aruncăm excepția pentru a fi gestionată în blocul catch exterior
+                    throw;
                 }
 
-                // Adăugăm preparatele selectate la meniu
+                
                 System.Diagnostics.Debug.WriteLine($"Adăugare {SelectedPreparate.Count} preparate la meniul ID: {menuId}");
                 foreach (var preparat in SelectedPreparate)
                 {
@@ -333,11 +333,11 @@ namespace Restaurant.ViewModels.Admin
                     {
                         System.Diagnostics.Debug.WriteLine($"Eroare la adăugarea preparatului: {ex.Message}");
                         System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                        throw; // Re-aruncăm excepția pentru a fi gestionată în blocul catch exterior
+                        throw; 
                     }
                 }
 
-                // Afișăm un mesaj de succes
+              
                 string message = IsAddMode
                     ? "Meniul a fost creat cu succes!"
                     : "Meniul a fost actualizat cu succes!";
@@ -345,10 +345,10 @@ namespace Restaurant.ViewModels.Admin
                 System.Diagnostics.Debug.WriteLine(message);
                 MessageBox.Show(message, "Succes", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Notificăm părinte că s-a salvat un meniu nou/actualizat
+                
                 OnMenuSaved?.Invoke(this, EventArgs.Empty);
 
-                // Resetăm formularul și ieșim din modul de editare/adăugare
+               
                 System.Diagnostics.Debug.WriteLine("Resetare formular și ieșire din modul editare/adăugare");
                 Cancel();
 
@@ -356,7 +356,7 @@ namespace Restaurant.ViewModels.Admin
             }
             catch (Exception ex)
             {
-                // Afișăm informații detaliate despre eroare
+            
                 System.Diagnostics.Debug.WriteLine($"EROARE NEAȘTEPTATĂ: {ex.Message}");
                 System.Diagnostics.Debug.WriteLine($"Tip excepție: {ex.GetType().FullName}");
                 System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
@@ -372,16 +372,16 @@ namespace Restaurant.ViewModels.Admin
             }
             finally
             {
-                // Resetăm flag-ul de încărcare indiferent de rezultat
+                
                 IsLoading = false;
                 System.Diagnostics.Debug.WriteLine("IsLoading setat la false");
             }
         }
 
-        // Eveniment pentru a notifica că s-a salvat un meniu
+   
         public event EventHandler OnMenuSaved;
 
-        // Eveniment pentru a notifica că utilizatorul a anulat editarea/adăugarea
+        
         public event EventHandler CancelRequested;
 
       
@@ -395,11 +395,11 @@ namespace Restaurant.ViewModels.Admin
 
                 _currentMenu = menu;
 
-                // Resetăm formularul
+         
                 MenuName = menu?.Name ?? string.Empty;
                 System.Diagnostics.Debug.WriteLine($"MenuName inițializat: '{MenuName}'");
 
-                // Inițializăm categoria
+            
                 if (menu?.Category != null)
                 {
                     SelectedCategory = menu.Category;
@@ -419,13 +419,13 @@ namespace Restaurant.ViewModels.Admin
                     }
                 }
 
-                // Resetăm listele de preparate
+               
                 SelectedPreparate.Clear();
                 AvailablePreparate.Clear();
                 System.Diagnostics.Debug.WriteLine("Liste de preparate resetate");
 
-                // Citim procentajul de discount direct din configurare
-                decimal defaultDiscount = 10; // Valoare implicită
+               
+                decimal defaultDiscount = 10; 
 
                 string configDiscount = ConfigurationManager.AppSettings["MenuDiscountPercentage"];
                 if (!string.IsNullOrEmpty(configDiscount) && decimal.TryParse(configDiscount, out decimal discountValue))
@@ -439,7 +439,7 @@ namespace Restaurant.ViewModels.Admin
                     System.Diagnostics.Debug.WriteLine($"Se folosește discount-ul implicit: {defaultDiscount}%");
                 }
 
-                // Încărcăm toate preparatele disponibile
+           
                 System.Diagnostics.Debug.WriteLine("Începe încărcarea preparatelor disponibile...");
                 var categories = _categoryService.GetAllCategories();
                 int totalPreparate = 0;
@@ -453,8 +453,7 @@ namespace Restaurant.ViewModels.Admin
 
                         foreach (var preparat in preparate)
                         {
-                            // Dacă suntem în modul de editare și preparatul este deja în meniu,
-                            // nu-l adăugăm în lista de disponibile
+                            
                             if (menu != null && menu.MenuPreparate != null &&
                                 menu.MenuPreparate.Any(mp => mp.PreparatID == preparat.PreparatID))
                                 continue;
@@ -462,7 +461,7 @@ namespace Restaurant.ViewModels.Admin
                             AvailablePreparate.Add(new PreparatForMenuViewModel
                             {
                                 Preparat = preparat,
-                                QuantityMenuPortie = preparat.QuantityPortie / 2, // Implicit, jumătate din porția normală
+                                QuantityMenuPortie = preparat.QuantityPortie / 2, 
                                 Category = category
                             });
                             categoryPreparateCount++;
@@ -479,7 +478,7 @@ namespace Restaurant.ViewModels.Admin
 
                 System.Diagnostics.Debug.WriteLine($"Total preparate disponibile încărcate: {totalPreparate}");
 
-                // Dacă suntem în modul de editare, încărcăm preparatele selectate
+              
                 if (menu != null && menu.MenuPreparate != null)
                 {
                     System.Diagnostics.Debug.WriteLine("Încărcare preparate existente pentru meniul de editat...");
@@ -510,12 +509,12 @@ namespace Restaurant.ViewModels.Admin
                     System.Diagnostics.Debug.WriteLine($"Total preparate existente încărcate: {loadedCount}");
                 }
 
-                // Setăm modul de operare
+            
                 IsAddMode = menu == null;
                 IsEditMode = menu != null;
                 System.Diagnostics.Debug.WriteLine($"Mod: {(IsAddMode ? "Adăugare" : "Editare")}");
 
-                // Recalculăm prețul
+           
                 RecalculatePrice();
                 System.Diagnostics.Debug.WriteLine($"Preț calculat: {TotalPrice:F2} Lei, Cu reducere: {DiscountedPrice:F2} Lei");
 
@@ -530,11 +529,11 @@ namespace Restaurant.ViewModels.Admin
             }
             finally
             {
-                // Resetăm flag-ul de încărcare
+              
                 IsLoading = false;
                 System.Diagnostics.Debug.WriteLine("IsLoading setat la false");
 
-                // Notificare explicită de proprietăți pentru a fi siguri că UI-ul este actualizat
+               
                 OnPropertyChanged(nameof(MenuName));
                 OnPropertyChanged(nameof(SelectedCategory));
                 OnPropertyChanged(nameof(SelectedPreparate));
@@ -549,7 +548,7 @@ namespace Restaurant.ViewModels.Admin
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                // Notificare explicită de proprietăți pentru UI
+               
                 OnPropertyChanged(nameof(MenuName));
                 OnPropertyChanged(nameof(SelectedCategory));
                 OnPropertyChanged(nameof(SelectedPreparate));
@@ -560,10 +559,10 @@ namespace Restaurant.ViewModels.Admin
                 OnPropertyChanged(nameof(DiscountedPrice));
                 OnPropertyChanged(nameof(CanSaveMenu));
 
-                // Forțează actualizarea comenzii
+             
                 (SaveMenuCommand as RelayCommand)?.RaiseCanExecuteChanged();
 
-                // Debug pentru CanSaveMenu
+           
                 System.Diagnostics.Debug.WriteLine($"CanSaveMenu după Initialize pe UI thread: {CanSaveMenu}");
                 bool nameValid = !string.IsNullOrWhiteSpace(MenuName);
                 bool categoryValid = SelectedCategory != null;
@@ -581,7 +580,7 @@ namespace Restaurant.ViewModels.Admin
             {
                 System.Diagnostics.Debug.WriteLine("Începe procesul de anulare...");
 
-                // Resetăm formularul
+             
                 MenuName = string.Empty;
                 System.Diagnostics.Debug.WriteLine("MenuName resetat");
 
@@ -596,11 +595,10 @@ namespace Restaurant.ViewModels.Admin
                 IsEditMode = false;
                 System.Diagnostics.Debug.WriteLine("Mod de operare resetat");
 
-                // Recalculăm prețul după resetare
                 RecalculatePrice();
                 System.Diagnostics.Debug.WriteLine("Preț recalculat după resetare");
 
-                // Notificăm părinte că utilizatorul dorește să se întoarcă la pagina inițială
+  
                 CancelRequested?.Invoke(this, EventArgs.Empty);
                 System.Diagnostics.Debug.WriteLine("Eveniment CancelRequested declanșat");
             }
