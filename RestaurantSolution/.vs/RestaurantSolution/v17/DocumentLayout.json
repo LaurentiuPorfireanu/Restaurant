@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\search\\searchviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\search\\searchviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\order\\ordermanagementviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\order\\ordermanagementviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|c:\\users\\laurp\\desktop\\restaurant\\restaurantsolution\\restaurant.viewmodels\\order\\extras\\cartitemviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7A251BF2-E2DB-4984-AD5F-F008E9C9C9E5}|Restaurant.ViewModels\\Restaurant.ViewModels.csproj|solutionrelative:restaurant.viewmodels\\order\\extras\\cartitemviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,15 +38,28 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "SearchViewModel.cs",
-              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Search\\SearchViewModel.cs",
-              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Search\\SearchViewModel.cs",
-              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Search\\SearchViewModel.cs",
-              "RelativeToolTip": "Restaurant.ViewModels\\Search\\SearchViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAsAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "CartItemViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Order\\Extras\\CartItemViewModel.cs",
+              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Order\\Extras\\CartItemViewModel.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Order\\Extras\\CartItemViewModel.cs",
+              "RelativeToolTip": "Restaurant.ViewModels\\Order\\Extras\\CartItemViewModel.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABYAAAA1AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T11:03:34.744Z",
+              "WhenOpened": "2025-05-20T14:13:47.144Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "OrderManagementViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Order\\OrderManagementViewModel.cs",
+              "RelativeDocumentMoniker": "Restaurant.ViewModels\\Order\\OrderManagementViewModel.cs",
+              "ToolTip": "C:\\Users\\laurp\\Desktop\\Restaurant\\RestaurantSolution\\Restaurant.ViewModels\\Order\\OrderManagementViewModel.cs",
+              "RelativeToolTip": "Restaurant.ViewModels\\Order\\OrderManagementViewModel.cs",
+              "ViewState": "AgIAAOoAAAAAAAAAAAAQwJgBAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-20T14:12:27.828Z",
               "EditorCaption": ""
             }
           ]

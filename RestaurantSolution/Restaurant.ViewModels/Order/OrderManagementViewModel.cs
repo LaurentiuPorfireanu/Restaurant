@@ -294,6 +294,17 @@ public class OrderManagementViewModel : ViewModelBase
             var existingItem = CartItems.FirstOrDefault(i =>
                 i.ItemType == CartItemType.Dish && i.ItemId == preparatVm.PreparatId);
 
+            // Calculate how many more portions we can add based on available stock
+            int currentOrderQuantity = existingItem?.Quantity ?? 0;
+            int maxAvailablePortions = preparatVm.Preparat.QuantityTotal / preparatVm.Preparat.QuantityPortie;
+
+            if (currentOrderQuantity >= maxAvailablePortions)
+            {
+                MessageBox.Show($"Nu mai există suficiente porții disponibile pentru '{preparatVm.Name}'.\nStoc disponibil: {maxAvailablePortions} porții.",
+                    "Stoc insuficient", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (existingItem != null)
             {
                 // Increment quantity
@@ -312,15 +323,55 @@ public class OrderManagementViewModel : ViewModelBase
                     TotalPrice = preparatVm.Price,
                     UnitPriceFormatted = preparatVm.PriceFormatted,
                     TotalPriceFormatted = preparatVm.PriceFormatted,
-                    Preparat = preparatVm.Preparat
+                    Preparat = preparatVm.Preparat,
+                    MaxAvailableQuantity = maxAvailablePortions
                 });
             }
         }
         else if (parameter is MenuItemViewModel menuVm && menuVm.Menu != null)
         {
-            // Check if item is already in cart
+            // For menus, we need to check each ingredient
+            bool insufficientStock = false;
+            string insufficientItem = "";
+            int availableMenuCount = int.MaxValue;
+
+            // Check each preparat in the menu
+            if (menuVm.Menu.MenuPreparate != null)
+            {
+                foreach (var menuPreparat in menuVm.Menu.MenuPreparate)
+                {
+                    if (menuPreparat.Preparat == null)
+                        continue;
+
+                    // Calculate how many menu portions we can make from this ingredient
+                    int menuPortionsFromThisIngredient = menuPreparat.Preparat.QuantityTotal / menuPreparat.QuantityMenuPortie;
+
+                    if (menuPortionsFromThisIngredient < availableMenuCount)
+                    {
+                        availableMenuCount = menuPortionsFromThisIngredient;
+                        if (availableMenuCount == 0)
+                        {
+                            insufficientStock = true;
+                            insufficientItem = menuPreparat.Preparat.Name;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Check if menu already in cart
             var existingItem = CartItems.FirstOrDefault(i =>
                 i.ItemType == CartItemType.Menu && i.ItemId == menuVm.MenuId);
+
+            int currentOrderQuantity = existingItem?.Quantity ?? 0;
+
+            if (insufficientStock || currentOrderQuantity >= availableMenuCount)
+            {
+                MessageBox.Show($"Nu mai există suficiente ingrediente pentru '{menuVm.Name}'.\n" +
+                                (insufficientItem != "" ? $"Ingredient lipsă: {insufficientItem}" : $"Cantitate maximă disponibilă: {availableMenuCount}"),
+                                "Stoc insuficient", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             if (existingItem != null)
             {
@@ -340,7 +391,8 @@ public class OrderManagementViewModel : ViewModelBase
                     TotalPrice = menuVm.Price,
                     UnitPriceFormatted = $"{menuVm.Price:N2} Lei",
                     TotalPriceFormatted = $"{menuVm.Price:N2} Lei",
-                    Menu = menuVm.Menu
+                    Menu = menuVm.Menu,
+                    MaxAvailableQuantity = availableMenuCount
                 });
             }
         }
@@ -348,6 +400,31 @@ public class OrderManagementViewModel : ViewModelBase
         // Recalculate totals
         RecalculateSubtotal();
     }
+
+    private void IncrementQuantity(CartItemViewModel item)
+    {
+        if (item != null)
+        {
+            // Check if we're trying to exceed the available quantity
+            if (item.Quantity >= item.MaxAvailableQuantity)
+            {
+                MessageBox.Show($"Nu mai există suficient stoc pentru '{item.Name}'.\nCantitate maximă disponibilă: {item.MaxAvailableQuantity}.",
+                    "Stoc insuficient", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            item.Quantity++;
+            item.TotalPrice = item.UnitPrice * item.Quantity;
+            item.TotalPriceFormatted = $"{item.TotalPrice:N2} Lei";
+
+            RecalculateSubtotal();
+        }
+    }
+
+
+
+
+
     private void RemoveFromCart(CartItemViewModel item)
     {
         if (item != null)
@@ -357,17 +434,7 @@ public class OrderManagementViewModel : ViewModelBase
         }
     }
 
-    private void IncrementQuantity(CartItemViewModel item)
-    {
-        if (item != null)
-        {
-            item.Quantity++;
-            item.TotalPrice = item.UnitPrice * item.Quantity;
-            item.TotalPriceFormatted = $"{item.TotalPrice:N2} Lei";
-
-            RecalculateSubtotal();
-        }
-    }
+    
 
     private void DecrementQuantity(CartItemViewModel item)
     {

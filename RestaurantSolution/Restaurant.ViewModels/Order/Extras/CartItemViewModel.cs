@@ -20,6 +20,7 @@ namespace Restaurant.ViewModels.Order.Extras
         public string UnitPriceFormatted { get; set; }
         public Domain.Entities.Preparat Preparat { get; set; }
         public Domain.Entities.Menu Menu { get; set; }
+        public int MaxAvailableQuantity { get; set; }
 
         public int Quantity
         {
