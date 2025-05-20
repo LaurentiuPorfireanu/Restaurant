@@ -38,8 +38,18 @@ namespace Restaurant.Services.Implementation
 
         public void DeleteCategory(int id)
         {
-            if (id <= 0) throw new ArgumentException("ID invalid", nameof(id));
-            _repo.Delete(id);
+            if (id <= 0)
+                throw new ArgumentException("ID invalid", nameof(id));
+
+            try
+            {
+                _repo.Delete(id);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in CategoryService.DeleteCategory: {ex.Message}");
+                throw new Exception("Nu se poate șterge categoria. Este posibil să existe comenzi active care utilizează produse sau meniuri din această categorie.", ex);
+            }
         }
     }
 }

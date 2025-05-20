@@ -60,9 +60,19 @@ namespace Restaurant.DataAccess.Repos
 
         public void Delete(int preparatId)
         {
-            _context.Database.ExecuteSqlRaw(
-                "EXEC spDeletePreparat @PreparatID = {0}",
-                preparatId);
+            try
+            {
+                
+                var result = _context.Database.ExecuteSqlRaw(
+                    "EXEC spDeletePreparatWithCascade @PreparatID = {0}", preparatId);
+
+               
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in PreparatRepository.Delete: {ex.Message}");
+                throw;
+            }
         }
 
     }

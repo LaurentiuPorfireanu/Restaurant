@@ -50,9 +50,19 @@ namespace Restaurant.DataAccess.Repos
 
         public void Delete(int id)
         {
-            _context.Database.ExecuteSqlRaw(
-                "EXEC spDeleteCategory @CategoryID = {0}",
-                id);
+            try
+            {
+                
+                var result = _context.Database.ExecuteSqlRaw(
+                    "EXEC spDeleteCategoryWithCascade @CategoryId = {0}", id);
+
+                
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in CategoryRepository.Delete: {ex.Message}");
+                throw;
+            }
         }
 
     }

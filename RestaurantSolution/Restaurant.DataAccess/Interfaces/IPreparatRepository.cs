@@ -27,6 +27,8 @@ namespace Restaurant.DataAccess.Interfaces
             int QuantityTotal,
             int CategoryID);
 
+
+
         void Delete(int PreparatID);
     }
 }

@@ -7,16 +7,17 @@ namespace Restaurant.UI.Views.Search
     public partial class SearchView : UserControl
     {
         public SearchView(ICategoryService categoryService,
-                          IPreparatService preparatService,
-                          IMenuService menuService)
+                  IPreparatService preparatService,
+                  IMenuService menuService,
+                  IAlergenService alergenService)
         {
             InitializeComponent();
 
-            
             var viewModel = new SearchViewModel(
                 categoryService,
                 preparatService,
-                menuService);
+                menuService,
+                alergenService);
 
             DataContext = viewModel;
         }

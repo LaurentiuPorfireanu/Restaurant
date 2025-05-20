@@ -91,7 +91,15 @@ namespace Restaurant.Services.Implementations
             if (preparatId <= 0)
                 throw new ArgumentException("ID preparat invalid", nameof(preparatId));
 
-            _repo.Delete(preparatId);
+            try
+            {
+                _repo.Delete(preparatId);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in PreparatService.DeletePreparat: {ex.Message}");
+                throw new Exception("Nu se poate șterge preparatul. Este posibil să existe comenzi active care conțin acest preparat.", ex);
+            }
         }
 
         public void AddPreparatImage(int preparatId, string imagePath)

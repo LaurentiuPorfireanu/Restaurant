@@ -25,6 +25,7 @@ namespace Restaurant.Data.Configurations
                    .HasForeignKey(p => p.CategoryID)
                    .OnDelete(DeleteBehavior.Restrict);
 
+
             builder.HasMany(c => c.Menus)
                    .WithOne(m => m.Category)
                    .HasForeignKey(m => m.CategoryID)

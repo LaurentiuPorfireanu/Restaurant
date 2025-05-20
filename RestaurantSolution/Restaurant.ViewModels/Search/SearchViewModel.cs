@@ -9,6 +9,8 @@ using Restaurant.Services.Interfaces;
 using Restaurant.ViewModels.Base;
 using Restaurant.ViewModels.Commands;
 using System.Windows.Input;
+using System.Collections.Generic;
+using Restaurant.ViewModels.Search.Extras;
 
 namespace Restaurant.ViewModels.Search
 {
@@ -26,7 +28,12 @@ namespace Restaurant.ViewModels.Search
         private int _resultsCount;
         private bool _hasNoResults;
         private bool _hasSearched;
+        public ICommand SearchCommand { get; }
 
+
+        private readonly IAlergenService _alergenService;
+        private List<Alergen> _allAlergens;
+        #region Properties
         public string SearchTerm
         {
             get => _searchTerm;
@@ -107,26 +114,49 @@ namespace Restaurant.ViewModels.Search
                 OnPropertyChanged(nameof(HasNoResults));
             }
         }
+        #endregion
 
-        public ICommand SearchCommand { get; }
-
+        #region Constructors
         public SearchViewModel(ICategoryService categoryService,
                                IPreparatService preparatService,
-                               IMenuService menuService)
+                               IMenuService menuService,
+                               IAlergenService alergenService)
         {
             _categoryService = categoryService ?? throw new ArgumentNullException(nameof(categoryService));
             _preparatService = preparatService ?? throw new ArgumentNullException(nameof(preparatService));
             _menuService = menuService ?? throw new ArgumentNullException(nameof(menuService));
+            _alergenService = alergenService ?? throw new ArgumentNullException(nameof(alergenService));
 
             IsContainsSearch = true;
             SearchResults = new ObservableCollection<SearchResultViewModel>();
 
-            // Grupare rezultate după categorie
+            // Group results by category
             CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(SearchResults);
             PropertyGroupDescription groupDescription = new PropertyGroupDescription("CategoryName");
             view.GroupDescriptions.Add(groupDescription);
 
             SearchCommand = new RelayCommand(_ => PerformSearch());
+
+            // Initialize allergens list
+            LoadAllergens();
+        }
+
+        #endregion
+
+
+        #region Methods
+
+        private void LoadAllergens()
+        {
+            try
+            {
+                _allAlergens = _alergenService.GetAllAlergens().ToList();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading allergens: {ex.Message}");
+                _allAlergens = new List<Alergen>();
+            }
         }
 
         private void PerformSearch()
@@ -141,35 +171,46 @@ namespace Restaurant.ViewModels.Search
                 SearchResults.Clear();
 
                 var categories = _categoryService.GetAllCategories().ToList();
+                string searchTerm = SearchTerm.Trim().ToLower();
+
+               
+                bool isAllergenSearch = IsAllergenSearch(searchTerm);
 
                 foreach (var category in categories)
                 {
-                    // Caută în preparate
+                
                     var preparate = _preparatService.GetPreparateByCategory(category.CategoryId);
                     foreach (var preparat in preparate)
                     {
                         bool matchesSearch = false;
 
-                        // Verifică dacă numele preparatului conține termenul de căutare
-                        bool nameContainsTerm = preparat.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
+                      
+                        bool nameContainsTerm = preparat.Name.ToLower().Contains(searchTerm);
 
-                        // Verifică dacă alergenii preparatului conțin termenul de căutare
-                        bool alergensContainTerm = false;
-                        if (preparat.PreparatAlergens != null)
+                       
+                        bool allergenMatch = false;
+                        if (isAllergenSearch)
                         {
-                            alergensContainTerm = preparat.PreparatAlergens.Any(pa =>
-                                pa.Alergen != null &&
-                                pa.Alergen.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
+                   
+                            var preparatAlergenIds = preparat.PreparatAlergens?.Select(pa => pa.AlergenID) ?? Enumerable.Empty<int>();
+
+                           
+                            var matchingAllergens = _allAlergens
+                                .Where(a => a.Name.ToLower().Contains(searchTerm))
+                                .Select(a => a.AlergenID);
+
+                            bool hasMatchingAllergen = preparatAlergenIds.Any(id => matchingAllergens.Contains(id));
+
+                            allergenMatch = IsContainsSearch ? hasMatchingAllergen : !hasMatchingAllergen;
                         }
 
-                        // Stabilește dacă preparatul se potrivește cu criteriile de căutare
-                        if (IsContainsSearch)
+                        if (isAllergenSearch)
                         {
-                            matchesSearch = nameContainsTerm || alergensContainTerm;
+                            matchesSearch = allergenMatch;
                         }
-                        else // IsNotContainsSearch
+                        else
                         {
-                            matchesSearch = !(nameContainsTerm || alergensContainTerm);
+                            matchesSearch = IsContainsSearch ? nameContainsTerm : !nameContainsTerm;
                         }
 
                         if (matchesSearch)
@@ -180,7 +221,7 @@ namespace Restaurant.ViewModels.Search
                                 CategoryName = category.Name,
                                 Name = preparat.Name,
                                 TypeName = "Preparat",
-                                TypeBackground = "#2196F3", // albastru
+                                TypeBackground = "#2196F3", // blue
                                 QuantityInfo = $"{preparat.QuantityPortie}g/porție",
                                 PriceFormatted = $"{preparat.Price:N2} Lei",
                                 IsAvailable = preparat.QuantityTotal > 0,
@@ -189,43 +230,57 @@ namespace Restaurant.ViewModels.Search
                         }
                     }
 
-                    // Caută în meniuri
+                
                     var menus = _menuService.GetMenusByCategory(category.CategoryId);
                     foreach (var menu in menus)
                     {
                         bool matchesSearch = false;
 
-                        // Verifică dacă numele meniului conține termenul de căutare
-                        bool nameContainsTerm = menu.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase);
+                       
+                        bool nameContainsTerm = menu.Name.ToLower().Contains(searchTerm);
 
-                        // Verifică dacă vreunul dintre preparatele din meniu conține termenul de căutare
-                        bool menuItemsContainTerm = false;
-                        if (menu.MenuPreparate != null)
+                    
+                        bool menuItemsContainTerm = menu.MenuPreparate?.Any(mp =>
+                            mp.Preparat != null &&
+                            mp.Preparat.Name.ToLower().Contains(searchTerm)) ?? false;
+
+                      
+                        bool allergenMatch = false;
+                        if (isAllergenSearch)
                         {
-                            menuItemsContainTerm = menu.MenuPreparate.Any(mp =>
-                                mp.Preparat != null &&
-                                mp.Preparat.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase));
+                           
+                            var menuAlergenIds = menu.MenuPreparate?
+                                .Where(mp => mp.Preparat?.PreparatAlergens != null)
+                                .SelectMany(mp => mp.Preparat.PreparatAlergens)
+                                .Select(pa => pa.AlergenID)
+                                .Distinct() ?? Enumerable.Empty<int>();
+
+                        
+                            var matchingAllergens = _allAlergens
+                                .Where(a => a.Name.ToLower().Contains(searchTerm))
+                                .Select(a => a.AlergenID);
+
+                            bool hasMatchingAllergen = menuAlergenIds.Any(id => matchingAllergens.Contains(id));
+
+                         
+                            allergenMatch = IsContainsSearch ? hasMatchingAllergen : !hasMatchingAllergen;
                         }
 
-                        // Verifică dacă vreunul dintre alergenii preparatelor din meniu conține termenul de căutare
-                        bool menuAlergensContainTerm = false;
-                        if (menu.MenuPreparate != null)
+                      
+                        if (isAllergenSearch)
                         {
-                            menuAlergensContainTerm = menu.MenuPreparate.Any(mp =>
-                                mp.Preparat?.PreparatAlergens != null &&
-                                mp.Preparat.PreparatAlergens.Any(pa =>
-                                    pa.Alergen != null &&
-                                    pa.Alergen.Name.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)));
+                            matchesSearch = allergenMatch;
                         }
-
-                        // Stabilește dacă meniul se potrivește cu criteriile de căutare
-                        if (IsContainsSearch)
+                        else
                         {
-                            matchesSearch = nameContainsTerm || menuItemsContainTerm || menuAlergensContainTerm;
-                        }
-                        else // IsNotContainsSearch
-                        {
-                            matchesSearch = !(nameContainsTerm || menuItemsContainTerm || menuAlergensContainTerm);
+                            if (IsContainsSearch)
+                            {
+                                matchesSearch = nameContainsTerm || menuItemsContainTerm;
+                            }
+                            else 
+                            {
+                                matchesSearch = !nameContainsTerm && !menuItemsContainTerm;
+                            }
                         }
 
                         if (matchesSearch)
@@ -236,7 +291,7 @@ namespace Restaurant.ViewModels.Search
                                 CategoryName = category.Name,
                                 Name = menu.Name,
                                 TypeName = "Meniu",
-                                TypeBackground = "#4CAF50", // verde
+                                TypeBackground = "#4CAF50", // green
                                 QuantityInfo = GetMenuQuantityInfo(menu),
                                 PriceFormatted = $"{CalculateMenuPrice(menu):N2} Lei",
                                 IsAvailable = IsMenuAvailable(menu),
@@ -259,6 +314,11 @@ namespace Restaurant.ViewModels.Search
             }
         }
 
+        private bool IsAllergenSearch(string searchTerm)
+        {
+            // Check if the search term matches any known allergen name
+            return _allAlergens.Any(a => a.Name.ToLower().Contains(searchTerm));
+        }
         private string GetAlergenInfo(Preparat preparat)
         {
             if (preparat.PreparatAlergens != null && preparat.PreparatAlergens.Any())
@@ -325,18 +385,10 @@ namespace Restaurant.ViewModels.Search
 
             return menu.MenuPreparate.All(mp => (mp.Preparat?.QuantityTotal ?? 0) > 0);
         }
+        #endregion
+
+
     }
 
-    public class SearchResultViewModel : ViewModelBase
-    {
-        public int Id { get; set; }
-        public string CategoryName { get; set; }
-        public string Name { get; set; }
-        public string TypeName { get; set; }
-        public string TypeBackground { get; set; }
-        public string QuantityInfo { get; set; }
-        public string PriceFormatted { get; set; }
-        public bool IsAvailable { get; set; }
-        public string AlergenInfo { get; set; }
-    }
+    
 }

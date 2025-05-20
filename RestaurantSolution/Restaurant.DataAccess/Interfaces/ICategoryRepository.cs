@@ -13,6 +13,7 @@ namespace Restaurant.DataAccess.Interfaces
         Category GetById(int id);
         void Insert(string name);
         void Update(int id, string name);
+
         void Delete(int id);
     }
 }
